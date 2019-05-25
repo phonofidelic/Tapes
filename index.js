@@ -29,12 +29,16 @@ app.on('ready', () => {
 
 /***
  *	Receive 'start_rec' signal from client:
+ *
+ *	@startRecording:
  *	# Prep for tmp dir.
  *	# Create writeStream to tmp file in tmp dir.
  *	# Start child process with 'rec' command.
  *	# Create readStream from child process stdout.
  */
-ipcMain.on('start_rec', () => {
+ipcMain.on('start_rec', () => startRecording())
+
+const startRecording = () => {
 	console.log('start rec')
 	// Check for tmp directory. If none exists, create one.
 	fs.readdir(`${__dirname + TMP_DIR}`, (err, files) => {
@@ -51,30 +55,22 @@ ipcMain.on('start_rec', () => {
 		console.log('start_rec, files:', files)
 	})
 	
-	
+	// Prep path for tmp audio file, then create writeStream.
 	const FORMAT = 'flac';
 	const destPath = path.resolve(__dirname, TMP_DIR, `${uuidv4()}.${FORMAT}`);
-	console.log('destPath', destPath)
-
 	const writeStream = fs.WriteStream(`.${destPath}`);
+
 	// Execute rec and pipe output to stdout, then create readStream from stout.
 	const rec = spawn('rec', ['-c', '1', '-t', FORMAT, '-']);
 	const readStream = rec.stdout;	
 	
-
-	writeStream.on('data', data => {
-		console.log('### wtiteStream data:', data)
-		// TODO: process audio data and send to client for visualization
-	})
-
 	readStream.pipe(writeStream);
 	readStream.on('data', data => {
 		// console.log('data:', data)
+		// TODO: process audio data and send to client for visualization
 	})
-	writeStream.on('close', () => console.log('Done!'))
-
-	ipcMain.on('stop_rec', () => rec.kill())
-})
-
+	writeStream.on('close', () => console.log('\n*** Done!'))
+	ipcMain.on('stop_rec', () => rec.kill(0))
+}
 
 
