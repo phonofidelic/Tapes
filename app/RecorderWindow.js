@@ -13,7 +13,7 @@ class RecorderWindow extends BrowserWindow {
 	    resizable: false,
 	    show: false,
 		});
-		this.on('blur', () => this.handleBlur.bind(this));
+		this.on('blur', this.handleBlur.bind(this));
 	}
 
 	handleBlur() {
