@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
-import './App.css';
+import { Route, Switch } from "react-router-dom";
 
+import Header from './components/Header';
 import RecorderControls from './components/RecorderControls';
+import Settings from './components/Settings';
+
+import './App.css';
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
@@ -21,10 +25,27 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <RecorderControls
-          onStartRec={this.onStartRec}
-          onStopRec={this.onStopRec}
-        />
+        <Header />
+        <div>
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={() => (
+                <RecorderControls
+                  onStartRec={this.onStartRec}
+                  onStopRec={this.onStopRec}
+                />
+              )}
+            />
+            <Route
+              path="/settings"
+              render={() => (
+                <Settings />
+              )}
+            />
+          </Switch>
+        </div>
       </div>
     );  
   }
