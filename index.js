@@ -7,6 +7,9 @@ const fs = require('fs');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
 
+const RecorderTray = require('./app/RecorderTray');
+const RecorderWindow = require('./app/RecorderWindow');
+
 const TMP_DIR = '/tmp';
 
 const {
@@ -15,16 +18,16 @@ const {
 	ipcMain
 } = electron;
 
-let mainWindow;
-let rec;
+let recorderWindow;
+// let rec;
+let tray;
 
 app.on('ready', () => {
-	mainWindow = new BrowserWindow({
-		webPreferences: {
-      nodeIntegration: true
-    }
-	});
-	mainWindow.loadURL(`http://localhost:3000`)
+	recorderWindow = new RecorderWindow();
+	recorderWindow.loadURL(`http://localhost:3000`)
+	const iconName = 'icon@2x.png';
+	const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
+	tray = new RecorderTray(iconPath, recorderWindow);
 });
 
 /***
