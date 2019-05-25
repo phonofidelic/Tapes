@@ -73,7 +73,10 @@ const startRecording = () => {
 		// TODO: process audio data and send to client for visualization
 	})
 	writeStream.on('close', () => console.log('\n*** Done!'))
-	ipcMain.on('stop_rec', () => rec.kill(0))
+	ipcMain.on('stop_rec', () => {
+		console.log('stop_rec')
+		rec.kill(0)
+	})
 }
 
 

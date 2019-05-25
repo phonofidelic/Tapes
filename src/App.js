@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-import Recorder from './components/Recorder';
+import RecorderControls from './components/RecorderControls';
 
 const electron = window.require('electron');
-const fs = electron.remote.require('fs');
 const ipcRenderer  = electron.ipcRenderer;
 
 
@@ -23,7 +21,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Recorder
+        <RecorderControls
           onStartRec={this.onStartRec}
           onStopRec={this.onStopRec}
         />

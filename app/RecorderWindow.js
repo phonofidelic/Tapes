@@ -8,7 +8,7 @@ class RecorderWindow extends BrowserWindow {
 	      nodeIntegration: true
 	    },
 	    width: 300,
-	    height: 500,
+	    height: 300,
 	    frame: false,
 	    resizable: false,
 	    show: false,
