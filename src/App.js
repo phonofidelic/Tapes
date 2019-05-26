@@ -13,15 +13,27 @@ const ipcRenderer  = electron.ipcRenderer;
 
 
 class App extends Component {
-  onStartRec = () => {
+  componentDidMount() {
+    ipcRenderer.on('select_dir', (e, dirPath) => {
+      console.log('dirPath:', dirPath)
+      localStorage.setItem('saveDir', dirPath)
+    })
+  }
+
+  handleStartRec = () => {
     console.log('start')
     ipcRenderer.send('start_rec')
   }
 
-  onStopRec = () => {
+  handleStopRec = () => {
     console.log('stop')
     ipcRenderer.send('stop_rec')
-}
+  }
+
+  handleOpenDirSelect = () => {
+    ipcRenderer.send('open_dir_select')
+  }
+
   render() {
     return (
       <div className="App">
@@ -33,15 +45,15 @@ class App extends Component {
               path="/"
               render={() => (
                 <RecorderControls
-                  onStartRec={this.onStartRec}
-                  onStopRec={this.onStopRec}
+                  handleStartRec={this.handleStartRec}
+                  handleStopRec={this.handleStopRec}
                 />
               )}
             />
             <Route
               path="/settings"
               render={() => (
-                <Settings />
+                <Settings handleOpenDirSelect={this.handleOpenDirSelect} />
               )}
             />
           </Switch>

@@ -6,15 +6,21 @@ const Container = styled.div`
 	display: flex;
 	width: 100%;
 `
+
+const Button = styled.button`
+	width: 100%;
+	height: 50px;
+`
+
 const Header = props => {
 	return (
 		<nav>
 			<Container>
-			<Link to="/">
-					Recorder
+				<Link to="/">
+					<Button>Recorder</Button>
 				</Link>
 				<Link to="/settings">
-					Settings
+					<Button>Settings</Button>
 				</Link>
 			</Container>
 		</nav>

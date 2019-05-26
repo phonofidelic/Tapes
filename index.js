@@ -15,7 +15,8 @@ const TMP_DIR = '/tmp';
 const {
 	app,
 	BrowserWindow,
-	ipcMain
+	ipcMain,
+	dialog
 } = electron;
 
 let recorderWindow;
@@ -24,7 +25,8 @@ let tray;
 
 app.on('ready', () => {
 	recorderWindow = new RecorderWindow();
-	recorderWindow.loadURL(`http://localhost:3000`)
+	recorderWindow.loadURL(`http://localhost:3000`);
+	recorderWindow.webContents.openDevTools({mode: 'detach'});
 	const iconName = 'icon@2x.png';
 	const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
 	tray = new RecorderTray(iconPath, recorderWindow);
@@ -79,4 +81,16 @@ const startRecording = () => {
 	})
 }
 
+ipcMain.on('open_dir_select', () => openDirSelect())
+
+function openDirSelect() {
+	console.log('open_dir_select')
+	dialog.showOpenDialog({
+		properties: ['openDirectory']
+	}, (dirPath) => {
+		// if (err) throw err;
+		console.log('*** Selected directory:', dirPath)
+		recorderWindow.webContents.send('select_dir', dirPath[0])
+	})
+}
 

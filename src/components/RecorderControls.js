@@ -3,6 +3,9 @@ import styled from 'styled-components';
 
 const Container = styled.div`
 	display: flex;
+	position: fixed;
+	bottom 0;
+	width: 100%;
 `
 
 const ButtonContainer = styled.div`
@@ -12,21 +15,20 @@ const ButtonContainer = styled.div`
 const Button = styled.button`
 	width: 100%;
 	height: 50px;
-
 `
 
 const RecorderControls = props => {
 	const {
-		onStartRec,
-		onStopRec
+		handleStartRec,
+		handleStopRec
 	} = props;
 	return (
 		<Container>
 			<ButtonContainer>
-				<Button onClick={() => onStartRec()}>rec</Button>
+				<Button onClick={() => handleStartRec()}>rec</Button>
 			</ButtonContainer>
 			<ButtonContainer>
-      	<Button onClick={() => onStopRec()}>stop</Button>
+      	<Button onClick={() => handleStopRec()}>stop</Button>
       </ButtonContainer>
 		</Container>
 	);
