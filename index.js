@@ -27,7 +27,7 @@ app.on('ready', () => {
 	recorderWindow = new RecorderWindow();
 	recorderWindow.loadURL(`http://localhost:3000`);
 	recorderWindow.webContents.openDevTools({mode: 'detach'});
-	const iconName = 'icon@2x.png';
+	const iconName = 'icon@16.png';
 	const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
 	tray = new RecorderTray(iconPath, recorderWindow);
 });
@@ -39,11 +39,11 @@ app.on('ready', () => {
  *	# Prep for tmp dir.
  *	# Create writeStream to tmp file in tmp dir.
  *	# Start child process with 'rec' command.
- *	# Create readStream from child process stdout.
+ *	# Create readStream from child process stdout
+ *		and pipe to writeStream.
  */
 ipcMain.on('start_rec', () => startRecording())
-
-const startRecording = () => {
+function startRecording() {
 	console.log('start rec')
 	// Check for tmp directory. If none exists, create one.
 	fs.readdir(`${__dirname + TMP_DIR}`, (err, files) => {
@@ -62,11 +62,11 @@ const startRecording = () => {
 	
 	// Prep path for tmp audio file, then create writeStream.
 	const FORMAT = 'flac';
-	const destPath = path.resolve(__dirname, TMP_DIR, `${uuidv4()}.${FORMAT}`);
-	const writeStream = fs.WriteStream(`.${destPath}`);
+	const tmpPath = path.resolve(__dirname, TMP_DIR, `${uuidv4()}.${FORMAT}`);
+	const writeStream = fs.WriteStream(`.${tmpPath}`);
 
 	// Execute rec and pipe output to stdout, then create readStream from stout.
-	const rec = spawn('rec', ['-c', '1', '-t', FORMAT, '-']);
+	const rec = spawn('rec', ['-c', '1', '-t', FORMAT, '-']); // Command from https://superuser.com/a/583757
 	const readStream = rec.stdout;	
 	
 	readStream.pipe(writeStream);
@@ -74,23 +74,31 @@ const startRecording = () => {
 		// console.log('data:', data)
 		// TODO: process audio data and send to client for visualization
 	})
+	readStream.on('close', () => console.log('### readStream closed'))
+	
 	writeStream.on('close', () => console.log('\n*** Done!'))
-	ipcMain.on('stop_rec', () => {
-		console.log('stop_rec')
-		rec.kill(0)
-	})
+}
+
+ipcMain.on('stop_rec', (e, savePath) => stopRecording(savePath))
+function stopRecording(savePath) {
+	console.log('stop_rec, savePath:', savePath)
+	readStream.unpipe()
+	// rec.kill(0);
+	// fs.copyFile(tmpPath, savePath, err => {
+	// 	if (err) throw err;
+	// 	console.log(`*** file saved to ${savePath}`);
+	// })
 }
 
 ipcMain.on('open_dir_select', () => openDirSelect())
-
 function openDirSelect() {
 	console.log('open_dir_select')
 	dialog.showOpenDialog({
 		properties: ['openDirectory']
-	}, (dirPath) => {
+	}, (paths) => {
 		// if (err) throw err;
-		console.log('*** Selected directory:', dirPath)
-		recorderWindow.webContents.send('select_dir', dirPath[0])
+		console.log('*** Selected directory:', paths[0])
+		recorderWindow.webContents.send('select_dir', paths[0])
 	})
 }
 

@@ -13,10 +13,18 @@ const ipcRenderer  = electron.ipcRenderer;
 
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      settings: { savePath: localStorage.getItem('savePath') || null }
+    }
+  }
+
   componentDidMount() {
     ipcRenderer.on('select_dir', (e, dirPath) => {
       console.log('dirPath:', dirPath)
-      localStorage.setItem('saveDir', dirPath)
+      localStorage.setItem('savePath', dirPath)
     })
   }
 
@@ -27,7 +35,8 @@ class App extends Component {
 
   handleStopRec = () => {
     console.log('stop')
-    ipcRenderer.send('stop_rec')
+    const savePath = localStorage.getItem('savePath')
+    ipcRenderer.send('stop_rec', savePath)
   }
 
   handleOpenDirSelect = () => {
@@ -35,6 +44,7 @@ class App extends Component {
   }
 
   render() {
+    const { settings } = this.state;
     return (
       <div className="App">
         <Header />
@@ -53,7 +63,10 @@ class App extends Component {
             <Route
               path="/settings"
               render={() => (
-                <Settings handleOpenDirSelect={this.handleOpenDirSelect} />
+                <Settings
+                  settings={settings}
+                  handleOpenDirSelect={this.handleOpenDirSelect}
+                />
               )}
             />
           </Switch>
