@@ -6,14 +6,18 @@ import * as serviceWorker from './serviceWorker';
 
 import { HashRouter as Router, Route } from "react-router-dom";
 
+import Root from 'Root';
+
 ReactDOM.render(
-	<Router>
-		<Route
-			component={() => (
-				<App />
-			)}
-		/>
-	</Router>,
+	<Root>
+		<Router>
+			<Route
+				component={() => (
+					<App />
+				)}
+			/>
+		</Router>
+	</Root>,
 	document.getElementById('root')
 );
 

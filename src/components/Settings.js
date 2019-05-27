@@ -1,34 +1,59 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import styled from 'styled-components';
+import * as actions from 'actions/settings.actions';
+
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
 
 const Container = styled.div`
 	text-align: left;
 	padding: 8px;
 `
 
-const Settings = props => {
-	const {
-		settings,
-		handleOpenDirSelect
-	} = props;
-	return (
-		<Container>
-			<h1>Settings</h1>
-			<h2>Save directory:</h2>
-			<p>Set a destination folder for your recordings.</p>
-				<div>
-					<button onClick={() => handleOpenDirSelect()}>
-						{
-							!settings.savePath ? 
-							'Set destination folder' 
-							:
-							'Change destination folder'
-						}
-					</button>
-				</div>
-				<p style={{fontSize: '.8em'}}>Current: {settings.savePath || '(not set)'}</p>
-		</Container>
-	)
+class Settings extends Component {
+	componentDidMount() {
+		ipcRenderer.on('select_dir', (e, path) => {
+			this.props.setSavePath(path);
+		});
+		ipcRenderer.on('select_dir_cancel', (e, path) => {
+			this.props.cancelSetSavePath(path);
+		});
+	}
+
+	handleOpenDirSelect = () => {
+		this.props.openDirSelect()
+	}
+
+	render() {
+		const { settings } = this.props;
+
+		return (
+			<Container>
+				<h1>Settings</h1>
+				<h2>Save directory:</h2>
+				<p>Set a destination folder for your recordings.</p>
+					<div>
+						<button onClick={() => this.handleOpenDirSelect()}>
+							{
+								!settings.savePath ? 
+								'Set destination folder' 
+								:
+								'Change destination folder'
+							}
+						</button>
+					</div>
+					<p style={{fontSize: '.8em'}}>Current: {settings.savePath || '(not set)'}</p>
+			</Container>
+		)
+	}
 }
 
-export default Settings;
+const mapStateToProps = state => {
+	console.log('settings state:', state)
+	return {
+		settings: state.settings
+	}
+}
+
+export default connect(mapStateToProps, actions)(Settings);

@@ -19,17 +19,20 @@ const Button = styled.button`
 
 const RecorderControls = props => {
 	const {
+		isRecording,
 		handleStartRec,
-		handleStopRec
+		handleStopRec,
 	} = props;
+	console.log('isRecording:', isRecording)
 	return (
 		<Container>
-			<ButtonContainer>
-				<Button onClick={() => handleStartRec()}>rec</Button>
-			</ButtonContainer>
-			<ButtonContainer>
-      	<Button onClick={() => handleStopRec()}>stop</Button>
-      </ButtonContainer>
+      	<ButtonContainer>
+      	{	!isRecording ?
+					<Button onClick={() => handleStartRec()}>rec</Button>
+					:
+					<Button onClick={() => handleStopRec()}>stop</Button>
+      	}
+				</ButtonContainer>
 		</Container>
 	);
 }

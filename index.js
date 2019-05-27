@@ -42,6 +42,7 @@ app.on('ready', () => {
  *	# Create readStream from child process stdout
  *		and pipe to writeStream.
  */
+let readStream;
 ipcMain.on('start_rec', () => startRecording())
 function startRecording() {
 	console.log('start rec')
@@ -67,7 +68,7 @@ function startRecording() {
 
 	// Execute rec and pipe output to stdout, then create readStream from stout.
 	const rec = spawn('rec', ['-c', '1', '-t', FORMAT, '-']); // Command from https://superuser.com/a/583757
-	const readStream = rec.stdout;	
+	readStream = rec.stdout;	
 	
 	readStream.pipe(writeStream);
 	readStream.on('data', data => {
@@ -79,10 +80,11 @@ function startRecording() {
 	writeStream.on('close', () => console.log('\n*** Done!'))
 }
 
-ipcMain.on('stop_rec', (e, savePath) => stopRecording(savePath))
-function stopRecording(savePath) {
-	console.log('stop_rec, savePath:', savePath)
-	readStream.unpipe()
+ipcMain.on('stop_rec', (e) => stopRecording())
+function stopRecording() {
+	console.log('stop_rec')
+	readStream.unpipe();
+	readStream = null;
 	// rec.kill(0);
 	// fs.copyFile(tmpPath, savePath, err => {
 	// 	if (err) throw err;
@@ -96,7 +98,10 @@ function openDirSelect() {
 	dialog.showOpenDialog({
 		properties: ['openDirectory']
 	}, (paths) => {
-		// if (err) throw err;
+		if (!paths) {
+			recorderWindow.webContents.send('select_dir_cancel')
+			return console.log('*** No path selected.');
+		}
 		console.log('*** Selected directory:', paths[0])
 		recorderWindow.webContents.send('select_dir', paths[0])
 	})
