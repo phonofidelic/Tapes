@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
@@ -9,11 +9,18 @@ import { theme } from 'config';
 // import { ThemeProvider } from 'contexts/theme.context';	TODO
 
 export default ({ children, initialState = {} }) => {
+	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+	const enhancer = composeEnhancers(
+		applyMiddleware(
+	    reduxThunk,
+	  )
+	);
 
 	const store = createStore(
 		reducer,
 		initialState,
-		applyMiddleware(reduxThunk)
+		enhancer
 	);
 
 	const customTheme = createMuiTheme(theme);

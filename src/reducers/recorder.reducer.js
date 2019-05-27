@@ -1,10 +1,12 @@
 import {
 	START_REC,
 	STOP_REC,
+	REC_READY,
 } from 'actions/types';
 
 export const INITIAL_STATE = {
-	isRecording: false
+	isRecording: false,
+	tmpRecordings: [],
 }
 
 const recorder = (state = INITIAL_STATE, action) => {
@@ -21,6 +23,12 @@ const recorder = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				isRecording: false,
+			}
+
+		case REC_READY:
+			return {
+				...state,
+				tmpRecordings: [...state.tmpRecordings, action.recording],
 			}
 
 		default: return state

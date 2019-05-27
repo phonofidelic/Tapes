@@ -93,7 +93,11 @@ function startRecording() {
 		// TODO: process audio data and send to client for visualization
 	})
 	readStream.on('close', () => console.log('### readStream closed'))
-	
+
+	writeStream.on('ready', () => {
+		console.log('*** writeStream ready.');
+		recorderWindow.webContents.send('rec_ready', tmpPath)
+	})
 	writeStream.on('close', () => console.log('\n*** Done!'))
 }
 

@@ -5,7 +5,14 @@ import * as actions from 'actions/recorder.actions';
 
 import RecorderControls from 'components/RecorderControls';
 
+const electron = window.require('electron');
+const ipcRenderer  = electron.ipcRenderer;
+
 class Recorder extends Component {
+	componentDidMount() {
+		ipcRenderer.on('rec_ready', (e, path) => this.props.createRecEntry(path))
+	}
+
 	handleStartRec = () => {
     console.log('start', this.props.recorder.isRecording)
     this.props.startRec();
