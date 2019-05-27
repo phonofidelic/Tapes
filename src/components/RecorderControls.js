@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import Button from '@material-ui/core/Button';
+
 const Container = styled.div`
 	display: flex;
 	position: fixed;
@@ -12,9 +14,10 @@ const ButtonContainer = styled.div`
 	width: 100%;
 `
 
-const Button = styled.button`
+const RecButton = styled(Button)`
 	width: 100%;
 	height: 50px;
+	color: red;
 `
 
 const RecorderControls = props => {
@@ -28,9 +31,9 @@ const RecorderControls = props => {
 		<Container>
       	<ButtonContainer>
       	{	!isRecording ?
-					<Button onClick={() => handleStartRec()}>rec</Button>
+					<RecButton onClick={() => handleStartRec()}>rec</RecButton>
 					:
-					<Button onClick={() => handleStopRec()}>stop</Button>
+					<RecButton onClick={() => handleStopRec()}>stop</RecButton>
       	}
 				</ButtonContainer>
 		</Container>

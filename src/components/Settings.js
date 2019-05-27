@@ -3,10 +3,14 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import * as actions from 'actions/settings.actions';
 
+import Button from '@material-ui/core/Button';
+
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
 const Container = styled.div`
+	display: flex;
+	flex-direction: column;
 	text-align: left;
 	padding: 8px;
 `
@@ -34,14 +38,14 @@ class Settings extends Component {
 				<h2>Save directory:</h2>
 				<p>Set a destination folder for your recordings.</p>
 					<div>
-						<button onClick={() => this.handleOpenDirSelect()}>
+						<Button fullWidth onClick={() => this.handleOpenDirSelect()}>
 							{
 								!settings.savePath ? 
 								'Set destination folder' 
 								:
 								'Change destination folder'
 							}
-						</button>
+						</Button>
 					</div>
 					<p style={{fontSize: '.8em'}}>Current: {settings.savePath || '(not set)'}</p>
 			</Container>
