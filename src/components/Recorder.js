@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 // import styled from 'styled-components';
 import * as actions from 'actions/recorder.actions';
 
+import RecordingsList from 'components/RecordingsList';
 import RecorderControls from 'components/RecorderControls';
 
 const electron = window.require('electron');
@@ -29,6 +30,7 @@ class Recorder extends Component {
 		console.log('recorder.isRecording:', recorder.isRecording)
 		return (
 			<div>
+				<RecordingsList recordings={recorder.tmpRecordings} />
 				<RecorderControls
 					isRecording={recorder.isRecording}
 					handleStartRec={this.handleStartRec}        

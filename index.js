@@ -6,6 +6,7 @@ const {
 const fs = require('fs');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
+const dataurl = require('dataurl');
 
 const RecorderTray = require('./app/RecorderTray');
 const RecorderWindow = require('./app/RecorderWindow');
@@ -87,16 +88,25 @@ function startRecording() {
 	const rec = spawn('rec', ['-c', '1', '-t', FORMAT, '-']); // Command from https://superuser.com/a/583757
 	readStream = rec.stdout;	
 	
-	readStream.pipe(writeStream);
+	readStream
+	// .pipe(dataurl.stream({ mimetype: 'audio/mp3' }))
+	.pipe(writeStream)
+
 	readStream.on('data', data => {
-		// console.log('data:', data)
+		console.log('*** data:', data)
 		// TODO: process audio data and send to client for visualization
-	})
+	});
+
 	readStream.on('close', () => console.log('### readStream closed'))
 
 	writeStream.on('ready', () => {
 		console.log('*** writeStream ready.');
 		recorderWindow.webContents.send('rec_ready', tmpPath)
+
+		// fs.readFile(tmpPath, (err, data) => {
+		// 	if (err) throw err;
+		// 	console.log('*** dataurl:', dataurl.convert({ data, mimetype: 'audio/mp3' }));
+		// })
 	})
 	writeStream.on('close', () => console.log('\n*** Done!'))
 }

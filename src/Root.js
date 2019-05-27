@@ -6,7 +6,35 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import reducer from 'reducers/index';
 import { theme } from 'config';
+// import { loadState, saveState } from './localStorage';
 // import { ThemeProvider } from 'contexts/theme.context';	TODO
+
+
+/*** Persist state to localStorage ****
+ *	From: https://egghead.io/lessons/javascript-redux-persisting-the-state-to-the-local-storage
+ */
+export const loadState = () => {
+	try {
+		const serializedState = localStorage.getItem('state');
+		if (serializedState === null) {
+			return undefined;
+		}
+		return JSON.parse(serializedState);
+	} catch (err) {
+		return undefined;
+	}
+};
+
+export const saveState = (state) => {
+	console.log('saveState state:', state)
+	try {
+		const serializedState = JSON.stringify(state);
+		localStorage.setItem('state', serializedState);
+	} catch (err) {
+		console.error('localStorage saveState error:', err);
+	}
+}
+/*********************************************************************************************/
 
 export default ({ children, initialState = {} }) => {
 	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -17,11 +45,17 @@ export default ({ children, initialState = {} }) => {
 	  )
 	);
 
+	const persistedState = loadState();
 	const store = createStore(
 		reducer,
-		initialState,
+		persistedState,
 		enhancer
 	);
+	console.log('store:', store.getState())
+
+	store.subscribe(() => {
+		saveState(store.getState())
+	})
 
 	const customTheme = createMuiTheme(theme);
 
