@@ -10,6 +10,14 @@ const uuidv4 = require('uuid/v4');
 const RecorderTray = require('./app/RecorderTray');
 const RecorderWindow = require('./app/RecorderWindow');
 
+const { 
+	default: installExtension,
+	REACT_DEVELOPER_TOOLS,
+	REDUX_DEVTOOLS
+} = require('electron-devtools-installer');
+
+
+
 const TMP_DIR = '/tmp';
 
 const {
@@ -18,6 +26,9 @@ const {
 	ipcMain,
 	dialog
 } = electron;
+
+
+
 
 let recorderWindow;
 // let rec;
@@ -30,6 +41,12 @@ app.on('ready', () => {
 	const iconName = 'icon@16.png';
 	const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
 	tray = new RecorderTray(iconPath, recorderWindow);
+	installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
+  installExtension(REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));
 });
 
 /***
