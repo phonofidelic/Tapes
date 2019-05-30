@@ -2,6 +2,7 @@ import {
 	START_REC,
 	STOP_REC,
 	REC_READY,
+	TOGGLE_MONITOR
 } from 'actions/types';
 
 const electron = window.require('electron');
@@ -46,4 +47,14 @@ export const createRecEntry = (path) => {
 			recording: recording
 		})
 	}
+}
+
+export const toggleMonitor = monitor => {
+	console.log('toggleMonitor, monitor:', monitor)
+	ipcRenderer.send('toggle_monitor', monitor)
+	 return dispatch => {
+	 	dispatch({
+	 		type: TOGGLE_MONITOR
+	 	})
+	 }
 }

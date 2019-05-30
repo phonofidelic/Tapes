@@ -2,11 +2,13 @@ import {
 	START_REC,
 	STOP_REC,
 	REC_READY,
+	TOGGLE_MONITOR,
 } from 'actions/types';
 
 export const INITIAL_STATE = {
 	isRecording: false,
 	tmpRecordings: [],
+	monitor: false
 }
 
 const recorder = (state = INITIAL_STATE, action) => {
@@ -31,6 +33,13 @@ const recorder = (state = INITIAL_STATE, action) => {
 				...state,
 				tmpRecordings: [...state.tmpRecordings, action.recording],
 			}
+
+		case TOGGLE_MONITOR: {
+			return {
+				...state,
+				monitor: !state.monitor
+			}
+		}
 
 		default: return state
 	}

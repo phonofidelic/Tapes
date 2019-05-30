@@ -4,7 +4,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import reducer from 'reducers/index';
+import reducer, { initGlobalState } from 'reducers/index';
 import { theme } from 'config';
 // import { loadState, saveState } from './localStorage';
 // import { ThemeProvider } from 'contexts/theme.context';	TODO
@@ -35,6 +35,8 @@ export const saveState = (state) => {
 	}
 }
 /*********************************************************************************************/
+const { recorder, settings } = initGlobalState;
+console.log('initGlobalState:', initGlobalState)
 
 export default ({ children, initialState = {} }) => {
 	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -48,7 +50,15 @@ export default ({ children, initialState = {} }) => {
 	const persistedState = loadState();
 	const store = createStore(
 		reducer,
-		persistedState,
+		{
+			...persistedState,
+			// Set everything not tracked by persistentState to initGlobalState defaults. TODO: refactor this
+			recorder: {
+				...persistedState.recorder,
+				isRecording: recorder.isRecording,
+				monitor: recorder.monitor,
+			}
+		},
 		enhancer
 	);
 	console.log('store:', store.getState())
@@ -56,7 +66,9 @@ export default ({ children, initialState = {} }) => {
 	store.subscribe(() => {
 		saveState({
 			settings: store.getState().settings,
-			recorder: { tmpRecordings: store.getState().recorder.tmpRecordings } // Exclude "isRecording" state
+			recorder: {
+				tmpRecordings: store.getState().recorder.tmpRecordings,
+			} 
 		})
 	})
 

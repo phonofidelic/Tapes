@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import Button from '@material-ui/core/Button';
+import MicIcon from '@material-ui/icons/Mic';
+import MicOffIcon from '@material-ui/icons/MicOff';
 
 const Container = styled.div`
 	display: flex;
@@ -11,10 +13,10 @@ const Container = styled.div`
 `
 
 const ButtonContainer = styled.div`
-	width: 100%;
+	width: ${props => props.width}%;
 `
 
-const RecButton = styled(Button)`
+const ControllButton = styled(Button)`
 	width: 100%;
 	height: 50px;
 `
@@ -24,25 +26,32 @@ const RecorderControls = props => {
 		isRecording,
 		handleStartRec,
 		handleStopRec,
+		handleToggleMonitor,
+		monitor,
 	} = props;
 	console.log('isRecording:', isRecording)
 	return (
 		<Container>
-      	<ButtonContainer>
-      	{	!isRecording ?
-					<RecButton 
-						style={{
-							color: 'red',
-							// border: '1px solid red',
-						}} 
-						onClick={() => handleStartRec()}
-					>
-						rec
-					</RecButton>
-					:
-					<RecButton onClick={() => handleStopRec()}>stop</RecButton>
-      	}
-				</ButtonContainer>
+			<ButtonContainer width={20}>
+				<ControllButton onClick={() => handleToggleMonitor(monitor)}>
+					{ !monitor? <MicOffIcon /> : <MicIcon />}
+				</ControllButton>
+			</ButtonContainer>
+    	<ButtonContainer width={80}>
+    	{	!isRecording ?
+				<ControllButton 
+					style={{
+						color: 'red',
+						// border: '1px solid red',
+					}} 
+					onClick={() => handleStartRec()}
+				>
+					rec
+				</ControllButton>
+				:
+				<ControllButton onClick={() => handleStopRec()}>stop</ControllButton>
+    	}
+			</ButtonContainer>
 		</Container>
 	);
 }

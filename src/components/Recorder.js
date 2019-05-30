@@ -35,10 +35,16 @@ class Recorder extends Component {
     this.props.stopRec();
   }
 
+  handleToggleMonitor = monitor => {
+  	// console.log('handleToggleMonitor:', monitor)
+  	this.props.toggleMonitor(monitor);
+  }
+
 	render() {
 		const { recorder } = this.props;
 
 		console.log('recorder.isRecording:', recorder.isRecording)
+		console.log('recorder.monitor:', recorder.monitor)
 		return (
 			<div>
 				<RecordingsList recordings={recorder.tmpRecordings} />
@@ -46,6 +52,8 @@ class Recorder extends Component {
 					isRecording={recorder.isRecording}
 					handleStartRec={this.handleStartRec}        
 	        handleStopRec={this.handleStopRec}
+	        handleToggleMonitor={this.handleToggleMonitor}
+	        monitor={recorder.monitor}
 				/>
 			</div>
 		)
