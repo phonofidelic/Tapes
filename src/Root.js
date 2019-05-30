@@ -54,7 +54,10 @@ export default ({ children, initialState = {} }) => {
 	console.log('store:', store.getState())
 
 	store.subscribe(() => {
-		saveState(store.getState())
+		saveState({
+			settings: store.getState().settings,
+			recorder: { tmpRecordings: store.getState().recorder.tmpRecordings } // Exclude "isRecording" state
+		})
 	})
 
 	const customTheme = createMuiTheme(theme);

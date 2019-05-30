@@ -16,6 +16,7 @@ const recorder = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				isRecording: true,
+				// tmpRecordings: [...state.tmpRecordings, action.recording],
 			}
 
 		case STOP_REC:

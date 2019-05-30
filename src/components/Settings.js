@@ -38,7 +38,11 @@ class Settings extends Component {
 				<h2>Save directory:</h2>
 				<p>Set a destination folder for your recordings.</p>
 					<div>
-						<Button fullWidth onClick={() => this.handleOpenDirSelect()}>
+						<Button 
+							fullWidth 
+							variant="outlined"
+							onClick={() => this.handleOpenDirSelect()}
+						>
 							{
 								!settings.savePath ? 
 								'Set destination folder' 

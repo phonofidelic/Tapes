@@ -12,9 +12,14 @@ export const startRec = () => {
 	ipcRenderer.send('start_rec');
 
 	return dispatch => {
+		// const recording = {
+		// 	_id: Math.trunc(Date.now() * Math.random()),
+		// 	created: Date.now(),
+		// 	// src: path
+		// }
 		dispatch({
 			type: START_REC,
-			
+			// recording: recording
 		})
 	}
 }

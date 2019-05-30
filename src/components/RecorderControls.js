@@ -17,7 +17,6 @@ const ButtonContainer = styled.div`
 const RecButton = styled(Button)`
 	width: 100%;
 	height: 50px;
-	color: red;
 `
 
 const RecorderControls = props => {
@@ -31,7 +30,15 @@ const RecorderControls = props => {
 		<Container>
       	<ButtonContainer>
       	{	!isRecording ?
-					<RecButton onClick={() => handleStartRec()}>rec</RecButton>
+					<RecButton 
+						style={{
+							color: 'red',
+							// border: '1px solid red',
+						}} 
+						onClick={() => handleStartRec()}
+					>
+						rec
+					</RecButton>
 					:
 					<RecButton onClick={() => handleStopRec()}>stop</RecButton>
       	}
