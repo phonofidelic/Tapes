@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "audio-buffer": "^4.0.4",
+    "audio-buffer-list": "^5.0.0",
     "audio-speaker": "^1.5.0",
     "mic": "^2.1.2",
     "speaker": "^0.4.2"

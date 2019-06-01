@@ -35,7 +35,7 @@ export const saveState = (state) => {
 	}
 }
 /*********************************************************************************************/
-const { recorder, settings } = initGlobalState;
+const { recorder } = initGlobalState;
 console.log('initGlobalState:', initGlobalState)
 
 export default ({ children, initialState = {} }) => {

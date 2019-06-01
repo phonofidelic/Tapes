@@ -50,6 +50,8 @@ export const createRecEntry = (path) => {
 }
 
 export const toggleMonitor = monitor => {
+	ipcRenderer.send(!monitor ? 'monitor:start' : 'monitor:stop')
+
 	console.log('toggleMonitor, monitor:', monitor)
 	ipcRenderer.send('toggle_monitor', monitor)
 	 return dispatch => {

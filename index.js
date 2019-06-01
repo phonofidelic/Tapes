@@ -16,7 +16,9 @@ const RecorderWindow = require('./app/RecorderWindow');
 
 const {
 	openDirSelect,
-	newRecording
+	newRecording,
+	startMonitor,
+	stopMonitor
 } = require('./event-handlers');
 
 const { 
@@ -32,8 +34,9 @@ const {
 	dialog
 } = electron;
 
-// let rec;
+let rec;
 // let monitor;
+// let audioIn_readStream;
 
 let recorderWindow;
 let tray;
@@ -56,4 +59,19 @@ app.on('ready', () => {
 ipcMain.on('start_rec', () => newRecording(ipcMain))
 ipcMain.on('open_dir_select', () => openDirSelect(recorderWindow))
 
+ipcMain.on('stop_rec', (e) => {
+	console.log('stop_rec')
+	// audioIn_readStream.unpipe();
+	// audioIn_readStream = undefined;
+	// tmpFile_writeStream = undefined;
+	rec.kill(0);
+	// fs.copyFile(tmpPath, savePath, err => {
+	// 	if (err) throw err;
+	// 	console.log(`*** file saved to ${savePath}`);
+	// })
+	// audioRecorder.stop();
+})
+
+ipcMain.on('monitor:start', () => startMonitor())
+// ipcMain.on('monitor:stop', () => stopMonitor())
 

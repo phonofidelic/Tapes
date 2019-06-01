@@ -9,8 +9,8 @@ import RecorderControls from 'components/RecorderControls';
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
-const Datauri = window.require('datauri');
-const datauri = new Datauri();
+// const Datauri = window.require('datauri');
+// const datauri = new Datauri();
 
 class Recorder extends Component {
 	componentDidMount() {
@@ -20,7 +20,7 @@ class Recorder extends Component {
 			// this.props.createRecEntry(datauri)
 		})
 		ipcRenderer.on('rec_writestream_ready', (e, src) => {
-			console.log('rec_writestream_ready, src:', src)
+			// console.log('rec_writestream_ready, src:', src)
 			this.props.createRecEntry(src)
 		})
 	}
@@ -43,8 +43,8 @@ class Recorder extends Component {
 	render() {
 		const { recorder } = this.props;
 
-		console.log('recorder.isRecording:', recorder.isRecording)
-		console.log('recorder.monitor:', recorder.monitor)
+		// console.log('recorder.isRecording:', recorder.isRecording)
+		// console.log('recorder.monitor:', recorder.monitor)
 		return (
 			<div>
 				<RecordingsList recordings={recorder.tmpRecordings} />
@@ -61,7 +61,7 @@ class Recorder extends Component {
 }
 
 const mapStateToProps = state => {
-	console.log('recorder state:', state)
+	// console.log('recorder state:', state)
 	return {
 		recorder: state.recorder
 	}

@@ -9,6 +9,7 @@
     "datauri": "^2.0.0",
     "dataurl": "^0.1.0",
     "history": "^4.9.0",
+    "mic": "^2.1.2",
     "naudiodon": "^2.0.3",
     "node-audiorecorder": "^1.4.1",
     "react": "^16.8.6",
@@ -27,7 +28,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "electron": "electron ."
+    "electron": "electron .",
+    "rebuild": "./node_modules/.bin/electron-rebuild -f -w speaker"
   },
   "eslintConfig": {
     "extends": "react-app"

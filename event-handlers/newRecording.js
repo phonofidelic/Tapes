@@ -57,7 +57,7 @@ function newRecording(renderer) {
 	tmpFile_writeStream = fs.WriteStream(tmpFile);
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
-	const rec = spawn('rec', [
+	rec = spawn('rec', [
 		'-c', '1',				// One chanel mono 
 		'-t', FORMAT, 		// Set format
 		'-'								// Pipe to stdout
@@ -94,20 +94,7 @@ function newRecording(renderer) {
 	// .on('end', () => console.log('*** Done!'));															// Nope
 
 	audioIn_readStream
-	.pipe(tmpFile_writeStream)
-
-	ipcMain.on('stop_rec', (e) => {
-		console.log('stop_rec')
-		audioIn_readStream.unpipe();
-		// audioIn_readStream = undefined;
-		// tmpFile_writeStream = undefined;
-		rec.kill(0);
-		// fs.copyFile(tmpPath, savePath, err => {
-		// 	if (err) throw err;
-		// 	console.log(`*** file saved to ${savePath}`);
-		// })
-		// audioRecorder.stop();
-	})
+		.pipe(tmpFile_writeStream);
 }
 
 module.exports = newRecording;
