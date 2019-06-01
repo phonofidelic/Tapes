@@ -17,6 +17,7 @@ const RecorderWindow = require('./app/RecorderWindow');
 const {
 	openDirSelect,
 	newRecording,
+	stopRecording,
 	startMonitor,
 	stopMonitor
 } = require('./event-handlers');
@@ -35,8 +36,7 @@ const {
 } = electron;
 
 let rec;
-// let monitor;
-// let audioIn_readStream;
+let monitor;
 
 let recorderWindow;
 let tray;
@@ -56,22 +56,9 @@ app.on('ready', () => {
     .catch((err) => console.log('An error occurred: ', err));
 });
 
-ipcMain.on('start_rec', () => newRecording(ipcMain))
+ipcMain.on('rec:start', () => newRecording(ipcMain))
+ipcMain.on('rec:stop', () => stopRecording(ipcMain))
 ipcMain.on('open_dir_select', () => openDirSelect(recorderWindow))
-
-ipcMain.on('stop_rec', (e) => {
-	console.log('stop_rec')
-	// audioIn_readStream.unpipe();
-	// audioIn_readStream = undefined;
-	// tmpFile_writeStream = undefined;
-	rec.kill(0);
-	// fs.copyFile(tmpPath, savePath, err => {
-	// 	if (err) throw err;
-	// 	console.log(`*** file saved to ${savePath}`);
-	// })
-	// audioRecorder.stop();
-})
-
 ipcMain.on('monitor:start', () => startMonitor())
-// ipcMain.on('monitor:stop', () => stopMonitor())
+ipcMain.on('monitor:stop', () => stopMonitor())
 

@@ -10,7 +10,7 @@ const ipcRenderer = electron.ipcRenderer;
 
 export const startRec = () => {
 	
-	ipcRenderer.send('start_rec');
+	ipcRenderer.send('rec:start');
 
 	return dispatch => {
 		// const recording = {
@@ -26,7 +26,7 @@ export const startRec = () => {
 }
 
 export const stopRec = () => {
-	ipcRenderer.send('stop_rec');
+	ipcRenderer.send('rec:stop');
 
 	return dispatch => {
 		dispatch({

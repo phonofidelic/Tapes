@@ -9,17 +9,17 @@ const newRecording = require('./newRecording');
 
 let micInstance;
 
+function stopRecording() {
+	console.log('\n*** stopRecording')
+	rec.kill(0);
+	rec = undefined;
+}
 
 function startMonitor() {
-	let monitor;
-	console.log('\n*** startMonitor')
+	console.log('\n*** Monitor started.')
 	monitor = spawn('node', [path.resolve(__dirname, '..', 'monitor.js')])
 
 	monitor.stdout.pipe(process.stdout)
-
-	ipcMain.on('monitor:stop', () => {
-	 	monitor.kill();
-	})
 }
 
 function stopMonitor() {
@@ -31,6 +31,7 @@ function stopMonitor() {
 module.exports = {
 	openDirSelect,
 	newRecording,
+	stopRecording,
 	startMonitor,
 	stopMonitor
 }

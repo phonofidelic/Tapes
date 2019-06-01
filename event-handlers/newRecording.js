@@ -14,7 +14,7 @@ const { ipcMain } = electron;
 
 // console.log(path.relative('./', ))
 /***
- *	Receive 'start_rec' signal from client:
+ *	Receive 'rec:start' signal from client:
  *
  *	@newRecording:
  *	# Prep for tmp dir.
@@ -29,9 +29,10 @@ let tmpPath;
 const TMP_DIR = 'tmp';
 const FORMAT = 'mp3';
 
-
+// let rec;
 function newRecording(renderer) {
 	console.log('start rec')
+	// Prep path for tmp audio file...
 	tmpPath = path.resolve(__dirname, '..' , TMP_DIR);
 	tmpFile = path.resolve(tmpPath, `${uuidv4()}.${FORMAT}`)
 	// tmpPath = path.join('..', tmpPath);
@@ -48,12 +49,10 @@ function newRecording(renderer) {
 			}
 			throw err;
 		}
-		console.log('start_rec, files:', files)
+		console.log('rec:start, files:', files)
 	})
 	
-	// Prep path for tmp audio file, then create tmpFile_writeStream.
-	
-	
+	// ...then create tmpFile_writeStream.	
 	tmpFile_writeStream = fs.WriteStream(tmpFile);
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
@@ -64,37 +63,16 @@ function newRecording(renderer) {
 	]); // Command from https://superuser.com/a/583757
 	audioIn_readStream = rec.stdout;
 
-	play = spawn('play', [tmpPath])
-
-	// datauri
-	// .on('error', (err) => console.log('*** datauri error:', err))
-	// .on('encoded', content => console.log('*** datauri encoded:', content))
-	// .on('data', data => console.log('*** datauri data:', data))
-	// .on('end', data => console.log('*** datauri ended:'))
-
-	// audioIn_readStream
-	// .on('error', (err) => console.log('*** audioIn_readStream error:', err))
-	// .on('open', () => console.log('*** audioIn_readStream open.')) 						// Nope
-	// .on('ready', () => console.log('*** audioIn_readStream ready.')) 					// Nope
-	// .on('data', data => {
-	// 	// TODO: process audio data and send to client for visualization
-	// 	// console.log('*** audioIn_readStream data:', data)
-	// 	// renderer.webContents.send('rec_audio_data', data)
-	// })
-	// .on('end', () => console.log('*** audioIn_readStream ended.'))						// Nope
-
-	// tmpFile_writeStream
-	// .on('error', (err) => console.log('*** tmpFile_writeStream error:', err))
-	// .on('open', () => console.log('*** tmpFile_writeStream open.'))
-	// .on('ready', () => {
-	// 	console.log('*** tmpFile_writeStream ready.')
-	// 	// datauri.encode(`.${tmpPath}`);
-	// 	// renderer.webContents.send('rec_audio_data', datauri.format('.mp3', `.${tmpPath}`))
-	// })
-	// .on('end', () => console.log('*** Done!'));															// Nope
-
 	audioIn_readStream
-		.pipe(tmpFile_writeStream);
+	.pipe(tmpFile_writeStream);
+
+
+	// ipcMain.on('rec:stop', (e) => {
+	// 	console.log('rec:stop')
+	// 	rec.kill(0);
+	// 	rec = undefined;
+	// })
+	// console.log('\n*** this from newRecording:', this)
 }
 
 module.exports = newRecording;

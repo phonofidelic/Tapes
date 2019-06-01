@@ -5,12 +5,27 @@ const Speaker = require('speaker');
 const micInstance = mic({
     rate: '44100',
     channels: '1',
-    debug: true
+    // debug: true
     // exitOnSilence: 6
 });
+
+/*** mic: https://www.npmjs.com/package/mic ***
+ *
+ *	Events:
+ *		data,
+ *		error,
+ *		startComplete,
+ *		stopComplete,
+ *		resumeComplete,
+ * 		silence,
+ *		processExitComplete
+ *
+ ***/
 const micInputStream = micInstance.getAudioStream();
 
-
+/*** speaker: https://www.npmjs.com/package/speaker ***
+ *
+ ***/
 // Create the Speaker instance
 const speaker = new Speaker({
   channels: 1,          // 1 channels
@@ -20,8 +35,7 @@ const speaker = new Speaker({
 
 // PCM data from stdin gets piped into the speaker
 micInputStream.pipe(speaker);
-// micInputStream.pipe(process.stdout);
 
-// micInputStream.on('ready', () => console.log('\n*** Listening...'))
+micInputStream.on('startComplete', () => console.log('\n*** Monitor listening...'));
 
-micInstance.start()
+micInstance.start();
