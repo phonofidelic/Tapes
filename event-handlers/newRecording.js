@@ -35,7 +35,6 @@ function newRecording(renderer) {
 	// Prep path for tmp audio file...
 	tmpPath = path.resolve(__dirname, '..' , TMP_DIR);
 	tmpFile = path.resolve(tmpPath, `${uuidv4()}.${FORMAT}`)
-	// tmpPath = path.join('..', tmpPath);
 	console.log('tmpFile:', tmpFile)
 	// Check for tmp directory. If none exists, create one.
 	fs.readdir(tmpPath, (err, files) => {
@@ -65,14 +64,6 @@ function newRecording(renderer) {
 
 	audioIn_readStream
 	.pipe(tmpFile_writeStream);
-
-
-	// ipcMain.on('rec:stop', (e) => {
-	// 	console.log('rec:stop')
-	// 	rec.kill(0);
-	// 	rec = undefined;
-	// })
-	// console.log('\n*** this from newRecording:', this)
 }
 
 module.exports = newRecording;
