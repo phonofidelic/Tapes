@@ -27,12 +27,11 @@ let audioIn_readStream;
 let tmpFile_writeStream;
 let tmpPath;
 const TMP_DIR = 'tmp';
-const FORMAT = 'mp3';
+const FORMAT = 'flac';
 
-// let rec;
 function newRecording(renderer) {
 	console.log('start rec')
-	// Prep path for tmp audio file...
+	// Prep path for tmp audio file...								*** TODO: Move to helper function ***
 	tmpPath = path.resolve(__dirname, '..' , TMP_DIR);
 	tmpFile = path.resolve(tmpPath, `${uuidv4()}.${FORMAT}`)
 	console.log('tmpFile:', tmpFile)

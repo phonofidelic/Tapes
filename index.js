@@ -36,6 +36,7 @@ const {
 } = electron;
 
 let rec;
+let micInstance;
 let monitor;
 
 let recorderWindow;
@@ -59,6 +60,12 @@ app.on('ready', () => {
 ipcMain.on('rec:start', () => newRecording(ipcMain))
 ipcMain.on('rec:stop', () => stopRecording(ipcMain))
 ipcMain.on('open_dir_select', () => openDirSelect(recorderWindow))
-ipcMain.on('monitor:start', () => startMonitor())
+ipcMain.on('monitor:start', () => startMonitor(recorderWindow))
 ipcMain.on('monitor:stop', () => stopMonitor())
 
+process.on('beforeExit', () => {
+	console.lof('\n*** process beforeExit')
+})
+process.on('exit', (code) => {
+  console.log(`About to exit with code: ${code}`);
+});
