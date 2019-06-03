@@ -59,7 +59,7 @@ app.on('ready', () => {
 
 ipcMain.on('rec:start', () => newRecording(ipcMain))
 ipcMain.on('rec:stop', () => stopRecording(ipcMain))
-ipcMain.on('open_dir_select', () => openDirSelect(recorderWindow))
+ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
 ipcMain.on('monitor:start', () => startMonitor(recorderWindow))
 ipcMain.on('monitor:stop', () => stopMonitor())
 

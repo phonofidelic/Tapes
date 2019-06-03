@@ -54,14 +54,18 @@ class Visualizer extends Component {
 
 
 		let data;
-		ipcRenderer.on('monitor:bufferdata', (e, buffer) => {
-			data = buffer;
-
-			// Write data to plotter
-			this.visualizer.write(data)
-		})
+		ipcRenderer.on('monitor:bufferdata', this.handleBufferData);
 		
-		this.visualizer.pipe(plotter)
+		this.visualizer.pipe(plotter);
+	}
+
+	componentWillUnmount() {
+		ipcRenderer.removeListener('monitor:bufferdata', this.handleBufferData);
+	}
+
+	handleBufferData = (e, buffer) => {
+		// Write data to plotter
+		this.visualizer.write(buffer);
 	}
 
 	render() {

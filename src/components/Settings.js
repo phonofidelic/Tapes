@@ -8,42 +8,37 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
+import {
+	Container,
+	Section,
+	SectionTitle,
+	SectionBody,
+} from 'components/CommonUI';
+
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
-const Container = styled.div`
-	display: flex;
-	flex-direction: column;
-	text-align: left;
-`
-
-const Section = styled.div`
-
-`
-
-const SectionTitle = styled.div`
-	color: #fff;
-	background-color: #333;
-	width: 100%;
-	padding-left: 8px;
-`
-
-const SectionBody = styled.div`
-	padding: 8px;
-`
-
 class Settings extends Component {
 	componentDidMount() {
-		ipcRenderer.on('select_dir', (e, path) => {
-			this.props.setSavePath(path);
-		});
-		ipcRenderer.on('select_dir_cancel', (e, path) => {
-			this.props.cancelSetSavePath(path);
-		});
+		ipcRenderer.on('settings:select_dir', this.handleSelectDir);
+		ipcRenderer.on('settings:select_dir_cancel', this.handleSelectDirCancel);
+	}
+
+	componentWillUnmount() {
+		ipcRenderer.removeListener('settings:select_dir', this.handleSelectDir)
+		ipcRenderer.removeListener('settings:select_dir_cancel', this.handleSelectDirCancel)
 	}
 
 	handleOpenDirSelect = () => {
 		this.props.openDirSelect()
+	}
+
+	handleSelectDir = (e, path) => {
+		this.props.setSavePath(path);
+	}
+
+	handleSelectDirCancel = (e, path) => {
+		this.props.cancelSetSavePath(path);
 	}
 
 	render() {
@@ -53,7 +48,7 @@ class Settings extends Component {
 			<Container>
 				<Section>
 					<SectionTitle>
-						<Typography variant="overline">Storage</Typography>
+						<Typography variant="overline">Settings</Typography>
 					</SectionTitle>
 					<SectionBody>
 						<Tooltip
@@ -66,7 +61,7 @@ class Settings extends Component {
 								variant="caption"
 								display="block"
 							>
-							Current: {settings.savePath || '(not set)'}
+							Save folder: {settings.savePath || '(not set)'}
 							</Typography>
 						</Tooltip>
 							<Tooltip 

@@ -8,7 +8,7 @@ const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
 export const openDirSelect = () => {
-	ipcRenderer.send('open_dir_select');
+	ipcRenderer.send('settings:open_dir_select');
 
 	return (dispatch) => {
 		dispatch({
