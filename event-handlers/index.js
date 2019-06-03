@@ -28,7 +28,7 @@ const dbAnalyser = (recorderWindow) => {
 				data = chunkString.substring(start.index+4, end.index)	
 			}
 			
-			console.log('*** dbAnalyser, chunk:', chunk)
+			// console.log('*** dbAnalyser, chunk:', chunk)
 			// Send cunk to renderer?
 			recorderWindow.send('monitor:bufferdata', chunk)
 			callback(null, chunk)
