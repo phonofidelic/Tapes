@@ -55,12 +55,10 @@ class Visualizer extends Component {
 
 		let data;
 		ipcRenderer.on('monitor:bufferdata', (e, buffer) => {
-			// console.log('monitor:bufferdata', buffer)
 			data = buffer;
 
 			// Write data to plotter
 			this.visualizer.write(data)
-			// console.log('Visualization data:', data)
 		})
 		
 		this.visualizer.pipe(plotter)
