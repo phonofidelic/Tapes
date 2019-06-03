@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import * as actions from 'actions/settings.actions';
 
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import Tooltip from '@material-ui/core/Tooltip';
+import Typography from '@material-ui/core/Typography';
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
@@ -12,6 +15,20 @@ const Container = styled.div`
 	display: flex;
 	flex-direction: column;
 	text-align: left;
+`
+
+const Section = styled.div`
+
+`
+
+const SectionTitle = styled.div`
+	color: #fff;
+	background-color: #333;
+	width: 100%;
+	padding-left: 8px;
+`
+
+const SectionBody = styled.div`
 	padding: 8px;
 `
 
@@ -34,24 +51,44 @@ class Settings extends Component {
 
 		return (
 			<Container>
-				<h1>Settings</h1>
-				<h2>Save directory:</h2>
-				<p>Set a destination folder for your recordings.</p>
-					<div>
-						<Button 
-							fullWidth 
-							variant="outlined"
-							onClick={() => this.handleOpenDirSelect()}
+				<Section>
+					<SectionTitle>
+						<Typography variant="overline">Storage</Typography>
+					</SectionTitle>
+					<SectionBody>
+						<Tooltip
+							title={settings.savePath || ''}
+							placement="top-end"
+							enterDelay={300}
 						>
-							{
-								!settings.savePath ? 
-								'Set destination folder' 
-								:
-								'Change destination folder'
-							}
-						</Button>
-					</div>
-					<p style={{fontSize: '.8em'}}>Current: {settings.savePath || '(not set)'}</p>
+							<Typography 
+								noWrap
+								variant="caption"
+								display="block"
+							>
+							Current: {settings.savePath || '(not set)'}
+							</Typography>
+						</Tooltip>
+							<Tooltip 
+								title="Set a destination folder for your recordings."
+								placement="bottom-end"
+								enterDelay={300}
+							>
+								<Button 
+									fullWidth 
+									variant="outlined"
+									onClick={() => this.handleOpenDirSelect()}
+								>
+									{
+										!settings.savePath ? 
+										'Set save folder' 
+										:
+										'Change save folder'
+									}
+								</Button>
+							</Tooltip>
+					</SectionBody>
+				</Section>
 			</Container>
 		)
 	}
