@@ -8,6 +8,8 @@ import reducer, { initGlobalState } from 'reducers/index';
 import { theme } from 'config';
 // import { loadState, saveState } from './localStorage';
 // import { ThemeProvider } from 'contexts/theme.context';	TODO
+import { history } from 'config'
+import { routerMiddleware } from 'connected-react-router';
 
 
 /*** Persist state to localStorage ****
@@ -44,6 +46,7 @@ export default ({ children, initialState = {} }) => {
 	const enhancer = composeEnhancers(
 		applyMiddleware(
 	    reduxThunk,
+	    routerMiddleware(history),
 	  )
 	);
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Route, Switch } from "react-router-dom";
 
-import Header from 'components/Header';
+import Navigation from 'components/Navigation';
 import Recorder from 'components/Recorder';
 import Settings from 'components/Settings';
 
@@ -11,7 +11,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Header />
+        <Navigation />
         <div>
           <Switch>
             <Route
