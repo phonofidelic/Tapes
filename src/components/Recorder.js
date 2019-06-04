@@ -23,15 +23,9 @@ const ipcRenderer  = electron.ipcRenderer;
 
 class Recorder extends Component {
 	componentDidMount() {
-		// // ipcRenderer.on('rec_ready', (e, path) => this.props.createRecEntry(path))
-		// ipcRenderer.on('rec_audio_data', (e, datauri) => {
-		// 	// console.log('rec_audio_data:', datauri)
-		// 	// this.props.createRecEntry(datauri)
-		// });
-		// ipcRenderer.on('rec_writestream_ready', (e, src) => {
-		// 	// console.log('rec_writestream_ready, src:', src)
-		// 	this.props.createRecEntry(src)
-		// });	
+		ipcRenderer.on('rec:tmpFile', (e, tmpFile) => {
+			this.handleTmpFile(tmpFile);
+		})	
 	}
 
 	// componentWillUnmount() {
@@ -40,13 +34,19 @@ class Recorder extends Component {
 	// }
 
 	handleStartRec = () => {
+		const { saveDir } = this.props;
     console.log('start', this.props.recorder.isRecording)
-    this.props.startRec();
+    this.props.startRec(saveDir);
+  }
+
+  handleTmpFile = (tmpFile) => {
+  	this.props.setTmpFile(tmpFile)
   }
 
   handleStopRec = () => {
+  	const { saveDir, tmpFile } = this.props;
     console.log('stop', this.props.recorder.isRecording)
-    this.props.stopRec();
+    this.props.stopRec(saveDir, tmpFile);
   }
 
   handleToggleMonitor = monitor => {
@@ -78,7 +78,9 @@ class Recorder extends Component {
 const mapStateToProps = state => {
 	// console.log('recorder state:', state)
 	return {
-		recorder: state.recorder
+		recorder: state.recorder,
+		saveDir: state.settings.saveDir,
+		tmpFile: state.recorder.tmpFile,
 	}
 }
 

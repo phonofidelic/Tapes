@@ -13,7 +13,7 @@ class Storage extends Component {
 		return (
 			<Container>
 				<Section>
-					<SectionTitle>Storage</SectionTitle>
+					<SectionTitle variant="overline">Storage</SectionTitle>
 				</Section>
 			</Container>
 		);

@@ -29,12 +29,18 @@ let tmpPath;
 const TMP_DIR = 'tmp';
 const FORMAT = 'flac';
 
-function newRecording(renderer) {
-	console.log('start rec')
+function newRecording(renderer, saveDir) {
+	console.log('\n*** start rec, saveDir:', saveDir)
 	// Prep path for tmp audio file...								*** TODO: Move to helper function ***
 	tmpPath = path.resolve(__dirname, '..' , TMP_DIR);
-	tmpFile = path.resolve(tmpPath, `${uuidv4()}.${FORMAT}`)
-	console.log('tmpFile:', tmpFile)
+	tmpFile = `${uuidv4()}.${FORMAT}`
+	tmpFilePath = path.resolve(tmpPath, tmpFile)
+	console.log('tmpFile:', tmpFilePath)
+
+	// Send tmpFile path to client
+	renderer.webContents.send('rec:tmpFile', tmpFilePath);
+
+
 	// Check for tmp directory. If none exists, create one.
 	fs.readdir(tmpPath, (err, files) => {
 		if (err){
@@ -51,7 +57,9 @@ function newRecording(renderer) {
 	})
 	
 	// ...then create tmpFile_writeStream.	
-	tmpFile_writeStream = fs.WriteStream(tmpFile);
+	// tmpFile_writeStream = fs.WriteStream(tmpFilePath);
+	console.log('\n*** path.resolve(saveDir, tmpFile):', path.resolve(saveDir, tmpFile))
+	tmpFile_writeStream = fs.WriteStream(path.resolve(saveDir, tmpFile));
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
 	rec = spawn('rec', [

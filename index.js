@@ -50,15 +50,15 @@ app.on('ready', () => {
 	const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
 	tray = new RecorderTray(iconPath, recorderWindow);
 	installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
+    .then((name) => console.log(`Added Extension: ${name}`))
     .catch((err) => console.log('An error occurred: ', err));
   installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension:  ${name}`))
+    .then((name) => console.log(`Added Extension: ${name}`))
     .catch((err) => console.log('An error occurred: ', err));
 });
 
-ipcMain.on('rec:start', () => newRecording(ipcMain))
-ipcMain.on('rec:stop', () => stopRecording(ipcMain))
+ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir))
+ipcMain.on('rec:stop', (e, saveDir, tmpFile) => stopRecording(recorderWindow, saveDir, tmpFile))
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
 ipcMain.on('monitor:start', () => startMonitor(recorderWindow))
 ipcMain.on('monitor:stop', () => stopMonitor())

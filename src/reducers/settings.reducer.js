@@ -5,7 +5,7 @@ import {
 } from 'actions/types';
 
 export const INITIAL_STATE = {
-	savePath: window.localStorage.getItem('saveDir') || null,
+	saveDir: window.localStorage.getItem('saveDir') || null,
 	loading: false,
 }
 
@@ -21,7 +21,7 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				loading: false,
-				savePath: action.savePath,
+				saveDir: action.saveDir,
 			}
 
 		case CANCEL_SET_SAVE_PATH:

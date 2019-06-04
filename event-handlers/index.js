@@ -1,3 +1,4 @@
+const fs = require('fs');
 const { spawn } = require('child_process');
 const path = require('path');
 const mic = require('mic');
@@ -36,10 +37,17 @@ const dbAnalyser = (recorderWindow) => {
 	})
 }
 
-function stopRecording() {
-	console.log('\n*** stopRecording')
+function stopRecording(e, saveDir, tmpFile) {
+	console.log('\n*** stop recording')
+	console.log('*** saveDir:', saveDir)
+	console.log('*** tmpFile:', tmpFile)
 	rec.kill();
 	rec = undefined;
+
+	// fs.copyFile(tmpFile, saveDir, err => {
+	// 	 if (err) throw err; // TODO: Handle error
+	// 	 	console.log(`*** New recording saved to ${saveDir}`)
+	// })
 }
 
 

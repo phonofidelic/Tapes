@@ -42,7 +42,7 @@ class Settings extends Component {
 	}
 
 	render() {
-		const { settings } = this.props;
+		const { saveDir } = this.props;
 
 		return (
 			<Container>
@@ -50,7 +50,7 @@ class Settings extends Component {
 					<SectionTitle variant="overline">Settings</SectionTitle>
 					<SectionBody>
 						<Tooltip
-							title={settings.savePath || ''}
+							title={saveDir || ''}
 							placement="top-end"
 							enterDelay={300}
 						>
@@ -59,7 +59,7 @@ class Settings extends Component {
 								variant="caption"
 								display="block"
 							>
-							Save folder: {settings.savePath || '(not set)'}
+							Save folder: {saveDir || '(not set)'}
 							</Typography>
 						</Tooltip>
 							<Tooltip 
@@ -73,7 +73,7 @@ class Settings extends Component {
 									onClick={() => this.handleOpenDirSelect()}
 								>
 									{
-										!settings.savePath ? 
+										!saveDir ? 
 										'Set save folder' 
 										:
 										'Change save folder'
@@ -90,7 +90,7 @@ class Settings extends Component {
 const mapStateToProps = state => {
 	console.log('settings state:', state)
 	return {
-		settings: state.settings
+		saveDir: state.settings.saveDir
 	}
 }
 

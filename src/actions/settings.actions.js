@@ -18,11 +18,10 @@ export const openDirSelect = () => {
 }
 
 export const setSavePath = (path) => {
-	window.localStorage.setItem('saveDir', path)
 	return (dispatch) => {
 		dispatch({
 			type: SET_SAVE_PATH,
-			savePath: path,
+			saveDir: path,
 		});
 	}
 }
