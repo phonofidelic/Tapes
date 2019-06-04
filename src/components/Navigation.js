@@ -7,10 +7,12 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MicIcon from '@material-ui/icons/Mic';
+import StorageIcon from '@material-ui/icons/Storage';
 
 const Container = styled(BottomNavigation)`
 	display: flex;
 	width: 100%;
+	// max-width: 300px;
 `
 
 const NavItem = styled(Link)`
@@ -31,6 +33,14 @@ class Navigation extends Component {
 					component={NavItem}
 					to="/"
 					value="/"
+				/>
+				<BottomNavigationAction 
+					label="Storage" 
+					icon={<StorageIcon />} 
+					style={{width: '100%'}}
+					component={NavItem}
+					to="/storage"
+					value="/storage"
 				/>
 				<BottomNavigationAction 
 					label="Settings" 

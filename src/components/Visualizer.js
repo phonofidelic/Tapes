@@ -6,9 +6,10 @@ const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 const { Transform } = window.require('stream');
 
+const CANVAS_WIDTH = 350;
+const CANVAS_HEIGHT = 300;
 
 class Visualizer extends Component {
-
 	constructor(props) {
 		super(props)
 		this.canvasElement = React.createRef();
@@ -19,8 +20,8 @@ class Visualizer extends Component {
 			}
 		})
 
-		this.ctxWidth = 300;
-		this.ctxHeight = 300;
+		this.ctxWidth = CANVAS_WIDTH;
+		this.ctxHeight = CANVAS_HEIGHT;
 	}
 
 	componentDidMount() {
@@ -72,7 +73,7 @@ class Visualizer extends Component {
 		return (
 			<div>
 				{/*<h1>Visualizer</h1>*/}
-				<canvas id="canvas" width={300} height={300} ref={this.canvasElement} /> 
+				<canvas id="canvas" width={CANVAS_WIDTH} height={CANVAS_HEIGHT} ref={this.canvasElement} /> 
 			</div>
 		);	
 	}

@@ -47,9 +47,7 @@ class Settings extends Component {
 		return (
 			<Container>
 				<Section>
-					<SectionTitle>
-						<Typography variant="overline">Settings</Typography>
-					</SectionTitle>
+					<SectionTitle variant="overline">Settings</SectionTitle>
 					<SectionBody>
 						<Tooltip
 							title={settings.savePath || ''}

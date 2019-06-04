@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import Typography from '@material-ui/core/Typography';
 
 export const Container = styled.div`
 	display: flex;
@@ -11,9 +12,10 @@ export const Section = styled.div`
 
 `
 
-export const SectionTitle = styled.div`
+export const SectionTitle = styled(Typography)`
 	color: #fff;
 	background-color: #333;
+	display: flex;
 	padding-left: 8px;
 `
 

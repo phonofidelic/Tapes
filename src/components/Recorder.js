@@ -60,9 +60,7 @@ class Recorder extends Component {
 		return (
 			<Container>
 				<Section>
-					<SectionTitle>
-						<Typography variant="overline">Recorder</Typography>
-					</SectionTitle>
+					<SectionTitle variant="overline">Recorder</SectionTitle>
 				</Section>
 				<Visualizer />
 				<RecorderControls
