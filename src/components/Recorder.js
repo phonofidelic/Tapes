@@ -25,13 +25,8 @@ class Recorder extends Component {
 	componentDidMount() {
 		ipcRenderer.on('rec:tmpFile', (e, tmpFile) => {
 			this.handleTmpFile(tmpFile);
-		})	
+		})
 	}
-
-	// componentWillUnmount() {
-	// 	console.log('Recorder unmounted')
-	// 	ipcRenderer.removeListener('rec_audio_data')
-	// }
 
 	handleStartRec = () => {
 		const { saveDir } = this.props;

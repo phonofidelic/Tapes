@@ -83,10 +83,20 @@ function stopMonitor() {
 	micInstance = undefined;
 }
 
+function loadRecordings(recorderWindow, saveDir) {
+	fs.readdir(saveDir, (err, files) => {
+		if (err) throw err;	// TODO: Handle error
+		const recordings = files.filter(file => file !== '.DS_Store'); // Ignore .DS_Store files
+		console.log('*** recordings:', recordings);
+		recorderWindow.webContents.send('storage:loadRecordings:response', recordings)
+	});
+}
+
 module.exports = {
 	openDirSelect,
 	newRecording,
 	stopRecording,
 	startMonitor,
-	stopMonitor
+	stopMonitor,
+	loadRecordings
 }

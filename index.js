@@ -19,7 +19,8 @@ const {
 	newRecording,
 	stopRecording,
 	startMonitor,
-	stopMonitor
+	stopMonitor,
+	loadRecordings
 } = require('./event-handlers');
 
 const { 
@@ -35,6 +36,7 @@ const {
 	dialog
 } = electron;
 
+// TODO: Refactor bad global variables
 let rec;
 let micInstance;
 let monitor;
@@ -62,6 +64,7 @@ ipcMain.on('rec:stop', (e, saveDir, tmpFile) => stopRecording(recorderWindow, sa
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
 ipcMain.on('monitor:start', () => startMonitor(recorderWindow))
 ipcMain.on('monitor:stop', () => stopMonitor())
+ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir))
 
 process.on('beforeExit', () => {
 	console.lof('\n*** process beforeExit')
