@@ -48,7 +48,7 @@ let tray;
 app.on('ready', () => {
 	recorderWindow = new RecorderWindow();
 	recorderWindow.loadURL(isDev ? `http://localhost:3000` : `file://${path.join(__dirname, "../build/index.html")}`);
-	recorderWindow.webContents.openDevTools({mode: 'detach'});
+	isDev && recorderWindow.webContents.openDevTools({mode: 'detach'});
 	const iconName = 'icon@16.png';
 	const iconPath = path.join(__dirname, `../src/assets/${iconName}`);
 	tray = new RecorderTray(iconPath, recorderWindow);
