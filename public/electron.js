@@ -1,4 +1,5 @@
 const electron = require('electron');
+const isDev = require('electron-is-dev');
 const {
 	exec,
 	spawn
@@ -46,11 +47,14 @@ let tray;
 
 app.on('ready', () => {
 	recorderWindow = new RecorderWindow();
-	recorderWindow.loadURL(`http://localhost:3000`);
+	recorderWindow.loadURL(isDev ? `http://localhost:3000` : `file://${path.join(__dirname, "../build/index.html")}`);
 	recorderWindow.webContents.openDevTools({mode: 'detach'});
 	const iconName = 'icon@16.png';
-	const iconPath = path.join(__dirname, `./src/assets/${iconName}`)
+	console.log('\n*** prod iconPath:', `file:/${path.join(__dirname, 'assets', iconName)}`)
+	// const iconPath = isDev ? path.join(__dirname, `../src/assets/${iconName}`) : `file:/${path.join(__dirname, 'assets', iconName)}`
+	const iconPath = path.join(__dirname, `../src/assets/${iconName}`);
 	tray = new RecorderTray(iconPath, recorderWindow);
+
 	installExtension(REACT_DEVELOPER_TOOLS)
     .then((name) => console.log(`Added Extension: ${name}`))
     .catch((err) => console.log('An error occurred: ', err));
