@@ -50,8 +50,6 @@ app.on('ready', () => {
 	recorderWindow.loadURL(isDev ? `http://localhost:3000` : `file://${path.join(__dirname, "../build/index.html")}`);
 	recorderWindow.webContents.openDevTools({mode: 'detach'});
 	const iconName = 'icon@16.png';
-	console.log('\n*** prod iconPath:', `file:/${path.join(__dirname, 'assets', iconName)}`)
-	// const iconPath = isDev ? path.join(__dirname, `../src/assets/${iconName}`) : `file:/${path.join(__dirname, 'assets', iconName)}`
 	const iconPath = path.join(__dirname, `../src/assets/${iconName}`);
 	tray = new RecorderTray(iconPath, recorderWindow);
 

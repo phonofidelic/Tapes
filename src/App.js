@@ -28,6 +28,9 @@ class App extends Component {
               path="/settings"
               render={() => <Settings />}
             />
+            <Route
+              render={() => <Recorder />}
+            />
           </Switch>
         </div>
       </div>
