@@ -13,6 +13,7 @@
     "cross-env": "^5.2.0",
     "datauri": "^2.0.0",
     "dataurl": "^0.1.0",
+    "electron-devtools-installer": "^2.2.4",
     "electron-is-dev": "^1.1.0",
     "gl-waveform": "^4.3.3",
     "history": "^4.9.0",
@@ -29,10 +30,10 @@
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
+    "sox-bin": "^1.0.2",
     "speaker": "^0.4.2",
     "styled-components": "^4.2.0",
-    "wait-on": "^3.2.0",
-    "electron-devtools-installer": "^2.2.4"
+    "wait-on": "^3.2.0"
   },
   "scripts": {
     "react-start": "react-scripts start",
@@ -40,7 +41,6 @@
     "react-test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "electron": "electron ./public/electron.js",
-    "rebuild": "./node_modules/.bin/electron-rebuild -f -w speaker",
     "electron-build": "ELECTRON_BUILDER_ALLOW_UNRESOLVED_DEPENDENCIES=true electron-builder",
     "release": "yarn react-build && electron-builder --publish=always",
     "build": "yarn react-build && yarn electron-build",
@@ -63,12 +63,13 @@
   },
   "devDependencies": {
     "electron": "^5.0.2",
-    "electron-rebuild": "^1.8.5",
-    "electron-builder": "^20.43.0"
+    "electron-builder": "^20.43.0",
+    "electron-rebuild": "^1.8.5"
   },
   "description": "Desktop application for creating and cataloging audio recordings.",
   "author": "phonofidelic",
   "build": {
+    "productName": "Tapes",
     "appId": "com.tapes.phonofidelic",
     "files": [
       "**/*",
@@ -76,7 +77,6 @@
       "node_modules/**/*"
     ]
   },
-  "nodeGypRebuild": true,
   "main": "public/electron.js",
   "homepage": "./"
 }
