@@ -1,7 +1,9 @@
 const fs = require('fs');
+const { Transform, PassThrough } = require('stream');
 const { spawn } = require('child_process');
 const path = require('path');
 const mic = require('mic');
+const soxPath = require('sox-bin');
 
 const electron = require('electron')
 const { ipcMain } = electron;
@@ -9,7 +11,7 @@ const { ipcMain } = electron;
 const openDirSelect = require('./openDirSelect');
 const newRecording = require('./newRecording');
 
-const { Transform, PassThrough } = require('stream');
+
 
 const CHANNEL_COUNT = 1;
 const SAMPLE_RATE = 44100;
@@ -63,6 +65,7 @@ function startMonitor(recorderWindow) {
 
 	console.log('\n*** Monitor started.')
 	monitor = spawn('node', [path.resolve(__dirname, '..', 'monitor.js')])
+
 	console.log('*** monitor pid:', monitor.pid)
 
 	micInputStream
@@ -70,6 +73,8 @@ function startMonitor(recorderWindow) {
 	.pipe(monitor.stdin)
 	// monitor.stdout
 
+	monitor.on('error', err => console.error('*** monitor error:', err))
+	// dbAnalyser.on('error', err => console.error('*** dbAnalyser error:', err))
 
 	micInstance.start()
 }
