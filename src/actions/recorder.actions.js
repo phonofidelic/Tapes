@@ -3,9 +3,11 @@ import {
 	STOP_REC,
 	REC_READY,
 	SET_TMP_FILE,
-	TOGGLE_MONITOR,
+	START_MONITOR,
+	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
 } from 'actions/types';
+import Wad from 'web-audio-daw';
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
@@ -67,14 +69,25 @@ export const createRecEntry = (path) => {
 	}
 }
 
-export const toggleMonitor = monitor => {
-	ipcRenderer.send(!monitor ? 'monitor:start' : 'monitor:stop')
+export const startMonitor = (existingMonitorInstance) => {
+	const monitorInstance = existingMonitorInstance || new Wad({ source: 'mic' });
+	monitorInstance.play();
 
-	console.log('toggleMonitor, monitor:', monitor)
-	ipcRenderer.send('toggle_monitor', monitor)
-	 return dispatch => {
-	 	dispatch({
-	 		type: TOGGLE_MONITOR
-	 	});
-	 }
+	return dispatch => {
+		dispatch({
+			type: START_MONITOR,
+			monitorInstance,
+		});
+	}
 }
+
+export const stopMonitor = (monitorInstance) => {
+	monitorInstance.stop();
+
+	return dispatch => {
+		dispatch({
+			type: STOP_MONITOR
+		});
+	}
+}
+

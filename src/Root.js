@@ -28,7 +28,7 @@ export const loadState = () => {
 };
 
 export const saveState = (state) => {
-	console.log('saveState state:', state)
+	// console.log('saveState state:', state)
 	try {
 		const serializedState = JSON.stringify(state);
 		localStorage.setItem('state', serializedState);
@@ -59,7 +59,7 @@ export default ({ children, initialState = {} }) => {
 			recorder: {
 				...persistedState.recorder,
 				isRecording: recorder.isRecording,
-				monitor: recorder.monitor,
+				monitoring: recorder.monitoring,
 			}
 		},
 		enhancer

@@ -3,7 +3,8 @@ import {
 	STOP_REC,
 	REC_READY,
 	SET_TMP_FILE,
-	TOGGLE_MONITOR,
+	START_MONITOR,
+	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
 } from 'actions/types';
 
@@ -11,7 +12,8 @@ export const INITIAL_STATE = {
 	isRecording: false,
 	tmpFile: null,
 	tmpRecordings: [],
-	monitor: false,
+	monitoring: false,
+	monitorInstance: null,
 	error: null,
 }
 
@@ -42,10 +44,18 @@ const recorder = (state = INITIAL_STATE, action) => {
 				tmpRecordings: [...state.tmpRecordings, action.recording],
 			}
 
-		case TOGGLE_MONITOR: {
+		case START_MONITOR: {
 			return {
 				...state,
-				monitor: !state.monitor
+				monitoring: true,
+				monitorInstance: action.monitorInstance,
+			}
+		}
+
+		case STOP_MONITOR: {
+			return {
+				...state,
+				monitoring: false,
 			}
 		}
 

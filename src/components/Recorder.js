@@ -6,6 +6,7 @@ import * as actions from 'actions/recorder.actions';
 import Typography from '@material-ui/core/Typography';
 
 import Visualizer from 'components/Visualizer';
+import Monitor from 'components/Monitor';
 import RecordingsList from 'components/RecordingsList';
 import RecorderControls from 'components/RecorderControls';
 import {
@@ -15,6 +16,9 @@ import {
 	SectionBody,
 } from 'components/CommonUI';
 
+// import Wad from 'web-audio-daw';
+// // Wad.logs.verbosity = 2
+
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
@@ -22,11 +26,19 @@ const ipcRenderer  = electron.ipcRenderer;
 // const datauri = new Datauri();
 
 class Recorder extends Component {
+	constructor(props) {
+		super(props)
+		console.log('### Recorder constructor')
+
+		
+	}
+
 	componentDidMount() {
 		ipcRenderer.on('rec:tmpFile', (e, tmpFile) => {
 			this.handleTmpFile(tmpFile);
 		})
 	}
+
 
 	handleStartRec = () => {
 		const { saveDir } = this.props;
@@ -44,9 +56,14 @@ class Recorder extends Component {
     this.props.stopRec(saveDir, tmpFile);
   }
 
-  handleToggleMonitor = monitor => {
-  	// console.log('handleToggleMonitor:', monitor)
-  	this.props.toggleMonitor(monitor);
+  handleStartMonitor = () => {
+  	const { recorder } = this.props;
+  	this.props.startMonitor(recorder.monitorInstance);
+  }
+
+  handleStopMonitor = () => {
+  	const { recorder } = this.props;
+  	this.props.stopMonitor(recorder.monitorInstance);
   }
 
 	render() {
@@ -60,9 +77,11 @@ class Recorder extends Component {
 				<Visualizer />
 				<RecorderControls
 					isRecording={recorder.isRecording}
-					monitor={recorder.monitor}
+					monitoring={recorder.monitoring}
 					handleStartRec={this.handleStartRec}        
 	        handleStopRec={this.handleStopRec}
+	        handleStartMonitor={this.handleStartMonitor}
+	        handleStopMonitor={this.handleStopMonitor}
 	        handleToggleMonitor={this.handleToggleMonitor}
 				/>
 			</Container>

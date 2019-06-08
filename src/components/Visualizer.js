@@ -51,7 +51,7 @@ class Visualizer extends Component {
 		});
 
 		const ctx = document.querySelector('#canvas').getContext('2d');
-		console.log('ctx:', ctx)
+		// console.log('ctx:', ctx)
 
 
 		let data;

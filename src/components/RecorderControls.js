@@ -26,15 +26,16 @@ const RecorderControls = props => {
 		isRecording,
 		handleStartRec,
 		handleStopRec,
-		handleToggleMonitor,
-		monitor,
+		handleStartMonitor,
+		handleStopMonitor,
+		monitoring,
 	} = props;
-	console.log('isRecording:', isRecording)
+
 	return (
 		<Container>
 			<ButtonContainer width={20}>
-				<ControllButton onClick={() => handleToggleMonitor(monitor)}>
-					{ !monitor? <MicOffIcon /> : <MicIcon />}
+				<ControllButton onClick={() => !monitoring ? handleStartMonitor() : handleStopMonitor()}>
+					{ !monitoring ? <MicOffIcon /> : <MicIcon />}
 				</ControllButton>
 			</ButtonContainer>
     	<ButtonContainer width={80}>
