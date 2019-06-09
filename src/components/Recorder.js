@@ -6,7 +6,6 @@ import * as actions from 'actions/recorder.actions';
 import Typography from '@material-ui/core/Typography';
 
 import AudioAnalyser from 'components/AudioAnalyser';
-import Visualizer from 'components/Visualizer';
 import Monitor from 'components/Monitor';
 import RecordingsList from 'components/RecordingsList';
 import RecorderControls from 'components/RecorderControls';
