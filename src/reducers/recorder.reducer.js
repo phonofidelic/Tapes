@@ -14,6 +14,7 @@ export const INITIAL_STATE = {
 	tmpRecordings: [],
 	monitoring: false,
 	monitorInstance: null,
+	// mediaStreamSource: null,
 	error: null,
 }
 
@@ -49,6 +50,7 @@ const recorder = (state = INITIAL_STATE, action) => {
 				...state,
 				monitoring: true,
 				monitorInstance: action.monitorInstance,
+				// mediaStreamSource: action.mediaStreamSource,
 			}
 		}
 
@@ -56,6 +58,7 @@ const recorder = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				monitoring: false,
+				monitorInstance: null,
 			}
 		}
 

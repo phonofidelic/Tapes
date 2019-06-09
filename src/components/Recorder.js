@@ -5,6 +5,7 @@ import * as actions from 'actions/recorder.actions';
 
 import Typography from '@material-ui/core/Typography';
 
+import AudioAnalyser from 'components/AudioAnalyser';
 import Visualizer from 'components/Visualizer';
 import Monitor from 'components/Monitor';
 import RecordingsList from 'components/RecordingsList';
@@ -56,13 +57,15 @@ class Recorder extends Component {
     this.props.stopRec(saveDir, tmpFile);
   }
 
-  handleStartMonitor = () => {
+  handleStartMonitor = async () => {
   	const { recorder } = this.props;
-  	this.props.startMonitor(recorder.monitorInstance);
+  	const monitorInstance = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+  	this.props.startMonitor(monitorInstance);
   }
 
   handleStopMonitor = () => {
   	const { recorder } = this.props;
+  	recorder.monitorInstance.getTracks().forEach(track => track.stop());
   	this.props.stopMonitor(recorder.monitorInstance);
   }
 
@@ -74,7 +77,8 @@ class Recorder extends Component {
 				<Section>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
 				</Section>
-				<Visualizer />
+				{/*recorder.monitorInstance && <Visualizer mediaStreamSource={recorder.monitorInstance.mediaStreamSource} />*/}
+				{recorder.monitorInstance && <AudioAnalyser audio={recorder.monitorInstance} />}
 				<RecorderControls
 					isRecording={recorder.isRecording}
 					monitoring={recorder.monitoring}

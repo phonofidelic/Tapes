@@ -69,20 +69,23 @@ export const createRecEntry = (path) => {
 	}
 }
 
-export const startMonitor = (existingMonitorInstance) => {
-	const monitorInstance = existingMonitorInstance || new Wad({ source: 'mic' });
-	monitorInstance.play();
-
+export const startMonitor = (monitorInstance) => {
+	// const monitorInstance = existingMonitorInstance || new Wad({ source: 'mic' });
+	// monitorInstance.play();
+	
+	console.log('monitorInstance:', monitorInstance)
 	return dispatch => {
 		dispatch({
 			type: START_MONITOR,
 			monitorInstance,
+			// mediaStreamSource: monitorInstance.mediaStreamSource,
 		});
 	}
 }
 
 export const stopMonitor = (monitorInstance) => {
-	monitorInstance.stop();
+	// monitorInstance.stop();
+	
 
 	return dispatch => {
 		dispatch({

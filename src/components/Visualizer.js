@@ -15,6 +15,7 @@ class Visualizer extends Component {
 		this.canvasElement = React.createRef();
 
 		this.visualizer = new Transform({
+			// Is this translfor method doing anything? We call write method when handleing buffer data...
 			transform(chunk, encoding, callback) {
 				callback(null, chunk)
 			}
@@ -25,6 +26,9 @@ class Visualizer extends Component {
 	}
 
 	componentDidMount() {
+		const { mediaStreamSource } = this.props;
+		// console.log('mediaStreamSource:', mediaStreamSource)
+
 		const plotter = new Waveform({
 		    //what channel to display, 0 - L, 1 - R
 		    channel: 0,
@@ -55,6 +59,7 @@ class Visualizer extends Component {
 
 
 		let data;
+		// Recieve audio-buffer data from from electron main process
 		ipcRenderer.on('monitor:bufferdata', this.handleBufferData);
 		
 		this.visualizer.pipe(plotter);

@@ -54,11 +54,16 @@ app.on('ready', () => {
 	tray = new RecorderTray(iconPath, recorderWindow);
 
 	installExtension(REACT_DEVELOPER_TOOLS)
-    .then((name) => console.log(`Added Extension: ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+  .then((name) => console.log(`Added Extension: ${name}`))
+  .catch((err) => console.log('An error occurred: ', err));
+
   installExtension(REDUX_DEVTOOLS)
-    .then((name) => console.log(`Added Extension: ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));
+  .then((name) => console.log(`Added Extension: ${name}`))
+  .catch((err) => console.log('An error occurred: ', err));
+
+  installExtension('cmhomipkklckpomafalojobppmmidlgl')
+  .then(name => console.log(`Added Extension: ${name}`))
+  .catch(err => console.log('An error occurred: ', err));
 });
 
 ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir))
