@@ -2,7 +2,6 @@ import {
 	START_REC,
 	STOP_REC,
 	REC_READY,
-	SET_TMP_FILE,
 	START_MONITOR,
 	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
@@ -10,11 +9,10 @@ import {
 
 export const INITIAL_STATE = {
 	isRecording: false,
-	tmpFile: null,
+	// tmpFile: null,
 	tmpRecordings: [],
 	monitoring: false,
 	monitorInstance: null,
-	// mediaStreamSource: null,
 	error: null,
 }
 
@@ -25,12 +23,6 @@ const recorder = (state = INITIAL_STATE, action) => {
 				...state,
 				isRecording: true,
 				// tmpRecordings: [...state.tmpRecordings, action.recording],
-			}
-
-		case SET_TMP_FILE:
-			return {
-				...state,
-				tmpFile: action.tmpFile,
 			}
 
 		case STOP_REC:
@@ -50,7 +42,6 @@ const recorder = (state = INITIAL_STATE, action) => {
 				...state,
 				monitoring: true,
 				monitorInstance: action.monitorInstance,
-				// mediaStreamSource: action.mediaStreamSource,
 			}
 		}
 

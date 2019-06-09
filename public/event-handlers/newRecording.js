@@ -7,8 +7,6 @@ const fs = require('fs');
 const path = require('path');
 
 const uuidv4 = require('uuid/v4');
-const Datauri = require('datauri');
-const datauri = new Datauri();
 const soxPath = require('sox-bin');
 
 const command = soxPath + ' --version';

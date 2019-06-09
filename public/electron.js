@@ -7,10 +7,6 @@ const {
 const fs = require('fs');
 const path = require('path');
 const uuidv4 = require('uuid/v4');
-// const dataurl = require('dataurl');
-const Datauri = require('datauri');
-const datauri = new Datauri();
-const AudioRecorder = require('node-audiorecorder');
 
 const RecorderTray = require('./app/RecorderTray');
 const RecorderWindow = require('./app/RecorderWindow');
@@ -19,8 +15,6 @@ const {
 	openDirSelect,
 	newRecording,
 	stopRecording,
-	startMonitor,
-	stopMonitor,
 	loadRecordings
 } = require('./event-handlers');
 
@@ -39,8 +33,6 @@ const {
 
 // TODO: Refactor bad global variables
 let rec;
-let micInstance;
-let monitor;
 
 let recorderWindow;
 let tray;
@@ -69,8 +61,6 @@ app.on('ready', () => {
 ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir))
 ipcMain.on('rec:stop', (e, saveDir, tmpFile) => stopRecording(recorderWindow, saveDir, tmpFile))
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
-ipcMain.on('monitor:start', () => startMonitor(recorderWindow))
-ipcMain.on('monitor:stop', () => stopMonitor())
 ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir))
 
 process.on('beforeExit', () => {

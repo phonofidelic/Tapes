@@ -17,9 +17,6 @@ import {
 	SectionBody,
 } from 'components/CommonUI';
 
-// import Wad from 'web-audio-daw';
-// // Wad.logs.verbosity = 2
-
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
@@ -34,21 +31,10 @@ class Recorder extends Component {
 		
 	}
 
-	componentDidMount() {
-		ipcRenderer.on('rec:tmpFile', (e, tmpFile) => {
-			this.handleTmpFile(tmpFile);
-		})
-	}
-
-
 	handleStartRec = () => {
 		const { saveDir } = this.props;
     console.log('start', this.props.recorder.isRecording)
     this.props.startRec(saveDir);
-  }
-
-  handleTmpFile = (tmpFile) => {
-  	this.props.setTmpFile(tmpFile)
   }
 
   handleStopRec = () => {
@@ -77,8 +63,7 @@ class Recorder extends Component {
 				<Section>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
 				</Section>
-				{/*recorder.monitorInstance && <Visualizer mediaStreamSource={recorder.monitorInstance.mediaStreamSource} />*/}
-				{recorder.monitorInstance && <AudioAnalyser audio={recorder.monitorInstance} />}
+				{ recorder.monitorInstance && <AudioAnalyser audio={recorder.monitorInstance} /> }
 				<RecorderControls
 					isRecording={recorder.isRecording}
 					monitoring={recorder.monitoring}

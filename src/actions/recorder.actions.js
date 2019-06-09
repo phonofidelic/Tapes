@@ -2,12 +2,10 @@ import {
 	START_REC,
 	STOP_REC,
 	REC_READY,
-	SET_TMP_FILE,
 	START_MONITOR,
 	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
 } from 'actions/types';
-import Wad from 'web-audio-daw';
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
@@ -31,17 +29,7 @@ export const startRec = (saveDir) => {
 		// }
 		dispatch({
 			type: START_REC,
-			// recording: recording
 		});
-	}
-}
-
-export const setTmpFile = tmpFile => {
-	return dispatch => {
-		dispatch({
-			type: SET_TMP_FILE,
-			tmpFile
-		})
 	}
 }
 
@@ -70,23 +58,16 @@ export const createRecEntry = (path) => {
 }
 
 export const startMonitor = (monitorInstance) => {
-	// const monitorInstance = existingMonitorInstance || new Wad({ source: 'mic' });
-	// monitorInstance.play();
-	
 	console.log('monitorInstance:', monitorInstance)
 	return dispatch => {
 		dispatch({
 			type: START_MONITOR,
 			monitorInstance,
-			// mediaStreamSource: monitorInstance.mediaStreamSource,
 		});
 	}
 }
 
 export const stopMonitor = (monitorInstance) => {
-	// monitorInstance.stop();
-	
-
 	return dispatch => {
 		dispatch({
 			type: STOP_MONITOR

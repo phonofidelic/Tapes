@@ -1,5 +1,5 @@
 /***
- *	From: https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
+ *	Adapted from: https://www.twilio.com/blog/audio-visualisation-web-audio-api--react
  */
 import React, { Component } from 'react';
 import AudioVisualiser from 'components/AudioVisualiser';
