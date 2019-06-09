@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
-const uuidv4 = require('uuid/v4');
-const soxPath = require('sox-bin');
-
 const electron = require('electron')
 const { ipcMain } = electron;
+
+const uuidv4 = require('uuid/v4');
+const fixPath = require('fix-path');
+fixPath();
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
@@ -21,7 +22,8 @@ function openDirSelect(renderer) {
 	})
 }
 
-let rec;
+
+let rec; //	<-- TODO: Refactor bad global variable?
 function newRecording(renderer, saveDir) {
 	let audioIn_readStream;
 	let tmpFile_writeStream;
@@ -35,12 +37,14 @@ function newRecording(renderer, saveDir) {
 	tmpFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFile));
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
-	rec = spawn(soxPath, [
-		'-d',
-		'-c', '1',				// One chanel mono 
-		'-t', FORMAT, 		// Set format
-		'-'								// Pipe to stdout
-	]); // Command from https://superuser.com/a/583757
+	rec = spawn(
+		'rec', 
+		[
+			'-c', '1',				// One chanel mono 
+			'-t', FORMAT, 		// Set format
+			'-'								// Pipe to stdout
+		],
+	); // Command from https://superuser.com/a/583757
 
 	audioIn_readStream = rec.stdout;
 

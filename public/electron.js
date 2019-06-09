@@ -31,9 +31,6 @@ const {
 	dialog
 } = electron;
 
-// TODO: Refactor bad global variables
-let rec;
-
 let recorderWindow;
 let tray;
 
