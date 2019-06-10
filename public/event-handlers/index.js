@@ -3,7 +3,10 @@ const path = require('path');
 const { spawn } = require('child_process');
 
 const electron = require('electron')
-const { ipcMain } = electron;
+const { 
+	ipcMain, 
+	dialog 
+} = electron;
 
 const uuidv4 = require('uuid/v4');
 const fixPath = require('fix-path');
@@ -35,6 +38,7 @@ function newRecording(renderer, saveDir) {
 	console.log('\n*** newRecording')
 	console.log('*** path.resolve(saveDir, recordingFile):', path.resolve(saveDir, recordingFile))
 	tmpFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFile));
+	renderer.webContents.send('rec:set_rec_file', recordingFile)
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
 	rec = spawn(
@@ -52,10 +56,8 @@ function newRecording(renderer, saveDir) {
 	.pipe(tmpFile_writeStream);
 }
 
-function stopRecording(e, saveDir, tmpFile) {
+function stopRecording(e) {
 	console.log('\n*** stop recording')
-	console.log('*** saveDir:', saveDir)
-	console.log('*** tmpFile:', tmpFile)
 	rec.kill();
 	rec = undefined;
 }

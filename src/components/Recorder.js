@@ -23,11 +23,12 @@ const ipcRenderer  = electron.ipcRenderer;
 // const datauri = new Datauri();
 
 class Recorder extends Component {
-	constructor(props) {
-		super(props)
-		console.log('### Recorder constructor')
+	componentDidMount() {
+		ipcRenderer.on('rec:set_rec_file', this.handleSetRecFile)
+	}
 
-		
+	componentWillUnmount() {
+		ipcRenderer.removeListener('rec:set_rec_file', this.handleSetRecFile)
 	}
 
 	handleStartRec = () => {
@@ -36,10 +37,14 @@ class Recorder extends Component {
     this.props.startRec(saveDir);
   }
 
+  handleSetRecFile = (e, recordingFile) => {
+  	this.props.setRecFile(recordingFile);
+  }
+
   handleStopRec = () => {
-  	const { saveDir, tmpFile } = this.props;
+  	const { saveDir, recordingFile } = this.props;
     console.log('stop', this.props.recorder.isRecording)
-    this.props.stopRec(saveDir, tmpFile);
+    this.props.stopRec(saveDir, recordingFile);
   }
 
   handleStartMonitor = async () => {
@@ -82,7 +87,7 @@ const mapStateToProps = state => {
 	return {
 		recorder: state.recorder,
 		saveDir: state.settings.saveDir,
-		tmpFile: state.recorder.tmpFile,
+		recordingFile: state.recorder.recordingFile,
 	}
 }
 

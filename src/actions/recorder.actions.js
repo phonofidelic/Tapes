@@ -2,7 +2,7 @@ import {
 	START_REC,
 	STOP_REC,
 	ADD_NEW_REC,
-	REC_READY,
+	SET_REC_FILE,
 	START_MONITOR,
 	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
@@ -14,6 +14,7 @@ import db from 'db';
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
+const uuidv4 = require('uuid/v4');
 
 export const startRec = (saveDir) => {
 	if (!saveDir) {
@@ -38,11 +39,24 @@ export const startRec = (saveDir) => {
 	}
 }
 
+export const setRecFile = (recordingFile) => {
+	return dispatch => {
+		dispatch({
+			type: SET_REC_FILE,
+			recordingFile: recordingFile
+		});
+	}
+}
+
 export const stopRec = (saveDir, recordingFile) => {
-	ipcRenderer.send('rec:stop', saveDir, recordingFile);
+	console.log('stopRec, recordingFile:', recordingFile)
+	ipcRenderer.send('rec:stop');
 	const newRecording = {
+		id: uuidv4(),
 		title: moment().format(),
-		src: `${saveDir}/${recordingFile}`
+		src: `${saveDir}/${recordingFile}`,
+		created: Date.now(),
+		updated: Date.now(),
 	}
 
 	return dispatch => {
@@ -65,20 +79,6 @@ export const stopRec = (saveDir, recordingFile) => {
 			})
 		})
 	}	
-}
-
-export const createRecEntry = (path) => {
-	const recording = {
-		_id: Math.trunc(Date.now() * Math.random()),
-		created: Date.now(),
-		src: path
-	}
-	return dispatch => {
-		dispatch({
-			type: REC_READY,
-			recording: recording
-		});
-	}
 }
 
 export const startMonitor = (monitorInstance) => {

@@ -56,7 +56,7 @@ app.on('ready', () => {
 });
 
 ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir))
-ipcMain.on('rec:stop', (e, saveDir, tmpFile) => stopRecording(recorderWindow, saveDir, tmpFile))
+ipcMain.on('rec:stop', (e, saveDir) => stopRecording(recorderWindow))
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
 ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir))
 

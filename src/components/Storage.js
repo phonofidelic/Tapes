@@ -29,13 +29,14 @@ class Storage extends Component {
 
 	render() {
 		const { recordings } = this.props;
+		console.log('Storage, recordings:', recordings)
 		return (
 			<Container>
 				<Section>
 					<SectionTitle variant="overline">Storage</SectionTitle>
 					<List>
-					{ recordings && recordings.map((recording, i) => (
-						<ListItem key={i}>{recording}</ListItem>
+					{ recordings.map((recording, i) => (
+						<ListItem key={i}>{recording.title}</ListItem>
 					))}
 					</List>
 				</Section>
@@ -47,7 +48,7 @@ class Storage extends Component {
 const mapStateToProps = state => {
 	return {
 		saveDir: state.settings.saveDir,
-		recordings: state.storage.recordings,
+		recordings: state.recorder.recordings,
 	}
 }
 

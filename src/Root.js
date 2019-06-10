@@ -51,6 +51,7 @@ export default ({ children, initialState = {} }) => {
 	);
 
 	const persistedState = loadState() || {};
+
 	const store = createStore(
 		reducer,
 		{
