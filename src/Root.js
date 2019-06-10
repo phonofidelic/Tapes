@@ -60,6 +60,7 @@ export default ({ children, initialState = {} }) => {
 				...persistedState.recorder,
 				isRecording: recorder.isRecording,
 				monitoring: recorder.monitoring,
+				recordings: recorder.recordings,
 			}
 		},
 		enhancer
@@ -70,7 +71,7 @@ export default ({ children, initialState = {} }) => {
 		saveState({
 			settings: store.getState().settings,
 			recorder: {
-				tmpRecordings: store.getState().recorder.tmpRecordings,
+				recordings: store.getState().recorder.recordings,
 			} 
 		})
 	})

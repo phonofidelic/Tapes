@@ -34,8 +34,8 @@ class Storage extends Component {
 				<Section>
 					<SectionTitle variant="overline">Storage</SectionTitle>
 					<List>
-					{ recordings && recordings.map(recording => (
-						<ListItem>{recording}</ListItem>
+					{ recordings && recordings.map((recording, i) => (
+						<ListItem key={i}>{recording}</ListItem>
 					))}
 					</List>
 				</Section>

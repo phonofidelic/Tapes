@@ -1,11 +1,16 @@
 import {
 	START_REC,
 	STOP_REC,
+	ADD_NEW_REC,
 	REC_READY,
 	START_MONITOR,
 	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
+	ERROR_ADD_NEW_REC,
 } from 'actions/types';
+
+import * as moment from 'moment';
+import db from 'db';
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
@@ -33,14 +38,33 @@ export const startRec = (saveDir) => {
 	}
 }
 
-export const stopRec = (saveDir, tmpFile) => {
-	ipcRenderer.send('rec:stop', saveDir, tmpFile);
+export const stopRec = (saveDir, recordingFile) => {
+	ipcRenderer.send('rec:stop', saveDir, recordingFile);
+	const newRecording = {
+		title: moment().format(),
+		src: `${saveDir}/${recordingFile}`
+	}
 
 	return dispatch => {
 		dispatch({
-			type: STOP_REC
-		});
-	}
+			type: STOP_REC,
+		})
+
+		db.table('recordings')
+		.add(newRecording)
+		.then(id => {
+			dispatch({
+				type: ADD_NEW_REC,
+				newRecording
+			})
+		})
+		.catch(err => {
+			console.error('Could not save new recording:', err)
+			dispatch({
+				type: ERROR_ADD_NEW_REC
+			})
+		})
+	}	
 }
 
 export const createRecEntry = (path) => {
