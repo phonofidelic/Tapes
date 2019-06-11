@@ -66,8 +66,12 @@
     "files": [
       "**/*",
       "build/**/*",
+      "build/assets/icon.*",
       "node_modules/**/*"
-    ]
+    ],
+    "directories": {
+      "buildResources": "build"
+    }
   },
   "main": "public/electron.js",
   "homepage": "./"
