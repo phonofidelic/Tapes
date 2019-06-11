@@ -23,12 +23,20 @@ const StyledList = styled(List)`
 class Storage extends Component {
 	constructor(props) {
 		super(props);
-		ipcRenderer.on('storage:loadRecordings:response', (e, recordings) => this.props.loadRecordings(recordings))
+		ipcRenderer.on('storage:loadRecordings:response', this.handleLoadRecordings)
 	}
 
 	componentDidMount() {
 		const { saveDir } = this.props;
 		saveDir && ipcRenderer.send('storage:loadRecordings', saveDir)
+	}
+
+	componentWillUnmount() {
+		ipcRenderer.removeListener('storage:loadRecordings:response', this.handleLoadRecordings)
+	}
+
+	handleLoadRecordings = (e, recordings) => {
+		this.props.loadRecordings(recordings)
 	}
 
 	handleDeleteRecording = (id, path) => {
@@ -54,6 +62,7 @@ class Storage extends Component {
 					>
 					{ recordings.map(recording => (
 						<StorageItem 
+							key={recording.id}
 							recording={recording}
 							handleDeleteRecording={this.handleDeleteRecording}
 						/>
