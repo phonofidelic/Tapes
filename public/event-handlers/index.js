@@ -71,9 +71,19 @@ function loadRecordings(recorderWindow, saveDir) {
 	});
 }
 
+function deleteRecording(path) {
+	console.log('\n*** deleteRecording');
+
+	fs.unlink(path, err => {
+		if (err) throw err;
+		console.log('*** deleted:', path)
+	})
+}
+
 module.exports = {
 	openDirSelect,
 	newRecording,
 	stopRecording,
-	loadRecordings
+	loadRecordings,
+	deleteRecording
 }

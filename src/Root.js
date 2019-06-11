@@ -37,6 +37,7 @@ export const saveState = (state) => {
 	}
 }
 /*********************************************************************************************/
+
 const { recorder } = initGlobalState;
 console.log('initGlobalState:', initGlobalState)
 
@@ -61,8 +62,7 @@ export default ({ children, initialState = {} }) => {
 				...persistedState.recorder,
 				isRecording: recorder.isRecording,
 				monitoring: recorder.monitoring,
-				recordings: recorder.recordings,
-			}
+			},
 		},
 		enhancer
 	);
@@ -71,9 +71,6 @@ export default ({ children, initialState = {} }) => {
 	store.subscribe(() => {
 		saveState({
 			settings: store.getState().settings,
-			recorder: {
-				recordings: store.getState().recorder.recordings,
-			} 
 		})
 	})
 

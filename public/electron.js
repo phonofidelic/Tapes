@@ -15,7 +15,8 @@ const {
 	openDirSelect,
 	newRecording,
 	stopRecording,
-	loadRecordings
+	loadRecordings,
+	deleteRecording
 } = require('./event-handlers');
 
 const { 
@@ -59,6 +60,7 @@ ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir))
 ipcMain.on('rec:stop', (e, saveDir) => stopRecording(recorderWindow))
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
 ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir))
+ipcMain.on('storage:delete', (e, path) => deleteRecording(path))
 
 process.on('beforeExit', () => {
 	console.lof('\n*** process beforeExit')

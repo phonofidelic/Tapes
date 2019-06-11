@@ -1,19 +1,17 @@
 import {
 	START_REC,
 	STOP_REC,
-	ADD_NEW_REC,
 	SET_REC_FILE,
 	START_MONITOR,
 	STOP_MONITOR,
-	LOAD_RECORDINGS,
 	ERROR_NO_SAVE_DIR,
 	ERROR_ADD_NEW_REC,
-	ERR_LOAD_RECORDINGS,
+	ERROR_LOAD_RECORDINGS,
 } from 'actions/types';
 
 export const INITIAL_STATE = {
 	isRecording: false,
-	recordings: [],
+	// recordings: [],
 	recordingFile: null,
 	monitoring: false,
 	monitorInstance: null,
@@ -41,12 +39,6 @@ const recorder = (state = INITIAL_STATE, action) => {
 				isRecording: false,
 			}
 
-		case ADD_NEW_REC:
-			return {
-				...state,
-				recordings: [...state.recordings, action.newRecording]
-			}
-
 		case START_MONITOR: {
 			return {
 				...state,
@@ -63,13 +55,6 @@ const recorder = (state = INITIAL_STATE, action) => {
 			}
 		}
 
-		case LOAD_RECORDINGS: {
-			return {
-				...state,
-				recordings: action.recordings,
-			}
-		}
-
 		case ERROR_NO_SAVE_DIR:
 			return {
 				...state,
@@ -82,7 +67,7 @@ const recorder = (state = INITIAL_STATE, action) => {
 				error: { message: 'Could not save recording in database.' }
 			}
 
-		case ERR_LOAD_RECORDINGS:
+		case ERROR_LOAD_RECORDINGS:
 			return {
 				...state,
 				error: { message: 'Could not load recording from database.' }

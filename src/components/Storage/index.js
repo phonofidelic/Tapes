@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/storage.actions';
 
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 
+import StorageItem from 'components/Storage/StorageItem';
 import {
 	Container,
 	Section,
@@ -24,19 +24,26 @@ class Storage extends Component {
 	componentDidMount() {
 		const { saveDir } = this.props;
 		ipcRenderer.send('storage:loadRecordings', saveDir)
+	}
 
+	handleDeleteRecording = (id, path) => {
+		this.props.deleteRecording(id, path)
 	}
 
 	render() {
 		const { recordings } = this.props;
+
 		console.log('Storage, recordings:', recordings)
 		return (
 			<Container>
 				<Section>
 					<SectionTitle variant="overline">Storage</SectionTitle>
 					<List>
-					{ recordings.map((recording, i) => (
-						<ListItem key={i}>{recording.title}</ListItem>
+					{ recordings.map(recording => (
+						<StorageItem 
+							recording={recording}
+							handleDeleteRecording={this.handleDeleteRecording}
+						/>
 					))}
 					</List>
 				</Section>
@@ -48,7 +55,7 @@ class Storage extends Component {
 const mapStateToProps = state => {
 	return {
 		saveDir: state.settings.saveDir,
-		recordings: state.recorder.recordings,
+		recordings: state.storage.recordings,
 	}
 }
 

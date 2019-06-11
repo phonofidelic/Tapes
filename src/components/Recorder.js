@@ -7,7 +7,6 @@ import Typography from '@material-ui/core/Typography';
 
 import AudioAnalyser from 'components/AudioAnalyser';
 import Monitor from 'components/Monitor';
-import RecordingsList from 'components/RecordingsList';
 import RecorderControls from 'components/RecorderControls';
 import {
 	Container,
