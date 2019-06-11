@@ -53,7 +53,7 @@ export const stopRec = (saveDir, recordingFile) => {
 	ipcRenderer.send('rec:stop');
 	const newRecording = {
 		id: uuidv4(),
-		title: `${Date.now()}`,
+		title: `${moment().format('MMM Do YYYY, hh:mm:ss a')}`,
 		src: `${saveDir}/${recordingFile}`,
 		created: Date.now(),
 		updated: Date.now(),
