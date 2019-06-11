@@ -1,6 +1,7 @@
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/storage.actions';
+import styled from 'styled-components';
 
 import List from '@material-ui/core/List';
 
@@ -14,6 +15,10 @@ import {
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
+
+const StyledList = styled(List)`
+	padding: 0px;
+`
 
 class Storage extends Component {
 	constructor(props) {
@@ -31,14 +36,18 @@ class Storage extends Component {
 	}
 
 	render() {
-		const { recordings } = this.props;
+		const { recordings, saveDir } = this.props;
 
 		console.log('Storage, recordings:', recordings)
 		return (
 			<Container>
 				<Section>
 					<SectionTitle variant="overline">Storage</SectionTitle>
-					<List>
+					<List 
+						disablePadding
+						dense
+						subheader={<SectionTitle variant="caption" style={{backgroundColor: '#666'}}>{saveDir}:</SectionTitle>}
+					>
 					{ recordings.map(recording => (
 						<StorageItem 
 							recording={recording}

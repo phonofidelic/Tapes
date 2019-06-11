@@ -30,7 +30,12 @@ export default function(props) {
 	}
 
 	return (
-		<ListItem key={recording.id} style={{ justifyContent: 'space-between' }}>
+		<ListItem 
+			key={recording.id} 
+			style={{ justifyContent: 'space-between' }}
+			divider
+			button
+		>
 			<span>{recording.title}</span>
 			<span style={{ width: '50px' }}>
 				<Menu
