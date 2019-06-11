@@ -28,7 +28,7 @@ class Storage extends Component {
 
 	componentDidMount() {
 		const { saveDir } = this.props;
-		ipcRenderer.send('storage:loadRecordings', saveDir)
+		saveDir && ipcRenderer.send('storage:loadRecordings', saveDir)
 	}
 
 	handleDeleteRecording = (id, path) => {
@@ -46,7 +46,11 @@ class Storage extends Component {
 					<List 
 						disablePadding
 						dense
-						subheader={<SectionTitle variant="caption" style={{backgroundColor: '#666'}}>{saveDir}:</SectionTitle>}
+						subheader={saveDir ? 
+							<SectionTitle variant="caption" style={{backgroundColor: '#666'}}>{saveDir}:</SectionTitle>
+							:
+							false
+						}
 					>
 					{ recordings.map(recording => (
 						<StorageItem 
