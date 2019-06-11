@@ -35,6 +35,7 @@ export default function(props) {
 			style={{ justifyContent: 'space-between' }}
 			divider
 			button
+			disableRipple	
 		>
 			<span>{recording.title}</span>
 			<span style={{ width: '50px' }}>
