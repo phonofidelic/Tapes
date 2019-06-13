@@ -1,12 +1,15 @@
-import React, { Component, useState } from 'react';
+import React, { Component, Fragment, useState } from 'react';
 
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import EditRecordingForm from 'components/Storage/EditRecordingForm';
 
@@ -51,49 +54,51 @@ export default function(props) {
 			button
 			disableRipple	
 		>
-			<span style={{ width: '100%' }}>
-			{ !editMode ? 
-				recording.title 
-				: 
-				<EditRecordingForm 
-					recording={recording}
-					setEditMode={setEditMode}
-					handleEditSubmit={handleEditSubmit}
-				/>
-			}
-			</span>
-			<span style={{ width: '50px' }}>
-				<Menu
-					id={`${recording.id}_menu`}
-					anchorEl={anchorEl}
-					keepMounted
-					open={Boolean(anchorEl)}
-					onClose={handleClose}
-				>
-					<MenuItem 
-						key="edit"
-						onClick={() => handleClickEdit(recording.id)}
+		{ !editMode ?
+			<Fragment>
+				<span style={{ width: '100%' }}>
+					{ recording.title }
+				</span>
+				<span style={{ width: '50px' }}>
+					<Menu
+						id={`${recording.id}_menu`}
+						anchorEl={anchorEl}
+						keepMounted
+						open={Boolean(anchorEl)}
+						onClose={handleClose}
 					>
-						Edit title
-					</MenuItem>
-					<MenuItem 
-						key="delete"
-						style={{
-							color: 'red'
-						}}
-						onClick={() => handleClickDelete(recording.id, recording.src)}
+						<MenuItem 
+							key="edit"
+							onClick={() => handleClickEdit(recording.id)}
+						>
+							Edit title
+						</MenuItem>
+						<MenuItem 
+							key="delete"
+							style={{
+								color: 'red'
+							}}
+							onClick={() => handleClickDelete(recording.id, recording.src)}
+						>
+							DELETE
+						</MenuItem>
+					</Menu>
+					<IconButton
+						aria-controls={`${recording.id}_menu`}
+						aria-haspopup="true"
+						onClick={handleClick}
 					>
-						DELETE
-					</MenuItem>
-				</Menu>
-				<IconButton
-					aria-controls={`${recording.id}_menu`}
-					aria-haspopup="true"
-					onClick={handleClick}
-				>
-					<MoreVertIcon />
-				</IconButton>
-			</span>
+						<MoreVertIcon />
+					</IconButton>
+				</span>
+			</Fragment>
+			:
+			<EditRecordingForm 
+				recording={recording}
+				setEditMode={setEditMode}
+				handleEditSubmit={handleEditSubmit}
+			/>
+		}
 		</ListItem>
 	);
 }

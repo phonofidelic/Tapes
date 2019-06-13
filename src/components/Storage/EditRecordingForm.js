@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Field, reduxForm } from 'redux-form'
 
 import TextField from '@material-ui/core/TextField';
-
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
+import Tooltip from '@material-ui/core/Tooltip';
 
 
 const EditRecordingForm = props => {
@@ -33,16 +37,16 @@ const EditRecordingForm = props => {
 	)
 
 	return (
-		<form onSubmit={handleSubmit(formData => {
+		<form style={{ width: '100%', display: 'flex' }} onSubmit={handleSubmit(formData => {
 			setEditMode(false)
 			console.log(formData)
 			handleEditSubmit(formData)
 		})}
-		style={{width: '100%'}}
 		>
+			<span style={{ width: '100%' }}>
 			<Field
+				style={{ width: '100%' }}
 				component={renderField}
-				style={{width: '100%'}}
 				id={`recording-title-input_${recording.id}`}
 				name={`title`}
 				type="text"
@@ -50,6 +54,33 @@ const EditRecordingForm = props => {
 				label={recording.title}
 				autoFocus={true}
 			/>
+			</span>
+			<span style={{ width: '50px' }}>
+				<Tooltip
+					title="Cancel changes"
+					placement="left"
+					enterDelay={300}
+				>
+					<IconButton
+						aria-haspopup="true"
+						onClick={() => setEditMode(false)}
+					>
+						<CloseIcon />
+					</IconButton>
+				</Tooltip>
+				<Tooltip
+					title="Save changes"
+					placement="left"
+					enterDelay={300}
+				>
+					<IconButton
+						aria-haspopup="true"
+						type="submit"
+					>
+						<CheckIcon />
+					</IconButton>
+				</Tooltip>
+			</span>
 		</form>
 	);
 }
