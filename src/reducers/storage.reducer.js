@@ -1,14 +1,18 @@
 import { 
-	LOAD_RECORDINGS,
-	ERROR_LOAD_RECORDINGS,
+	LOAD_RECORDINGS,	
 	ADD_NEW_REC,
 	DELETE_RECORDING,
 	DELETE_RECORDING_SUCCESS,
-	DELETE_RECORDING_FAILURE,
+	EDIT_RECORDING,
+	EDIT_RECORDING_SUCCESS,
+	ERROR_LOAD_RECORDINGS,
+	ERROR_DELETE_RECORDING,
+	ERROR_EDIT_RECORDING
 	} from 'actions/types';
 
 export const INITIAL_STATE = {
 	recordings: [],
+	loading: false,
 }
 
 const storage = (state = INITIAL_STATE, action) => {
@@ -23,6 +27,19 @@ const storage = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				recordings: [...state.recordings, action.newRecording]
+			}
+
+		case EDIT_RECORDING: 
+			return {
+				...state,
+				loading: true,
+			}
+
+		case EDIT_RECORDING_SUCCESS:
+			return {
+				...state,
+				loading: false,
+				recordings: state.recordings.map(recording => recording.id === action.recording.id ? action.recording : recording)
 			}
 
 		case DELETE_RECORDING:

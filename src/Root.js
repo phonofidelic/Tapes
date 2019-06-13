@@ -3,13 +3,13 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-
 import reducer, { initGlobalState } from 'reducers/index';
 import { theme } from 'config';
 // import { loadState, saveState } from './localStorage';
 // import { ThemeProvider } from 'contexts/theme.context';	TODO
 import { history } from 'config'
 import { routerMiddleware } from 'connected-react-router';
+import throttle from 'lodash/throttle';
 
 
 /*** Persist state to localStorage ****
@@ -41,7 +41,7 @@ export const saveState = (state) => {
 const { recorder } = initGlobalState;
 console.log('initGlobalState:', initGlobalState)
 
-export default ({ children, initialState = {} }) => {
+export default ({ children, initialState = initGlobalState }) => {
 	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 	const enhancer = composeEnhancers(
@@ -55,24 +55,25 @@ export default ({ children, initialState = {} }) => {
 
 	const store = createStore(
 		reducer,
-		{
-			...persistedState,
-			// Set everything not tracked by persistentState to initGlobalState defaults. TODO: refactor this
-			recorder: {
-				...persistedState.recorder,
-				isRecording: recorder.isRecording,
-				monitoring: recorder.monitoring,
-			},
-		},
+		persistedState,
+		// {
+		// 	...persistedState,
+		// 	// Set everything not tracked by persistentState to initGlobalState defaults. TODO: refactor this
+		// 	// recorder: {
+		// 	// 	...persistedState.recorder,
+		// 	// 	isRecording: recorder.isRecording,
+		// 	// 	monitoring: recorder.monitoring,
+		// 	// },
+		// },
 		enhancer
 	);
 	console.log('store:', store.getState())
 
-	store.subscribe(() => {
+	store.subscribe(throttle(() => {
 		saveState({
 			settings: store.getState().settings,
-		})
-	})
+		});
+	}, 1000));
 
 	const customTheme = createMuiTheme(theme);
 

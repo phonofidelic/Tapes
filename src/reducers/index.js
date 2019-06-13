@@ -4,6 +4,7 @@ import { history } from 'config';
 import settings, { INITIAL_STATE as settingsInitState } from './settings.reducer';
 import recorder, { INITIAL_STATE as recorderInitState } from './recorder.reducer';
 import storage, { INITIAL_STATE as storageInitState } from './storage.reducer';
+import { reducer as formReducer } from 'redux-form'
 
 export const initGlobalState = {
 	settings: settingsInitState,
@@ -16,4 +17,5 @@ export default combineReducers({
 	recorder,
 	storage,
 	router: connectRouter(history),
+	form: formReducer,
 })
