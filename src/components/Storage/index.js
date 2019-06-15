@@ -53,7 +53,7 @@ class Storage extends Component {
 
 		console.log('Storage, recordings:', recordings)
 		return (
-			<Container>
+			<Container style={{backgroundColor: '#fff'}}>
 				<Section>
 					<SectionTitle variant="overline">Storage</SectionTitle>
 					<List 

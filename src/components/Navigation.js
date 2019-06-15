@@ -10,6 +10,7 @@ import MicIcon from '@material-ui/icons/Mic';
 import StorageIcon from '@material-ui/icons/Storage';
 
 const Container = styled(BottomNavigation)`
+	background-color: #e9eae6;
 	display: flex;
 	width: 100%;
 	// max-width: 300px;
@@ -25,7 +26,10 @@ class Navigation extends Component {
 		const { locationPathname } = this.props;
 
 		return (
-			<Container value={locationPathname}>
+			<Container 
+				value={locationPathname}
+				style={{backgroundColor: '#e9eae6'}}
+			>
 				<BottomNavigationAction 
 					label="Recorder" 
 					icon={<MicIcon />}
