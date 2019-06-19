@@ -30,7 +30,10 @@ class Navigation extends Component {
 			locationPathname.includes('/open') ?
 			<Container
 				value={locationPathname}
-				style={{backgroundColor: '#e9eae6'}}
+				style={{
+					backgroundColor: '#e9eae6',
+					webkitAppRegion: 'drag',
+				}}
 			>
 				<BottomNavigationAction 
 					label="Workspace" 

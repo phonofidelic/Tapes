@@ -9,10 +9,7 @@ class WorkspaceWindow extends BrowserWindow {
 	    },
 	    width: 1250,
 	    height: 600,
-	    // frame: false,
-	    titleBarStyle: 'hidden',
-	    resizable: true,
-	    show: true,
+	    titleBarStyle: 'hiddenInset',
 		});
 	}
 }
