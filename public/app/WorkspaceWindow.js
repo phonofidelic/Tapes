@@ -9,6 +9,8 @@ class WorkspaceWindow extends BrowserWindow {
 	    },
 	    width: 1250,
 	    height: 600,
+	    minWidth: 500,
+	    minHeight: 300,
 	    titleBarStyle: 'hiddenInset',
 		});
 	}
