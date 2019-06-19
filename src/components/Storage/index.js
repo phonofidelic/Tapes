@@ -39,6 +39,9 @@ class Storage extends Component {
 		this.props.loadRecordings(recordings)
 	}
 
+	handleOpenRecording = (recording) => {
+		this.props.openRecording(recording)
+	}
 
 	handleEditRecording = id => {
 		this.props.editRecording(id)
@@ -69,6 +72,7 @@ class Storage extends Component {
 						<StorageItem 
 							key={recording.id}
 							recording={recording}
+							handleOpenRecording={this.handleOpenRecording}
 							handleEditRecording={this.handleEditRecording}
 							handleDeleteRecording={this.handleDeleteRecording}
 						/>

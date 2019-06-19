@@ -1,16 +1,22 @@
-const fs = require('fs');
-const path = require('path');
-const { spawn } = require('child_process');
-
 const electron = require('electron')
 const { 
 	ipcMain, 
 	dialog 
 } = electron;
-
+const fs = require('fs');
+const path = require('path');
+const { spawn } = require('child_process');
 const uuidv4 = require('uuid/v4');
 const fixPath = require('fix-path');
 fixPath();
+const { 
+	default: installExtension,
+	REACT_DEVELOPER_TOOLS,
+	REDUX_DEVTOOLS
+} = require('electron-devtools-installer');
+const isDev = require('electron-is-dev');
+
+const WorkspaceWindow = require('../app/WorkspaceWindow');
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
@@ -80,10 +86,31 @@ function deleteRecording(path) {
 	})
 }
 
+let workspaceWindow;
+function openWorkspace(recording) {
+	console.log('\n*** openWorkspace, recording:', recording)
+	workspaceWindow = new WorkspaceWindow();
+	workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../build/index.html")}`)
+	isDev && workspaceWindow.webContents.openDevTools({mode: 'detach'});
+
+	installExtension(REACT_DEVELOPER_TOOLS)
+  .then((name) => console.log(`Added Extension: ${name}`))
+  .catch((err) => console.log('An error occurred: ', err));
+
+  installExtension(REDUX_DEVTOOLS)
+  .then((name) => console.log(`Added Extension: ${name}`))
+  .catch((err) => console.log('An error occurred: ', err));
+
+  installExtension('cmhomipkklckpomafalojobppmmidlgl')
+  .then(name => console.log(`Added Extension: ${name}`))
+  .catch(err => console.log('An error occurred: ', err));
+}
+
 module.exports = {
 	openDirSelect,
 	newRecording,
 	stopRecording,
 	loadRecordings,
-	deleteRecording
+	deleteRecording,
+	openWorkspace
 }

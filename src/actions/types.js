@@ -13,6 +13,7 @@ export const DELETE_RECORDING = 'delete_recording';
 export const DELETE_RECORDING_SUCCESS = 'delete_recording_success';
 export const EDIT_RECORDING = 'edit_recording'
 export const EDIT_RECORDING_SUCCESS = 'edit_recording_success'
+export const OPEN_RECORDING = 'open_recording';
 
 export const ERROR_NO_SAVE_DIR = 'error_no_save_dir';
 export const ERROR_ADD_NEW_REC = 'err_add_new_rec';

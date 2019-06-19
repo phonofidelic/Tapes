@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -8,6 +8,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MicIcon from '@material-ui/icons/Mic';
 import StorageIcon from '@material-ui/icons/Storage';
+import TuneIcon from '@material-ui/icons/Tune';
 
 const Container = styled(BottomNavigation)`
 	background-color: #e9eae6;
@@ -24,8 +25,23 @@ const NavItem = styled(Link)`
 class Navigation extends Component {
 	render() {
 		const { locationPathname } = this.props;
-
+		console.log('locationPathname:', locationPathname)
 		return (
+			locationPathname.includes('/open') ?
+			<Container
+				value={locationPathname}
+				style={{backgroundColor: '#e9eae6'}}
+			>
+				<BottomNavigationAction 
+					label="Workspace" 
+					icon={<MicIcon />}
+					style={{width: '100%'}}
+					component={TuneIcon}
+					to="/open"
+					value="/open"
+				/>
+			</Container>
+			:
 			<Container 
 				value={locationPathname}
 				style={{backgroundColor: '#e9eae6'}}
@@ -54,6 +70,7 @@ class Navigation extends Component {
 					to="/settings"
 					value="/settings"
 				/>
+			}
 			</Container>
 		);
 	}

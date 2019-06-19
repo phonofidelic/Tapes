@@ -3,6 +3,7 @@ import {
 	ERROR_LOAD_RECORDINGS,
 	DELETE_RECORDING,
 	DELETE_RECORDING_SUCCESS,
+	OPEN_RECORDING,
 	EDIT_RECORDING,
 	EDIT_RECORDING_SUCCESS,
 	ERROR_DELETE_RECORDING,
@@ -82,6 +83,19 @@ export const deleteRecording = (id, path) => {
 			dispatch({
 				type: ERROR_DELETE_RECORDING,
 			})
+		})
+	}
+}
+
+export const openRecording = recording => {
+	console.log('openRecording, recording:', recording)
+
+	ipcRenderer.send('rec:open', recording);
+
+	return dispatch => {
+		dispatch({
+			type: OPEN_RECORDING,
+			recording
 		})
 	}
 }

@@ -16,7 +16,8 @@ const {
 	newRecording,
 	stopRecording,
 	loadRecordings,
-	deleteRecording
+	deleteRecording,
+	openWorkspace
 } = require('./event-handlers');
 
 const { 
@@ -56,11 +57,12 @@ app.on('ready', () => {
   .catch(err => console.log('An error occurred: ', err));
 });
 
-ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir))
-ipcMain.on('rec:stop', (e, saveDir) => stopRecording(recorderWindow))
-ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow))
-ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir))
-ipcMain.on('storage:delete', (e, path) => deleteRecording(path))
+ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir));
+ipcMain.on('rec:stop', (e, saveDir) => stopRecording(recorderWindow));
+ipcMain.on('rec:open', (e, recording) => openWorkspace(recording));
+ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow));
+ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir));
+ipcMain.on('storage:delete', (e, path) => deleteRecording(path));
 
 process.on('beforeExit', () => {
 	console.lof('\n*** process beforeExit')

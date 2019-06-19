@@ -17,7 +17,11 @@ import Tooltip from '@material-ui/core/Tooltip';
 import EditRecordingForm from 'components/Storage/EditRecordingForm';
 
 export default function(props) {
-	const { recording, handleDeleteRecording } = props;
+	const { 
+		recording,
+		handleDeleteRecording,
+		handleOpenRecording,
+	} = props;
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [editMode, setEditMode] = useState(false);
 
@@ -29,16 +33,20 @@ export default function(props) {
 		setAnchorEl(null);
 	}
 
+	const handleClickOpen = (recording) => {
+		handleOpenRecording(recording);
+	}
+
 	const handleClickEdit = id => {
-		setAnchorEl(null)
-		setEditMode(!editMode)
+		setAnchorEl(null);
+		setEditMode(!editMode);
 	}
 
 	const handleClickDelete = (id, path) => {
-		setAnchorEl(null)
+		setAnchorEl(null);
 
 		// TODO: implement action confirmation flow.
-		handleDeleteRecording(id, path)
+		handleDeleteRecording(id, path);
 	}
 
 	const handleEditSubmit = (formData) => {
@@ -72,7 +80,7 @@ export default function(props) {
 					>
 						<MenuItem 
 							key="open"
-							onClick={() => console.log('Open')}
+							onClick={() => handleClickOpen(recording)}
 						>
 							<OpenIcon style={{ marginRight: 10 }}/> Open
 						</MenuItem>
