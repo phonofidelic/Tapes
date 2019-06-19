@@ -16,7 +16,7 @@ const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 const uuidv4 = require('uuid/v4');
 
-export const startRec = (saveDir) => {
+export const startRecording = (saveDir) => {
 	if (!saveDir) {
 		window.alert('Please select a save directory in Settings.') // TODO: replace with custom error message
 		return dispatch => {
@@ -48,7 +48,7 @@ export const setRecFile = (recordingFile) => {
 	}
 }
 
-export const stopRec = (saveDir, recordingFile) => {
+export const stopRecording = (saveDir, recordingFile) => {
 	console.log('stopRec, recordingFile:', recordingFile)
 	ipcRenderer.send('rec:stop');
 	const newRecording = {
