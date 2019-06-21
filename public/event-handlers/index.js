@@ -15,6 +15,8 @@ const {
 	REDUX_DEVTOOLS
 } = require('electron-devtools-installer');
 const isDev = require('electron-is-dev');
+const Datauri = require('datauri');
+const datauri = new Datauri();
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 
@@ -35,15 +37,13 @@ function openDirSelect(renderer) {
 let rec; //	<-- TODO: Refactor bad global variable?
 function newRecording(renderer, saveDir) {
 	let audioIn_readStream;
-	let tmpFile_writeStream;
-	let tmpPath;
-	const TMP_DIR = 'tmp';
-	const FORMAT = 'flac';
+	let audioFile_writeStream;
+	const FORMAT = 'mp3';
 
 	recordingFile = `${uuidv4()}.${FORMAT}`
 	console.log('\n*** newRecording')
 	console.log('*** path.resolve(saveDir, recordingFile):', path.resolve(saveDir, recordingFile))
-	tmpFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFile));
+	audioFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFile));
 	renderer.webContents.send('rec:set_rec_file', recordingFile)
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
@@ -59,7 +59,7 @@ function newRecording(renderer, saveDir) {
 	audioIn_readStream = rec.stdout;
 
 	audioIn_readStream
-	.pipe(tmpFile_writeStream);
+	.pipe(audioFile_writeStream);
 }
 
 function stopRecording(e) {
@@ -86,9 +86,11 @@ function deleteRecording(path) {
 	})
 }
 
-let workspaceWindow;
+let workspaceWindow; // TODO: remove bad global variables
+let recording; // TODO: remove bad global variables
 function openWorkspace(recording) {
 	console.log('\n*** openWorkspace, recording:', recording)
+	recording = recording;
 	workspaceWindow = new WorkspaceWindow();
 	workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../build/index.html")}`)
 	isDev && workspaceWindow.webContents.openDevTools({mode: 'detach'});
@@ -106,11 +108,34 @@ function openWorkspace(recording) {
   .catch(err => console.log('An error occurred: ', err));
 }
 
+function audioStream(srcPath) {
+	console.log('\n*** wrk:requestAudioBuffer, srcPath:', srcPath)
+
+	// fs.copyFile(srcPath, path.resolve(__dirname, '..', 'tmp'), (err) => {
+	//   if (err) throw err;
+	//   console.log('source.txt was copied to destination.txt');
+	// });
+
+	datauri.encode(srcPath, (err, content) => {
+		if (err) throw err;
+		// console.log('\n*** datauri:', content)
+		workspaceWindow.webContents.send('wrk:audioBuffer', content)		
+	})
+
+	// fs.readFile(srcPath, (err, data) => {
+	// 	if (err) throw err;
+	// 	// console.log(data)
+
+	// 	workspaceWindow.webContents.send('wrk:audioBuffer', data)
+	// })
+}
+
 module.exports = {
 	openDirSelect,
 	newRecording,
 	stopRecording,
 	loadRecordings,
 	deleteRecording,
-	openWorkspace
+	openWorkspace,
+	audioStream
 }

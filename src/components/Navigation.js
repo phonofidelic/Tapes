@@ -32,14 +32,22 @@ class Navigation extends Component {
 				value={locationPathname}
 				style={{
 					backgroundColor: '#e9eae6',
-					webkitAppRegion: 'drag',
+					WebkitAppRegion: 'drag',
 				}}
 			>
-				<BottomNavigationAction 
-					label="Workspace" 
+				{/*<BottomNavigationAction 
+					label="Recorder" 
 					icon={<MicIcon />}
 					style={{width: '100%'}}
-					component={TuneIcon}
+					component={NavItem}
+					to="/open/recorder"
+					value="/open/recorder"
+				/>*/}
+				<BottomNavigationAction 
+					label="Workspace" 
+					icon={<TuneIcon />}
+					style={{width: '100%'}}
+					component={NavItem}
 					to="/open"
 					value="/open"
 				/>

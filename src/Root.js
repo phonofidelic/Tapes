@@ -39,7 +39,7 @@ export const saveState = (state) => {
 /*********************************************************************************************/
 
 const { recorder } = initGlobalState;
-console.log('initGlobalState:', initGlobalState)
+// console.log('initGlobalState:', initGlobalState)
 
 export default ({ children, initialState = initGlobalState }) => {
 	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -67,7 +67,7 @@ export default ({ children, initialState = initGlobalState }) => {
 		// },
 		enhancer
 	);
-	console.log('store:', store.getState())
+	// console.log('store:', store.getState())
 
 	store.subscribe(throttle(() => {
 		saveState({

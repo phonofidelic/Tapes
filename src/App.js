@@ -29,10 +29,24 @@ class App extends Component {
               path="/settings"
               render={() => <Settings />}
             />
+            
             <Route
+              exact
+              path="/open/:id"
+              //render={() => <Workspace />}
+              component={Workspace}
+            />
+            <Route
+              exact
               path="/open"
               render={() => <Workspace />}
             />
+            <Route
+              path="/open/recorder"
+              //render={() => <Recorder />}
+              component={Recorder}
+            />
+            
             <Route
               render={() => <Recorder />}
             />
