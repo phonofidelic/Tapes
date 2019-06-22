@@ -15,7 +15,8 @@ import AudioBuffer from 'audio-buffer'
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
-
+const CANVAS_WIDTH =  window.innerWidth;
+const CANVAS_HEIGHT = 200;
 
 class Workspace extends Component {
 	constructor(props) {
@@ -30,31 +31,68 @@ class Workspace extends Component {
 		this.props.loadRecordingData(id)
 
 		this.audioElement = createRef();
+		this.canvasElement = createRef();
+
+		this.canvasWidth = CANVAS_WIDTH;
+		this.canvasHeight = CANVAS_HEIGHT;
 	}
 	componentDidMount() {
 		const { recording } = this.props;
 		this.audioCtx = new (window.AudioContext || window.wobkitAudioContext)();
 		this.analyser = this.audioCtx.createAnalyser();
 
-		console.log('this.audioElement:', this.audioElement)
-		if (this.audioElement.current) {
-			const source = this.audioCtx.createMediaElementSource(this.audioElement.current)
-			console.log('*** Created audio source')
-		}
-
-		ipcRenderer.on('wrk:audioBuffer', (e, audioBuffer) => {
-			console.log('wrk:audioBuffer, audioBuffer:', audioBuffer)
-			this.props.loadAudioBuffer(audioBuffer)
+		ipcRenderer.on('wrk:datauri', (e, datauri) => {
+			// console.log('wrk:audioBuffer, datauri:', datauri)
+			this.props.loadAudioBuffer(datauri)
 
 			this.setState({
 				...this.state,
-				datauri: audioBuffer
+				datauri: datauri
 			})
 
-			// this.audioCtx.decodeAudioData(audioBuffer, buffer => {
-   //        const decodedAudioData = buffer.getChannelData(0);
-   //        console.log('decodedAudioData"', decodedAudioData);
-   //    });
+
+			const source = this.audioCtx.createMediaElementSource(this.audioElement.current)
+			console.log('*** Created audio source:', source)
+
+			this.analyser = this.audioCtx.createAnalyser();
+			this.analyser.fftSize = 256;
+			this.bufferLength = this.analyser.frequencyBinCount;
+			this.dataArray = new Float32Array(this.analyser.frequencyBinCount);
+			console.log('dataArray:', this.dataArray)
+			// this.analyser.getFloatFrequencyData(this.dataArray);
+			
+			let dest = []
+			source.connect(this.analyser);
+			this.analyser.connect(this.audioCtx.destination);
+
+
+			
+			source.mediaElement.onloadedmetadata = e => {
+				console.log('source.mediaElement, loadedmetadata')
+				console.log('source.mediaElement.duration:', source.mediaElement.duration)
+				this.audioBuffer = this.audioCtx.createBuffer(
+					source.channelCount, 
+					source.mediaElement.duration * (this.audioCtx.sampleRate * source.channelCount), 
+					this.audioCtx.sampleRate
+				)
+				console.log('audioBuffer:', this.audioBuffer)
+
+				for (let channel = 0; channel < this.audioBuffer.numberOfChannels; channel++) {
+					let nowBuffering = this.audioBuffer.getChannelData(channel);
+					console.log('nowBuffering:', nowBuffering)
+					for (let i = 0; i < this.audioBuffer.length; i++) {
+						// nowBuffering[i] = 
+					}
+				}
+			}
+
+			
+			// this.audioCtx.decodeAudioData(source, buffer => {
+   //        var decodedAudioData = buffer.getChannelData(0);
+   //        console.log('decodedAudioData:', decodedAudioData);
+   //    }, err => console.error('decodeAudioData error:', err));
+
+
 
 			// // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
 			// const NUMBER_OF_BUCKETS = 100;
@@ -81,22 +119,51 @@ class Workspace extends Component {
 			// 	buckets
 			// })
 
-			// this.source = this.audioCtx.createMediaStreamSource(audioBuffer);
-			// this.source.connect(this.analyser);
-			// this.analyser.connect(this.audioCtx.destination);
 
-			
+			this.canvas = this.canvasElement.current;
+			this.canvasCtx = this.canvas.getContext('2d');
+			this.rafId = requestAnimationFrame(this.draw.bind(this));
 		})
+
+		const _this = this;
+		window.addEventListener('resize', (e) => {
+			console.log('resize:', this)
+			this.canvasWidth = document.getInnerWidth
+			this.draw()
+		})
+	}
+
+	draw() {
+		this.analyser.getFloatFrequencyData(this.dataArray);
+		// console.log('getFloatFrequencyData:', this.dataArray)
+
+		this.canvasCtx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+		this.canvasCtx.fillStyle = '#e9eae6';
+  	this.canvasCtx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
+
+  	const barWidth = (this.canvasWidth / this.bufferLength) * 2.5;
+  	let posX = 0;
+	  for (let i = 0; i < this.bufferLength; i++) {
+	    const barHeight = (this.dataArray[i] + 140) * 2;
+	    this.canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 150) + ', 100, 50)';
+	    this.canvasCtx.fillRect(posX, this.canvasHeight - barHeight / 2, barWidth, barHeight / 2);
+	    posX += barWidth + 1;
+	  }
+
+	  this.rafId = requestAnimationFrame(this.draw.bind(this));
 	}
 
 	render() {
 		const { recording, audioBuffer } = this.props;
 		const { datauri } = this.state;
-		console.log('Workspace, props:', this.props)
+		// console.log('Workspace, props:', this.props)
 		return (
 			<Container>
 				<SectionTitle variant="overline">Workspace - {recording && recording.title}</SectionTitle>
-				<div style={{ margin: 20 }}>
+				<div style={{ 
+					// margin: 20 
+				}}>
 				{this.state.buckets && 
 					<div style={{
 						display: 'flex', 
@@ -114,6 +181,9 @@ class Workspace extends Component {
 						))}
 					</div>
 				}
+				<div>
+					<canvas ref={this.canvasElement} width={this.canvasWidth} height={this.canvasHeight} />
+				</div>
 				<div style={{
 					display: 'flex',
 					justifyContent: 'center',

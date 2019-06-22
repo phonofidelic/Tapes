@@ -111,23 +111,11 @@ function openWorkspace(recording) {
 function audioStream(srcPath) {
 	console.log('\n*** wrk:requestAudioBuffer, srcPath:', srcPath)
 
-	// fs.copyFile(srcPath, path.resolve(__dirname, '..', 'tmp'), (err) => {
-	//   if (err) throw err;
-	//   console.log('source.txt was copied to destination.txt');
-	// });
-
-	datauri.encode(srcPath, (err, content) => {
+	datauri.encode(srcPath, (err, datauri) => {
 		if (err) throw err;
 		// console.log('\n*** datauri:', content)
-		workspaceWindow.webContents.send('wrk:audioBuffer', content)		
+		workspaceWindow.webContents.send('wrk:datauri', datauri)		
 	})
-
-	// fs.readFile(srcPath, (err, data) => {
-	// 	if (err) throw err;
-	// 	// console.log(data)
-
-	// 	workspaceWindow.webContents.send('wrk:audioBuffer', data)
-	// })
 }
 
 module.exports = {
