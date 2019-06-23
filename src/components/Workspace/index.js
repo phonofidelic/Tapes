@@ -13,6 +13,8 @@ import {
 
 import AudioBuffer from 'audio-buffer'
 
+import Controls from './Controls'
+
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 
@@ -41,6 +43,7 @@ class Workspace extends Component {
 		this.canvasWidth = CANVAS_WIDTH;
 		this.canvasHeight = CANVAS_HEIGHT;
 	}
+
 	componentDidMount() {
 		const { recording } = this.props;
 		this.audioCtx = new (window.AudioContext || window.wobkitAudioContext)();
@@ -145,7 +148,7 @@ class Workspace extends Component {
 			return <rect
 				key={i}
 				x={ bucketSVGWidth * i + SPACE_BETWEEN_BARS / 2.0 }
-				y={ (100 - bucketSVGHeight) / 2.0 }
+				y={ (50 - bucketSVGHeight) / 2.0 }
 				width={ bucketSVGWidth - SPACE_BETWEEN_BARS }
 				height={ bucketSVGHeight }
 			/>
@@ -173,20 +176,6 @@ class Workspace extends Component {
 	  this.rafId = requestAnimationFrame(this.draw.bind(this));
 	}
 
-	play() {
-		console.log('play', this.source)
-		this.source.mediaElement.play();
-
-		this.startTimer()
-	}
-
-	stop() {
-		console.log('stop', this.source)
-		this.source.mediaElement.pause();
-
-		clearInterval(this.intervalID)
-	}
-
 	togglePlay() {
 		if (!this.state.playing) {
 			console.log('play', this.source)
@@ -206,10 +195,12 @@ class Workspace extends Component {
 
 	render() {
 		const { recording, audioBuffer } = this.props;
-		const { datauri } = this.state;
+		const { datauri, playing } = this.state;
 		// console.log('Workspace, props:', this.props)
 		return (
-			<Container>
+			<Container style={{
+				overflowY: 'hidden'
+			}}>
 				<SectionTitle variant="overline">Workspace - {recording && recording.title}</SectionTitle>
 				<div style={{ 
 					// margin: 20 
@@ -244,13 +235,17 @@ class Workspace extends Component {
 				*/}
 
 				<div style={{
+					// display: 'flex',
+					// width: '100%',
+					// height: '100%'
 					// overflowY: 'hidden'
 					// height: window.innerHeight - 87
+					// background: '#000'
 				}}>
 					<svg
-						viewBox={`0 0 100 100`}
+						viewBox={`0 0 100 50`}
 						className="waveform-container"
-						preserveAspectRatio="none"
+						preserveAspectRatio="meet"
 						//width={window.innerWidth}
 						//height={window.innerWidth - 87}
 					>
@@ -301,11 +296,16 @@ class Workspace extends Component {
 				}
 				</div>
 
+				{/*
 				<div>
-					{/*<button onClick={() => this.play()}>Play</button>*/}
-					{/*<button onClick={() => this.stop()}>Stop</button>*/}
 					<button onClick={() => this.togglePlay()}>{this.state.playing ? 'Pause' : 'Play'}</button>
 				</div>
+				*/}
+
+				<Controls
+					playing={playing}
+					togglePlay={this.togglePlay.bind(this)}
+				/>
 
 				</div>
 			</Container>
