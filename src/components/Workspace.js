@@ -26,7 +26,9 @@ class Workspace extends Component {
 		this.state = {
 			buckets: [],
 			datauri: null,
+			buffer: null,
 			audioPos: 0,
+			playing: false,
 		}
 
 		const { id } = this.props.match.params;
@@ -53,9 +55,9 @@ class Workspace extends Component {
 				datauri: datauri
 			})
 
-
-			const source = this.audioCtx.createMediaElementSource(this.audioElement.current)
-			console.log('*** Created audio source:', source)
+			this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
+			console.log('*** Created audio source:', this.source)
+			this.source.addEventListener('play', () => console.log('* play from source listener *'))
 
 			this.analyser = this.audioCtx.createAnalyser();
 			this.analyser.fftSize = 256;
@@ -64,30 +66,8 @@ class Workspace extends Component {
 			// console.log('dataArray:', this.dataArray)
 			
 			let dest = []
-			source.connect(this.analyser);
+			this.source.connect(this.analyser);
 			this.analyser.connect(this.audioCtx.destination);
-
-
-			
-			// source.mediaElement.onloadedmetadata = e => {
-			// 	console.log('source.mediaElement, loadedmetadata')
-			// 	console.log('source.mediaElement.duration:', source.mediaElement.duration)
-			// 	this.audioBuffer = this.audioCtx.createBuffer(
-			// 		source.channelCount, 
-			// 		source.mediaElement.duration * (this.audioCtx.sampleRate * source.channelCount), 
-			// 		this.audioCtx.sampleRate
-			// 	)
-			// 	console.log('audioBuffer:', this.audioBuffer)
-
-			// 	for (let channel = 0; channel < this.audioBuffer.numberOfChannels; channel++) {
-			// 		let nowBuffering = this.audioBuffer.getChannelData(channel);
-			// 		console.log('nowBuffering:', nowBuffering)
-			// 		for (let i = 0; i < this.audioBuffer.length; i++) {
-			// 			// nowBuffering[i] = 
-			// 		}
-			// 	}
-			// }
-
 			
 			axios({url: `http://localhost:5001/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
 			.then(response => {
@@ -98,7 +78,7 @@ class Workspace extends Component {
           console.log('decodedAudioData:', decodedAudioData);
 
           // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
-					const NUMBER_OF_BUCKETS = 100;
+					const NUMBER_OF_BUCKETS = 500;
 					let bucketDataSize = Math.floor(decodedAudioData.length / NUMBER_OF_BUCKETS);
 					let buckets = [];
 					for (var i = 0; i < NUMBER_OF_BUCKETS; i++) {
@@ -120,7 +100,8 @@ class Workspace extends Component {
 
 					this.setState({
 						...this.state,
-						buckets
+						buckets,
+						buffer
 					})
 			
 	      }, err => console.error('decodeAudioData error:', err));
@@ -141,16 +122,22 @@ class Workspace extends Component {
 	}
 
 	startTimer() {
+		console.log('startTimer, this.audioCtx:', this.audioCtx)
 		if (this.intervalID) clearInterval(this.intervalID);
 
 		this.intervalID = setInterval(() => {
-			console.log('current time:', this.audioCtx.currentTime())
-		}, 1000)
+			console.log('current time:', this.audioCtx.currentTime)
+			console.log(this.source.mediaElement.currentTime / this.source.mediaElement.duration)
+			this.setState({
+				// audioPos: (this.audioCtx.currentTime / this.source.mediaElement.duration) * 100 //  / duration
+				audioPos: (this.source.mediaElement.currentTime / this.source.mediaElement.duration) * 100 //  / durration
+			})
+		}, 100)
 	}
 
 	renderBuckets(buckets) {
-		console.log('renderBuckets, buckets:', buckets)
-		const SPACE_BETWEEN_BARS = 0;
+		// console.log('renderBuckets, buckets:', buckets)
+		const SPACE_BETWEEN_BARS = -0.1;
 		return buckets.map((bucket, i) => {
 			let bucketSVGWidth = 100.0 / buckets.length;
 			let bucketSVGHeight = bucket * 100.0;
@@ -186,9 +173,35 @@ class Workspace extends Component {
 	  this.rafId = requestAnimationFrame(this.draw.bind(this));
 	}
 
-	handlePlay = () => {
-		console.log('play')
-		this.audioCtx.play()
+	play() {
+		console.log('play', this.source)
+		this.source.mediaElement.play();
+
+		this.startTimer()
+	}
+
+	stop() {
+		console.log('stop', this.source)
+		this.source.mediaElement.pause();
+
+		clearInterval(this.intervalID)
+	}
+
+	togglePlay() {
+		if (!this.state.playing) {
+			console.log('play', this.source)
+			this.source.mediaElement.play();
+			this.startTimer();
+		} else {
+			console.log('stop', this.source)
+			this.source.mediaElement.pause();
+			clearInterval(this.intervalID);
+		}
+
+
+		this.setState({
+			playing: !this.state.playing
+		})
 	}
 
 	render() {
@@ -230,11 +243,16 @@ class Workspace extends Component {
 				</div>
 				*/}
 
-				<div>
+				<div style={{
+					// overflowY: 'hidden'
+					// height: window.innerHeight - 87
+				}}>
 					<svg
-						viewBox="0 0 100 100"
+						viewBox={`0 0 100 100`}
 						className="waveform-container"
 						preserveAspectRatio="none"
+						//width={window.innerWidth}
+						//height={window.innerWidth - 87}
 					>
 						<rect 
 							className="waveform-bg"
@@ -253,14 +271,17 @@ class Workspace extends Component {
 							height="100"
 							style={{
 								clipPath: 'url(#waveform-mask)',
-								fill: '#44bc75',
+								fill: '#fe9154',
 							}}
 						/>
 					</svg>
-					<svg>
+					<svg style={{
+						// display: 'none'
+						height: 0
+					}}>
 						<defs>
 							<clipPath id="waveform-mask" ref={this.waveformMaskElement}>
-							{this.state.buckets && this.renderBuckets(this.state.buckets)}
+							{ this.state.buckets && this.renderBuckets(this.state.buckets) }
 							</clipPath>
 						</defs>
 					</svg>
@@ -271,11 +292,19 @@ class Workspace extends Component {
 					justifyContent: 'center',
 					margin: 20,
 				}}>
-				{ datauri && <audio ref={this.audioElement} controls src={datauri} /> }
+				{ datauri && 
+					<audio 
+						ref={this.audioElement}
+						//controls
+						src={datauri}
+					/>
+				}
 				</div>
 
 				<div>
-					<button onClick={() => this.handlePlay()}>Play</button>
+					{/*<button onClick={() => this.play()}>Play</button>*/}
+					{/*<button onClick={() => this.stop()}>Stop</button>*/}
+					<button onClick={() => this.togglePlay()}>{this.state.playing ? 'Pause' : 'Play'}</button>
 				</div>
 
 				</div>

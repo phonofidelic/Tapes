@@ -10,7 +10,14 @@ import MicIcon from '@material-ui/icons/Mic';
 import StorageIcon from '@material-ui/icons/Storage';
 import TuneIcon from '@material-ui/icons/Tune';
 
-const Container = styled(BottomNavigation)`
+const Container = styled.div`
+	background-color: #e9eae6;
+	display: flex;
+	width: 100%;
+	// max-width: 300px;
+`
+
+const NavContainer = styled(BottomNavigation)`
 	background-color: #e9eae6;
 	display: flex;
 	width: 100%;
@@ -33,27 +40,12 @@ class Navigation extends Component {
 				style={{
 					backgroundColor: '#e9eae6',
 					WebkitAppRegion: 'drag',
+					height: 56,
 				}}
 			>
-				{/*<BottomNavigationAction 
-					label="Recorder" 
-					icon={<MicIcon />}
-					style={{width: '100%'}}
-					component={NavItem}
-					to="/open/recorder"
-					value="/open/recorder"
-				/>*/}
-				<BottomNavigationAction 
-					label="Workspace" 
-					icon={<TuneIcon />}
-					style={{width: '100%'}}
-					component={NavItem}
-					to="/open"
-					value="/open"
-				/>
 			</Container>
 			:
-			<Container 
+			<NavContainer 
 				value={locationPathname}
 				style={{backgroundColor: '#e9eae6'}}
 			>
@@ -82,7 +74,7 @@ class Navigation extends Component {
 					value="/settings"
 				/>
 			}
-			</Container>
+			</NavContainer>
 		);
 	}
 }
