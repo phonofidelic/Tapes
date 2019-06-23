@@ -10,6 +10,7 @@ const uuidv4 = require('uuid/v4');
 
 const RecorderTray = require('./app/RecorderTray');
 const RecorderWindow = require('./app/RecorderWindow');
+const server = require('./app/server')
 
 const {
 	openDirSelect,
@@ -34,6 +35,7 @@ const {
 	dialog
 } = electron;
 
+const PORT = 5001;
 
 let recorderWindow;
 let tray;
@@ -57,6 +59,8 @@ app.on('ready', () => {
   installExtension('cmhomipkklckpomafalojobppmmidlgl')
   .then(name => console.log(`Added Extension: ${name}`))
   .catch(err => console.log('An error occurred: ', err));
+
+  server.listen(PORT, () => console.log(`Express server listening on port ${PORT}`))
 });
 
 ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir));

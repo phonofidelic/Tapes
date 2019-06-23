@@ -55,6 +55,7 @@ export const stopRecording = (saveDir, recordingFile) => {
 		id: uuidv4(),
 		title: `${moment().format('MMM Do YYYY, hh:mm:ss a')}`,
 		src: `${saveDir}/${recordingFile}`,
+		filename: recordingFile,
 		created: Date.now(),
 		updated: Date.now(),
 	}

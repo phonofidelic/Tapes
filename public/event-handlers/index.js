@@ -44,6 +44,7 @@ function newRecording(renderer, saveDir) {
 	console.log('\n*** newRecording')
 	console.log('*** path.resolve(saveDir, recordingFile):', path.resolve(saveDir, recordingFile))
 	audioFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFile));
+	tmpFile_writeStream = fs.WriteStream(path.resolve('./public/tmp', recordingFile));
 	renderer.webContents.send('rec:set_rec_file', recordingFile)
 
 	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
@@ -59,7 +60,10 @@ function newRecording(renderer, saveDir) {
 	audioIn_readStream = rec.stdout;
 
 	audioIn_readStream
-	.pipe(audioFile_writeStream);
+	.pipe(audioFile_writeStream)
+
+	audioIn_readStream
+	.pipe(tmpFile_writeStream);
 }
 
 function stopRecording(e) {
