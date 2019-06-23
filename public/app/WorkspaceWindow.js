@@ -8,9 +8,9 @@ class WorkspaceWindow extends BrowserWindow {
 	      nodeIntegration: true
 	    },
 	    width: 1250,
-	    height: 600,
+	    height: 750,
 	    minWidth: 500,
-	    minHeight: 300,
+	    minHeight: 30,
 	    titleBarStyle: 'hiddenInset',
 		});
 	}

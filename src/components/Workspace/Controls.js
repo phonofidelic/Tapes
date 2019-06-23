@@ -1,5 +1,11 @@
 import React from 'react';
-import styled, {GlobalStyles} from 'styled-components';
+import styled from 'styled-components';
+
+const ControlsContainer = styled.div`
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+`
 
 const Controls = props => {
 	const { playing } = props;
@@ -9,9 +15,9 @@ const Controls = props => {
 	} 
 
 	return (
-		<div>
+		<ControlsContainer>
 			<button onClick={() => handleTogglePlay()}>{playing ? 'Pause' : 'Play'}</button>
-		</div>
+		</ControlsContainer>
 	)
 }
 

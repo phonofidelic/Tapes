@@ -211,24 +211,6 @@ class Workspace extends Component {
 					// margin: 20 
 				}}>
 
-				{/* this.state.buckets &&
-					<div style={{
-						display: 'flex', 
-						alignItems: 'center',
-						// marginTop: 20,
-					}}>
-						{this.state.buckets.map((point, i) => (
-							<div key={i} style={{
-								backgroundColor: 'red',
-								height: point,
-								width: 10,
-							}}>
-								
-							</div>
-						))}
-					</div>
-				*/}
-
 				{/*
 				<div>
 					<canvas 
@@ -239,20 +221,11 @@ class Workspace extends Component {
 				</div>
 				*/}
 
-				<div style={{
-					// display: 'flex',
-					// width: '100%',
-					// height: '100%'
-					// overflowY: 'hidden'
-					// height: window.innerHeight - 87
-					// background: '#000'
-				}}>
+				<div>
 					<svg
 						viewBox={`0 0 100 50`}
 						className="waveform-container"
 						preserveAspectRatio="none"
-						//width={window.innerWidth}
-						//height={window.innerWidth - 87}
 					>
 						<rect 
 							className="waveform-bg"
