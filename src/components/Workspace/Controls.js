@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, {GlobalStyles} from 'styled-components';
 
 const Controls = props => {
 	const { playing } = props;

@@ -1,7 +1,7 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/workspace.actions';
-import styled from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
 
 import {
@@ -20,6 +20,12 @@ const ipcRenderer = electron.ipcRenderer;
 
 const CANVAS_WIDTH =  window.innerWidth;
 const CANVAS_HEIGHT = 200;
+
+const GlobalStyle = createGlobalStyle`
+	body {
+		overflow-y: hidden;
+	}
+`
 
 class Workspace extends Component {
 	constructor(props) {
@@ -78,7 +84,7 @@ class Workspace extends Component {
 
 				this.audioCtx.decodeAudioData(response.data, buffer => {
           var decodedAudioData = buffer.getChannelData(0);
-          console.log('decodedAudioData:', decodedAudioData);
+          // console.log('decodedAudioData:', decodedAudioData);
 
           // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
 					const NUMBER_OF_BUCKETS = 500;
@@ -99,7 +105,7 @@ class Workspace extends Component {
 						// console.log('*** max:', max)
 						buckets.push(size / 2)
 					}
-					console.log('buckets:', buckets)
+					// console.log('buckets:', buckets)
 
 					this.setState({
 						...this.state,
@@ -198,9 +204,8 @@ class Workspace extends Component {
 		const { datauri, playing } = this.state;
 		// console.log('Workspace, props:', this.props)
 		return (
-			<Container style={{
-				overflowY: 'hidden'
-			}}>
+			<Container>
+				<GlobalStyle />
 				<SectionTitle variant="overline">Workspace - {recording && recording.title}</SectionTitle>
 				<div style={{ 
 					// margin: 20 
@@ -245,7 +250,7 @@ class Workspace extends Component {
 					<svg
 						viewBox={`0 0 100 50`}
 						className="waveform-container"
-						preserveAspectRatio="meet"
+						preserveAspectRatio="none"
 						//width={window.innerWidth}
 						//height={window.innerWidth - 87}
 					>
@@ -295,12 +300,6 @@ class Workspace extends Component {
 					/>
 				}
 				</div>
-
-				{/*
-				<div>
-					<button onClick={() => this.togglePlay()}>{this.state.playing ? 'Pause' : 'Play'}</button>
-				</div>
-				*/}
 
 				<Controls
 					playing={playing}
