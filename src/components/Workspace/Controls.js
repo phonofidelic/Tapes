@@ -14,7 +14,7 @@ const ControlsContainer = styled.div`
 	padding: 10px;
 `
 
-const Controls = props => {
+function Controls(props) {
 	const { playing } = props;
 
 	const handleTogglePlay = () => {

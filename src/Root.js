@@ -4,9 +4,8 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import reduxThunk from 'redux-thunk';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import reducer, { initGlobalState } from 'reducers/index';
-import { theme } from 'config';
-// import { loadState, saveState } from './localStorage';
-// import { ThemeProvider } from 'contexts/theme.context';	TODO
+// import { theme } from 'config';
+import ThemeProvider, { theme } from 'theme.context';
 import { history } from 'config'
 import { routerMiddleware } from 'connected-react-router';
 import throttle from 'lodash/throttle';
@@ -79,11 +78,11 @@ export default ({ children, initialState = initGlobalState }) => {
 
 	return (
 		<Provider store={store}>
-      {/*<ThemeProvider>*/}
+      <ThemeProvider>
     		<MuiThemeProvider theme={customTheme}>
           { children }
     		</MuiThemeProvider>
-      {/*</ThemeProvider>*/}
+      </ThemeProvider>
 		</Provider>
 	);
 }

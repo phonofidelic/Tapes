@@ -10,10 +10,9 @@ import {
 	SectionTitle,
 	SectionBody,
 } from 'components/CommonUI';
+import { ThemeContext } from 'theme.context'
 
-import AudioBuffer from 'audio-buffer'
-
-import Controls from './Controls'
+import Controls from 'components/Workspace/Controls';
 
 const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
@@ -28,6 +27,8 @@ const GlobalStyle = createGlobalStyle`
 `
 
 class Workspace extends Component {
+	static contextType = ThemeContext;
+
 	constructor(props) {
 		super(props);
 
@@ -202,7 +203,9 @@ class Workspace extends Component {
 	render() {
 		const { recording, audioBuffer } = this.props;
 		const { datauri, playing } = this.state;
-		// console.log('Workspace, props:', this.props)
+		const theme = this.context;
+
+		console.log('Workspace, theme:', theme)
 		return (
 			<Container>
 				<GlobalStyle />
@@ -244,7 +247,7 @@ class Workspace extends Component {
 							height="100"
 							style={{
 								clipPath: 'url(#waveform-mask)',
-								fill: '#fe9154',
+								fill: theme.palette.primary.accent,
 							}}
 						/>
 					</svg>
