@@ -44,7 +44,6 @@ class Workspace extends Component {
 		this.props.loadRecordingData(id)
 
 		this.audioElement = createRef();
-		this.canvasElement = createRef();
 		this.waveformMaskElement = createRef();
 
 		this.canvasWidth = CANVAS_WIDTH;
@@ -116,19 +115,8 @@ class Workspace extends Component {
 			
 	      }, err => console.error('decodeAudioData error:', err));
 			})
-			.catch(err => console.error('server error:', err))
-
-			// this.canvas = this.canvasElement.current;
-			// this.canvasCtx = this.canvas.getContext('2d');
-			// this.rafId = requestAnimationFrame(this.draw.bind(this));
+			.catch(err => console.error('server error:', err));
 		})
-
-		// const _this = this;
-		// window.addEventListener('resize', (e) => {
-		// 	console.log('resize:', this)
-		// 	this.canvasWidth = document.getInnerWidth
-		// 	this.draw()
-		// })
 	}
 
 	startTimer() {
@@ -162,27 +150,6 @@ class Workspace extends Component {
 		})
 	}
 
-	draw() {
-		this.analyser.getFloatFrequencyData(this.dataArray);
-		// console.log('getFloatFrequencyData:', this.dataArray)
-
-		this.canvasCtx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
-		this.canvasCtx.fillStyle = '#e9eae6';
-  	this.canvasCtx.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
-
-  	const barWidth = (this.canvasWidth / this.bufferLength) * 2.5;
-  	let posX = 0;
-	  for (let i = 0; i < this.bufferLength; i++) {
-	    const barHeight = (this.dataArray[i] + 140) * 2;
-	    this.canvasCtx.fillStyle = 'rgb(' + Math.floor(barHeight + 150) + ', 100, 50)';
-	    this.canvasCtx.fillRect(posX, this.canvasHeight - barHeight / 2, barWidth, barHeight / 2);
-	    posX += barWidth + 1;
-	  }
-
-	  this.rafId = requestAnimationFrame(this.draw.bind(this));
-	}
-
 	togglePlay() {
 		if (!this.state.playing) {
 			console.log('play', this.source)
@@ -193,7 +160,6 @@ class Workspace extends Component {
 			this.source.mediaElement.pause();
 			clearInterval(this.intervalID);
 		}
-
 
 		this.setState({
 			playing: !this.state.playing
@@ -213,16 +179,6 @@ class Workspace extends Component {
 				<div style={{ 
 					// margin: 20 
 				}}>
-
-				{/*
-				<div>
-					<canvas 
-						ref={this.canvasElement}
-						width={this.canvasWidth}
-						height={this.canvasHeight}
-					/>
-				</div>
-				*/}
 
 				<div>
 					<svg
