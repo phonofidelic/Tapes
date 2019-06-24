@@ -63,22 +63,24 @@ class Workspace extends Component {
 				...this.state,
 				datauri: datauri
 			})
-
+			
 			this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
-			console.log('*** Created audio source:', this.source)
-			this.source.addEventListener('play', () => console.log('* play from source listener *'))
+			this.source.connect(this.audioCtx.destination);
 
-			this.analyser = this.audioCtx.createAnalyser();
-			this.analyser.fftSize = 256;
-			this.bufferLength = this.analyser.frequencyBinCount;
-			this.dataArray = new Float32Array(this.analyser.frequencyBinCount);
-			// console.log('dataArray:', this.dataArray)
+			this.audioElement.current.addEventListener('ended', (e) => {
+				console.log('*** Recording ended')
+				clearInterval(this.intervalID);
+				this.setState({
+					playing: false
+				})
+			})
 			
-			let dest = []
-			this.source.connect(this.analyser);
-			this.analyser.connect(this.audioCtx.destination);
-			
-			axios({url: `http://localhost:5001/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
+			this.loadWaveformDada();
+		});
+	}
+
+	loadWaveformDada() {
+		axios({url: `http://localhost:5001/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
 			.then(response => {
 				console.log('server response:', response)
 
@@ -116,7 +118,6 @@ class Workspace extends Component {
 	      }, err => console.error('decodeAudioData error:', err));
 			})
 			.catch(err => console.error('server error:', err));
-		})
 	}
 
 	startTimer() {
@@ -124,10 +125,8 @@ class Workspace extends Component {
 		if (this.intervalID) clearInterval(this.intervalID);
 
 		this.intervalID = setInterval(() => {
-			console.log('current time:', this.audioCtx.currentTime)
-			console.log(this.source.mediaElement.currentTime / this.source.mediaElement.duration)
+			console.log('time:', this.source.mediaElement.currentTime)
 			this.setState({
-				// audioPos: (this.audioCtx.currentTime / this.source.mediaElement.duration) * 100 //  / duration
 				audioPos: (this.source.mediaElement.currentTime / this.source.mediaElement.duration) * 100 //  / durration
 			})
 		}, 100)
@@ -171,7 +170,7 @@ class Workspace extends Component {
 		const { datauri, playing } = this.state;
 		const theme = this.context;
 
-		console.log('Workspace, theme:', theme)
+		// console.log('Workspace, theme:', theme)
 		return (
 			<Container>
 				<GlobalStyle />
