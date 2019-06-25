@@ -15,11 +15,7 @@ const ControlsContainer = styled.div`
 `
 
 function Controls(props) {
-	const { playing } = props;
-
-	const handleTogglePlay = () => {
-		props.togglePlay();
-	} 
+	const { playing, handleTogglePlay } = props;
 
 	return (
 		<ControlsContainer>

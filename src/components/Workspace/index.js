@@ -91,6 +91,8 @@ class Workspace extends Component {
 		axios({url: `http://localhost:5001/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
 			.then(response => {
 				console.log('server response:', response)
+				// this.audioBuffer = new AudioBuffer({length: response.data.length})
+				// this.audioBufferSource = new AudioBufferSourceNode(this.audioCtx, {buffer: response.data})
 
 				this.audioCtx.decodeAudioData(response.data, buffer => {
           var decodedAudioData = buffer.getChannelData(0);
@@ -120,7 +122,6 @@ class Workspace extends Component {
 					this.setState({
 						...this.state,
 						buckets,
-						buffer
 					})
 			
 	      }, err => console.error('decodeAudioData error:', err));
@@ -133,11 +134,40 @@ class Workspace extends Component {
 		if (this.intervalID) clearInterval(this.intervalID);
 
 		this.intervalID = setInterval(() => {
-			console.log('time:', this.source.mediaElement.currentTime)
+			// console.log('time:', this.source.mediaElement.currentTime)
 			this.setState({
 				audioPos: (this.source.mediaElement.currentTime / this.source.mediaElement.duration) * 100 //  / durration
 			})
 		}, 100)
+	}
+
+	handleTogglePlay = (e) => {
+		if (!this.state.playing) {
+			console.log('play', this.source)
+			this.source.mediaElement.play();
+			this.startTimer();
+		} else {
+			console.log('stop', this.source)
+			this.source.mediaElement.pause();
+			clearInterval(this.intervalID);
+		}
+
+		this.setState({
+			playing: !this.state.playing
+		})
+	}
+
+	handleProgressClick = (e) => {
+		// Get time position from click X pos
+		const time = (e.clientX / window.innerWidth) * this.state.audioDuration;
+		console.log(time)
+		this.source.mediaElement.currentTime = time;
+
+		// Play audio from new position
+		this.source.mediaElement.play();
+		clearInterval(this.intervalID);
+		this.startTimer();
+		this.setState({ playing: true });
 	}
 
 	renderBuckets(buckets) {
@@ -155,28 +185,6 @@ class Workspace extends Component {
 				height={ bucketSVGHeight }
 			/>
 		})
-	}
-
-	togglePlay() {
-		if (!this.state.playing) {
-			console.log('play', this.source)
-			this.source.mediaElement.play();
-			this.startTimer();
-		} else {
-			console.log('stop', this.source)
-			this.source.mediaElement.pause();
-			clearInterval(this.intervalID);
-		}
-
-		this.setState({
-			playing: !this.state.playing
-		})
-	}
-
-	handleProgressClick = (e) => {
-		const time = (e.clientX / window.innerWidth) * this.state.audioDuration 
-		console.log(time)
-		// this.source.mediaElement.fastSeek(time) // TODO: fastSeek needs to be called on an AudioBufferNode
 	}
 
 	render() {
@@ -243,7 +251,7 @@ class Workspace extends Component {
 
 					<Controls
 						playing={playing}
-						togglePlay={this.togglePlay.bind(this)}
+						handleTogglePlay={this.handleTogglePlay}
 					/>
 
 				</div>
