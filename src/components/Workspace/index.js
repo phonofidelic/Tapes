@@ -36,8 +36,9 @@ class Workspace extends Component {
 			buckets: [],
 			datauri: null,
 			buffer: null,
-			audioPos: 0,
-			audioDuration: null,
+			audioTime: 0,
+			audioTimePercent: 0,
+			audioDuration: 0,
 			playing: false,
 		}
 
@@ -136,7 +137,8 @@ class Workspace extends Component {
 		this.intervalID = setInterval(() => {
 			// console.log('time:', this.source.mediaElement.currentTime)
 			this.setState({
-				audioPos: (this.source.mediaElement.currentTime / this.source.mediaElement.duration) * 100 //  / durration
+				audioTime: this.source.mediaElement.currentTime,
+				audioTimePercent: (this.source.mediaElement.currentTime / this.source.mediaElement.duration) * 100 //  / durration
 			})
 		}, 100)
 	}
@@ -201,13 +203,28 @@ class Workspace extends Component {
 					// margin: 20 
 				}}>
 
-					<div>
+					<div style={{
+						// border: 'solid red 1px'
+					}}>
 						<svg
 							viewBox={`0 0 100 50`}
+							width="100%"
+							height="400px"
 							className="waveform-container"
 							preserveAspectRatio="none"
 							onClick={this.handleProgressClick}
 						>
+							<rect 
+								className="waveform-time"
+								x="0"
+								y="0"
+								width="100%"
+								height="2"
+								fill="#666"
+								style={{
+									background: 'red'
+								}}
+							/>
 							<rect 
 								className="waveform-bg"
 								x="0"
@@ -221,7 +238,7 @@ class Workspace extends Component {
 							/>
 							<rect
 								className="waveform-progress"
-								width={this.state.audioPos}
+								width={this.state.audioTimePercent}
 								height="100"
 								style={{
 									clipPath: 'url(#waveform-mask)',
@@ -251,6 +268,8 @@ class Workspace extends Component {
 
 					<Controls
 						playing={playing}
+						time={this.state.audioTime}
+						duration={this.state.audioDuration}
 						handleTogglePlay={this.handleTogglePlay}
 					/>
 

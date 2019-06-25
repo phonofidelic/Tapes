@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
+import { ThemeContext } from 'theme.context';
 
 import IconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayArrow';
@@ -14,14 +15,39 @@ const ControlsContainer = styled.div`
 	padding: 10px;
 `
 
-function Controls(props) {
-	const { playing, handleTogglePlay } = props;
+const TimeInfo = styled.div`
+	width: 100px;
+	padding-top: 15px;
+	flex-grow: 1;
+	text-align: center;
+`
 
+function Controls(props) {
+	const { 
+		playing,
+		time,
+		duration,
+		handleTogglePlay,
+	} = props;
+
+	const theme = useContext(ThemeContext)
+	console.log('*** theme:', theme)
 	return (
 		<ControlsContainer>
-			<IconButton onClick={() => handleTogglePlay()}>
-			{!playing ? <PlayIcon /> : <PauseIcon />}
-			</IconButton>
+			<TimeInfo theme={theme}>
+				<span style={{width: 50}}>{time.toFixed(2)}</span> / <span style={{width: 50}}>{duration.toFixed(2)}</span>
+			</TimeInfo>
+			<div style={{flexGrow: 1, textAlign: 'center'}}>
+				<IconButton onClick={() => handleTogglePlay()}>
+				{!playing ? <PlayIcon /> : <PauseIcon />}
+				</IconButton>
+			</div>
+			<div style={{
+				flexGrow: 1, 
+				width: 100,
+				textAlign: 'center'
+			}}>
+			</div>
 		</ControlsContainer>
 	)
 }

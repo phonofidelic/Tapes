@@ -12,8 +12,11 @@ export const theme = {
 			main: '#d3d3d3',
 			light: '#e9eae6',
 			dark: '#666666',
-		}
-	}
+		},
+	},
+	dimensions: {
+		workspaceControlsHeight: 68,
+	},
 }
 
 export const ThemeContext = React.createContext(theme);
