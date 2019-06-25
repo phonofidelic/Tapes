@@ -37,6 +37,7 @@ class Workspace extends Component {
 			datauri: null,
 			buffer: null,
 			audioPos: 0,
+			audioDuration: null,
 			playing: false,
 		}
 
@@ -66,6 +67,13 @@ class Workspace extends Component {
 			
 			this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
 			this.source.connect(this.audioCtx.destination);
+
+			this.audioElement.current.addEventListener('loadedmetadata', e => {
+				console.log('onloadedmetadata, e:', e)
+				this.setState({
+					audioDuration: e.target.duration
+				})
+			})
 
 			this.audioElement.current.addEventListener('ended', (e) => {
 				console.log('*** Recording ended')
@@ -165,6 +173,12 @@ class Workspace extends Component {
 		})
 	}
 
+	handleProgressClick = (e) => {
+		const time = (e.clientX / window.innerWidth) * this.state.audioDuration 
+		console.log(time)
+		// this.source.mediaElement.fastSeek(time) // TODO: fastSeek needs to be called on an AudioBufferNode
+	}
+
 	render() {
 		const { recording, audioBuffer } = this.props;
 		const { datauri, playing } = this.state;
@@ -179,63 +193,58 @@ class Workspace extends Component {
 					// margin: 20 
 				}}>
 
-				<div>
-					<svg
-						viewBox={`0 0 100 50`}
-						className="waveform-container"
-						preserveAspectRatio="none"
-					>
-						<rect 
-							className="waveform-bg"
-							x="0"
-							y="0"
-							width="100"
-							height="100"
-							style={{
-								clipPath: 'url(#waveform-mask)',
-								fill: 'lightgray',
-							}}
-						/>
-						<rect
-							className="waveform-progress"
-							width={this.state.audioPos}
-							height="100"
-							style={{
-								clipPath: 'url(#waveform-mask)',
-								fill: theme.palette.primary.accent,
-							}}
-						/>
-					</svg>
-					<svg style={{
-						// display: 'none'
-						height: 0
-					}}>
-						<defs>
-							<clipPath id="waveform-mask" ref={this.waveformMaskElement}>
-							{ this.state.buckets && this.renderBuckets(this.state.buckets) }
-							</clipPath>
-						</defs>
-					</svg>
-				</div>
+					<div>
+						<svg
+							viewBox={`0 0 100 50`}
+							className="waveform-container"
+							preserveAspectRatio="none"
+							onClick={this.handleProgressClick}
+						>
+							<rect 
+								className="waveform-bg"
+								x="0"
+								y="0"
+								width="100"
+								height="100"
+								style={{
+									clipPath: 'url(#waveform-mask)',
+									fill: 'lightgray',
+								}}
+							/>
+							<rect
+								className="waveform-progress"
+								width={this.state.audioPos}
+								height="100"
+								style={{
+									clipPath: 'url(#waveform-mask)',
+									fill: theme.palette.primary.accent,
+								}}
+							/>
+						</svg>
+						<svg style={{
+							// display: 'none'
+							height: 0
+						}}>
+							<defs>
+								<clipPath id="waveform-mask" ref={this.waveformMaskElement}>
+								{ this.state.buckets && this.renderBuckets(this.state.buckets) }
+								</clipPath>
+							</defs>
+						</svg>
+					</div>
 
-				<div style={{
-					display: 'flex',
-					justifyContent: 'center',
-					margin: 20,
-				}}>
-				{ datauri && 
-					<audio 
-						ref={this.audioElement}
-						//controls
-						src={datauri}
+					{ datauri && 
+						<audio 
+							ref={this.audioElement}
+							//controls
+							src={datauri}
+						/>
+					}
+
+					<Controls
+						playing={playing}
+						togglePlay={this.togglePlay.bind(this)}
 					/>
-				}
-				</div>
-
-				<Controls
-					playing={playing}
-					togglePlay={this.togglePlay.bind(this)}
-				/>
 
 				</div>
 			</Container>
