@@ -19,6 +19,7 @@ const Datauri = require('datauri');
 const datauri = new Datauri();
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
+const { startServer } = require('./utils');
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
@@ -33,7 +34,6 @@ function openDirSelect(renderer) {
 	})
 }
 
-
 let rec; //	<-- TODO: Refactor bad global variable?
 function newRecording(renderer, saveDir) {
 	let audioIn_readStream;
@@ -44,41 +44,23 @@ function newRecording(renderer, saveDir) {
 	console.log('\n*** newRecording')
 	console.log('*** path.resolve(saveDir, recordingFileName):', path.resolve(saveDir, recordingFileName))
 	audioFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFileName));
+	
+	renderer.webContents.send('rec:set_rec_file', recordingFileName)
 
-	fs.access('./public/tmp', fs.constants.F_OK | fs.constants.W_OK, (err) => {
-		if (err) {
-			console.log(`./public/tmp ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`)
-			console.log('\n*** Creating new tmp directory')
-			
-			fs.mkdir('./public/tmp', err => {
-				if (err) console.error(err)
+	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
+	rec = spawn(
+		'rec', 
+		[
+			'-c', '1',				// One chanel mono 
+			'-t', FORMAT, 		// Set format
+			'-'								// Pipe to stdout
+		],
+	); // Command from https://superuser.com/a/583757
 
-				return tmpFile_writeStream = fs.WriteStream(path.resolve('./public/tmp', recordingFileName));
-			})
-		};
+	audioIn_readStream = rec.stdout;
 
-		tmpFile_writeStream = fs.WriteStream(path.resolve('./public/tmp', recordingFileName));
-
-		renderer.webContents.send('rec:set_rec_file', recordingFileName)
-
-		// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
-		rec = spawn(
-			'rec', 
-			[
-				'-c', '1',				// One chanel mono 
-				'-t', FORMAT, 		// Set format
-				'-'								// Pipe to stdout
-			],
-		); // Command from https://superuser.com/a/583757
-
-		audioIn_readStream = rec.stdout;
-
-		audioIn_readStream
-		.pipe(audioFile_writeStream)
-
-		audioIn_readStream
-		.pipe(tmpFile_writeStream);
-	})
+	audioIn_readStream
+	.pipe(audioFile_writeStream);
 }
 
 function stopRecording(e) {
@@ -107,8 +89,12 @@ function deleteRecording(path) {
 
 let workspaceWindow; // TODO: remove bad global variables
 let recording; // TODO: remove bad global variables
-function openWorkspace(recording) {
-	console.log('\n*** openWorkspace, recording:', recording)
+let server;
+async function openWorkspace(recording) {
+	console.log('\n*** openWorkspace, recording:', recording);
+	// Check if server is already running
+	if (!server) server = await startServer(path.dirname(recording.src));
+
 	recording = recording;
 	workspaceWindow = new WorkspaceWindow();
 	workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../build/index.html")}`)

@@ -5,7 +5,8 @@ class WorkspaceWindow extends BrowserWindow {
 	constructor() {
 		super({
 			webPreferences: {
-	      nodeIntegration: true
+	      nodeIntegration: true,
+	      webSecurity: false
 	    },
 	    width: 1250,
 	    height: 750,

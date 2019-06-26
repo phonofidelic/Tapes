@@ -34,6 +34,7 @@ export default function(props) {
 	}
 
 	const handleClickOpen = (recording) => {
+		setAnchorEl(null);
 		handleOpenRecording(recording);
 	}
 

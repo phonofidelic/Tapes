@@ -78,7 +78,7 @@ class Workspace extends Component {
 
 	loadWaveformDada = () => {
 		// TODO: use audio element as source, no need to request same resource twice
-		axios({url: `http://localhost:5001/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
+		axios({url: `http://localhost:5000/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
 			.then(response => {
 				console.log('server response:', response)
 
@@ -250,7 +250,8 @@ class Workspace extends Component {
 							//controls
 							preload="true"
 							crossOrigin="anonymous"
-							src={`http://localhost:5001/tmp/${recording.filename}`}
+							//src={`http://localhost:5000/tmp/${recording.filename}`}
+							src={`file://${recording.src}`}
 							onLoadedMetadata={this.handleOnLoadedMetadata}
 						/>
 					}
