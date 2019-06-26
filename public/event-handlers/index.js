@@ -134,5 +134,4 @@ module.exports = {
 	loadRecordings,
 	deleteRecording,
 	openWorkspace,
-	audioStream
 }

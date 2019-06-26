@@ -34,7 +34,6 @@ class Workspace extends Component {
 
 		this.state = {
 			buckets: [],
-			buffer: null,
 			audioTime: 0,
 			audioTimePercent: 0,
 			audioDuration: 0,
