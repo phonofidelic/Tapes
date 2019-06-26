@@ -17,12 +17,6 @@ const workspace = ( state = INITIAL_STATE, action) => {
 				recording: action.recording,
 			}
 
-		case 'load_audio_buffer':
-			return {
-				...state,
-				audioBuffer: action.audioBuffer,
-			}
-
 		default: return state;
 	}
 }

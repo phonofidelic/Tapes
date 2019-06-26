@@ -31,7 +31,7 @@ function Controls(props) {
 	} = props;
 
 	const theme = useContext(ThemeContext)
-	console.log('*** theme:', theme)
+	// console.log('*** theme:', theme)
 	return (
 		<ControlsContainer>
 			<TimeInfo theme={theme}>

@@ -34,7 +34,6 @@ class Workspace extends Component {
 
 		this.state = {
 			buckets: [],
-			datauri: null,
 			buffer: null,
 			audioTime: 0,
 			audioTimePercent: 0,
@@ -56,44 +55,33 @@ class Workspace extends Component {
 		const { recording } = this.props;
 		this.audioCtx = new (window.AudioContext || window.wobkitAudioContext)();
 		this.analyser = this.audioCtx.createAnalyser();
-
-		ipcRenderer.on('wrk:datauri', (e, datauri) => {
-			// console.log('wrk:audioBuffer, datauri:', datauri)
-			this.props.loadAudioBuffer(datauri)
-
-			this.setState({
-				...this.state,
-				datauri: datauri
-			})
-			
-			this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
-			this.source.connect(this.audioCtx.destination);
-
-			this.audioElement.current.addEventListener('loadedmetadata', e => {
-				console.log('onloadedmetadata, e:', e)
-				this.setState({
-					audioDuration: e.target.duration
-				})
-			})
-
-			this.audioElement.current.addEventListener('ended', (e) => {
-				console.log('*** Recording ended')
-				clearInterval(this.intervalID);
-				this.setState({
-					playing: false
-				})
-			})
-			
-			this.loadWaveformDada();
-		});
 	}
 
-	loadWaveformDada() {
+	handleOnLoadedMetadata = (e) => {
+		console.log('handleAudioElementMounted, e:', e)
+		this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
+		this.source.connect(this.audioCtx.destination);
+
+		this.setState({
+			audioDuration: e.target.duration
+		})
+
+		this.audioElement.current.addEventListener('ended', (e) => {
+			console.log('*** Recording ended')
+			clearInterval(this.intervalID);
+			this.setState({
+				playing: false
+			})
+		})
+		
+		this.loadWaveformDada();
+	}
+
+	loadWaveformDada = () => {
+		// TODO: use audio element as source, no need to request same resource twice
 		axios({url: `http://localhost:5001/tmp/${this.props.recording.filename}`, responseType: "arraybuffer"})
 			.then(response => {
 				console.log('server response:', response)
-				// this.audioBuffer = new AudioBuffer({length: response.data.length})
-				// this.audioBufferSource = new AudioBufferSourceNode(this.audioCtx, {buffer: response.data})
 
 				this.audioCtx.decodeAudioData(response.data, buffer => {
           var decodedAudioData = buffer.getChannelData(0);
@@ -130,8 +118,8 @@ class Workspace extends Component {
 			.catch(err => console.error('server error:', err));
 	}
 
-	startTimer() {
-		console.log('startTimer, this.audioCtx:', this.audioCtx)
+	startTimer = () => {
+		// console.log('startTimer, this.audioCtx:', this.audioCtx)
 		if (this.intervalID) clearInterval(this.intervalID);
 
 		this.intervalID = setInterval(() => {
@@ -190,8 +178,8 @@ class Workspace extends Component {
 	}
 
 	render() {
-		const { recording, audioBuffer } = this.props;
-		const { datauri, playing } = this.state;
+		const { recording } = this.props;
+		const { playing } = this.state;
 		const theme = this.context;
 
 		// console.log('Workspace, theme:', theme)
@@ -247,7 +235,6 @@ class Workspace extends Component {
 							/>
 						</svg>
 						<svg style={{
-							// display: 'none'
 							height: 0
 						}}>
 							<defs>
@@ -258,11 +245,14 @@ class Workspace extends Component {
 						</svg>
 					</div>
 
-					{ datauri && 
+					{ recording && 
 						<audio 
 							ref={this.audioElement}
 							//controls
-							src={datauri}
+							preload="true"
+							crossOrigin="anonymous"
+							src={`http://localhost:5001/tmp/${recording.filename}`}
+							onLoadedMetadata={this.handleOnLoadedMetadata}
 						/>
 					}
 
@@ -282,7 +272,6 @@ class Workspace extends Component {
 const mapStateToProps = state => {
 	return {
 		recording: state.workspace.recording,
-		audioBuffer: state.workspace.audioBuffer,
 	}
 }
 

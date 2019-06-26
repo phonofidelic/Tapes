@@ -40,30 +40,45 @@ function newRecording(renderer, saveDir) {
 	let audioFile_writeStream;
 	const FORMAT = 'mp3';
 
-	recordingFile = `${uuidv4()}.${FORMAT}`
+	recordingFileName = `${uuidv4()}.${FORMAT}`
 	console.log('\n*** newRecording')
-	console.log('*** path.resolve(saveDir, recordingFile):', path.resolve(saveDir, recordingFile))
-	audioFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFile));
-	tmpFile_writeStream = fs.WriteStream(path.resolve('./public/tmp', recordingFile));
-	renderer.webContents.send('rec:set_rec_file', recordingFile)
+	console.log('*** path.resolve(saveDir, recordingFileName):', path.resolve(saveDir, recordingFileName))
+	audioFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFileName));
 
-	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
-	rec = spawn(
-		'rec', 
-		[
-			'-c', '1',				// One chanel mono 
-			'-t', FORMAT, 		// Set format
-			'-'								// Pipe to stdout
-		],
-	); // Command from https://superuser.com/a/583757
+	fs.access('./public/tmp', fs.constants.F_OK | fs.constants.W_OK, (err) => {
+		if (err) {
+			console.log(`./public/tmp ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`)
+			console.log('\n*** Creating new tmp directory')
+			
+			fs.mkdir('./public/tmp', err => {
+				if (err) console.error(err)
 
-	audioIn_readStream = rec.stdout;
+				return tmpFile_writeStream = fs.WriteStream(path.resolve('./public/tmp', recordingFileName));
+			})
+		};
 
-	audioIn_readStream
-	.pipe(audioFile_writeStream)
+		tmpFile_writeStream = fs.WriteStream(path.resolve('./public/tmp', recordingFileName));
 
-	audioIn_readStream
-	.pipe(tmpFile_writeStream);
+		renderer.webContents.send('rec:set_rec_file', recordingFileName)
+
+		// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
+		rec = spawn(
+			'rec', 
+			[
+				'-c', '1',				// One chanel mono 
+				'-t', FORMAT, 		// Set format
+				'-'								// Pipe to stdout
+			],
+		); // Command from https://superuser.com/a/583757
+
+		audioIn_readStream = rec.stdout;
+
+		audioIn_readStream
+		.pipe(audioFile_writeStream)
+
+		audioIn_readStream
+		.pipe(tmpFile_writeStream);
+	})
 }
 
 function stopRecording(e) {
@@ -110,16 +125,6 @@ function openWorkspace(recording) {
   installExtension('cmhomipkklckpomafalojobppmmidlgl')
   .then(name => console.log(`Added Extension: ${name}`))
   .catch(err => console.log('An error occurred: ', err));
-}
-
-function audioStream(srcPath) {
-	console.log('\n*** wrk:requestAudioBuffer, srcPath:', srcPath)
-
-	datauri.encode(srcPath, (err, datauri) => {
-		if (err) throw err;
-		// console.log('\n*** datauri:', content)
-		workspaceWindow.webContents.send('wrk:datauri', datauri)		
-	})
 }
 
 module.exports = {

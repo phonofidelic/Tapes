@@ -11,10 +11,6 @@ export const loadRecordingData = id => {
 	return dispatch => {
 		db.recordings.get(id)
 		.then(recording => {
-			// console.log('LOAD_RECORDING, recording:', recording)
-
-			ipcRenderer.send('wrk:requestAudioBuffer', recording.src)
-
 			dispatch({
 				type: LOAD_RECORDING,
 				recording
@@ -27,14 +23,5 @@ export const loadRecordingData = id => {
 			})
 		})
 		
-	}
-}
-
-export const loadAudioBuffer = audioBuffer => {
-	return dispatch => {
-		dispatch({
-			type: 'load_audio_buffer',
-			audioBuffer
-		})
 	}
 }

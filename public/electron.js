@@ -71,8 +71,6 @@ ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow));
 ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir));
 ipcMain.on('storage:delete', (e, path) => deleteRecording(path));
 
-ipcMain.on('wrk:requestAudioBuffer', (e, path) => audioStream(path))
-
 process.on('beforeExit', () => {
 	console.log('\n*** process beforeExit')
 })
