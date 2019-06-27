@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 
 import Navigation from 'components/Navigation';
@@ -13,7 +12,6 @@ import './App.css';
 class App extends Component {
   render() {
     let params = new URLSearchParams(window.location.search);
-    console.log('App, locationPathname:', this.props.locationPathname)
     console.log('params, view:', params.get('view'))
     const view = params.get('view');
     const recordingId = params.get('id');
@@ -50,11 +48,4 @@ class App extends Component {
   
 }
 
-// export default App;
-const mapStateToProps = state => {
-  return {
-    locationPathname: state.router.location.pathname
-  }
-}
-
-export default connect(mapStateToProps, null)(App);
+export default App;
