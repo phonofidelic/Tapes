@@ -93,7 +93,7 @@ let server;
 async function openWorkspace(recording) {
 	console.log('\n*** openWorkspace, recording:', recording);
 	// Check if server is already running
-	if (!server) server = await serveStatic('/tmp', path.dirname(recording.src), 5000);
+	if (!server) server = await serveStatic('/recordings', path.dirname(recording.src), 5000);
 
 	recording = recording;
 	workspaceWindow = new WorkspaceWindow();
