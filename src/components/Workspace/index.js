@@ -40,7 +40,9 @@ class Workspace extends Component {
 			playing: false,
 		}
 
-		const { id } = this.props.match.params;
+		// const { id } = this.props.match.params;
+		let params = new URLSearchParams(window.location.search);
+		const id = params.get('id');
 		this.props.loadRecordingData(id)
 
 		this.audioElement = createRef();
@@ -250,8 +252,8 @@ class Workspace extends Component {
 							//controls
 							preload="true"
 							crossOrigin="anonymous"
-							//src={`http://localhost:5000/tmp/${recording.filename}`}
-							src={`file://${recording.src}`}
+							src={`http://localhost:5000/tmp/${recording.filename}`}
+							//src={`file://${recording.src}`}
 							onLoadedMetadata={this.handleOnLoadedMetadata}
 						/>
 					}

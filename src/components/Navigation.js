@@ -32,9 +32,11 @@ const NavItem = styled(Link)`
 
 function Navigation(props)  {
 	const { locationPathname } = props;
+	let params = new URLSearchParams(window.location.search);
+	const view = params.get('view');
 
 	return (
-		locationPathname.includes('/open') ?
+		view === 'workspace' ?
 		<Container
 			value={locationPathname}
 			style={{

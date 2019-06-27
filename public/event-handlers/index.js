@@ -15,11 +15,11 @@ const {
 	REDUX_DEVTOOLS
 } = require('electron-devtools-installer');
 const isDev = require('electron-is-dev');
-const Datauri = require('datauri');
-const datauri = new Datauri();
+// const Datauri = require('datauri');
+// const datauri = new Datauri();
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
-const { startServer } = require('./utils');
+const { serveStatic } = require('../app/utils');
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
@@ -93,11 +93,12 @@ let server;
 async function openWorkspace(recording) {
 	console.log('\n*** openWorkspace, recording:', recording);
 	// Check if server is already running
-	if (!server) server = await startServer(path.dirname(recording.src));
+	if (!server) server = await serveStatic('/tmp', path.dirname(recording.src), 5000);
 
 	recording = recording;
 	workspaceWindow = new WorkspaceWindow();
-	workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../build/index.html")}`)
+	// workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../index.html/open/${recording.id")}`)
+	workspaceWindow.loadURL(isDev ? `http://localhost:3000?view=workspace&id=${recording.id}` :`file://${path.join(__dirname, `../index.html?view=workspace&id=${recording.id}`)}`)
 	isDev && workspaceWindow.webContents.openDevTools({mode: 'detach'});
 
 	installExtension(REACT_DEVELOPER_TOOLS)

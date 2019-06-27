@@ -10,6 +10,7 @@ const uuidv4 = require('uuid/v4');
 
 const RecorderTray = require('./app/RecorderTray');
 const RecorderWindow = require('./app/RecorderWindow');
+const { serveStatic } = require('./app/utils');
 
 const {
 	openDirSelect,
@@ -27,6 +28,7 @@ const {
 	REDUX_DEVTOOLS
 } = require('electron-devtools-installer');
 
+
 const {
 	app,
 	BrowserWindow,
@@ -34,13 +36,16 @@ const {
 	dialog
 } = electron;
 
-
 let recorderWindow;
 let tray;
+let server;
 
-app.on('ready', () => {
+app.on('ready', async () => {
+	// if (!server) server = await serveStatic('/', path.join(__dirname, '../build'), 5001);
+
 	recorderWindow = new RecorderWindow();
-	recorderWindow.loadURL(isDev ? `http://localhost:3000` : `file://${path.join(__dirname, "../build/index.html")}`);
+	recorderWindow.loadURL(isDev ? `http://localhost:3000` : `file://${path.join(__dirname, "index.html")}`);
+	// recorderWindow.loadURL(isDev ? `http://localhost:3000` : `http://localhost:5001`);
 	isDev && recorderWindow.webContents.openDevTools({mode: 'detach'});
 	const iconName = 'icon@16.png';
 	const iconPath = path.join(__dirname, `../src/assets/${iconName}`);

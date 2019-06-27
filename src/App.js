@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 
 import Navigation from 'components/Navigation';
@@ -11,16 +12,23 @@ import './App.css';
 
 class App extends Component {
   render() {
+    let params = new URLSearchParams(window.location.search);
+    console.log('App, locationPathname:', this.props.locationPathname)
+    console.log('params, view:', params.get('view'))
+    const view = params.get('view');
+    const recordingId = params.get('id');
+
     return (
       <div className="App">
         <Navigation />
         <div>
+        { view === 'workspace' ?
+
+          <Workspace />
+
+          :
+
           <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => <Recorder />}
-            />
             <Route 
               path="/storage"
               render={() => <Storage />}
@@ -29,28 +37,12 @@ class App extends Component {
               path="/settings"
               render={() => <Settings />}
             />
-            
-            <Route
-              exact
-              path="/open/:id"
-              //render={() => <Workspace />}
-              component={Workspace}
-            />
-            <Route
-              exact
-              path="/open"
-              render={() => <Workspace />}
-            />
-            <Route
-              path="/open/recorder"
-              //render={() => <Recorder />}
-              component={Recorder}
-            />
-            
             <Route
               render={() => <Recorder />}
             />
           </Switch>
+
+        }
         </div>
       </div>
     );  
@@ -58,4 +50,11 @@ class App extends Component {
   
 }
 
-export default App;
+// export default App;
+const mapStateToProps = state => {
+  return {
+    locationPathname: state.router.location.pathname
+  }
+}
+
+export default connect(mapStateToProps, null)(App);
