@@ -18,7 +18,17 @@ export const SectionTitle = styled(Typography)`
 	display: flex;
 	padding-left: 8px;
 `
+// const SectionSubTitle = 
+export const SectionSubTitle = styled(Typography)`
+	color: #fff;
+	background-color: #666;
+	display: flex;
+	padding-left: 8px;
+	height: 19px;
+	line-height: 19px;
+`
 
 export const SectionBody = styled.div`
 	padding: 8px;
 `
+

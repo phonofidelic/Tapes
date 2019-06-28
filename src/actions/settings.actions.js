@@ -33,3 +33,13 @@ export const cancelSetSavePath = () => {
 		})
 	}
 }
+
+export const setFormat = format => {
+	console.log('setFormat, format:', format)
+	return dispatch => {
+		dispatch({
+			type: 'set_format',
+			format: format,
+		})
+	}
+}

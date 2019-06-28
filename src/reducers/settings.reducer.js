@@ -6,6 +6,7 @@ import {
 
 export const INITIAL_STATE = {
 	saveDir: window.localStorage.getItem('saveDir') || null,
+	format: 'mp3',
 	loading: false,
 }
 
@@ -28,6 +29,12 @@ const settings = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				loading: false,
+			}
+
+		case 'set_format':
+			return {
+				...state,
+				format: action.format,
 			}
 
 		default: return state
