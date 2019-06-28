@@ -6,7 +6,10 @@ import {
 
 export const INITIAL_STATE = {
 	saveDir: window.localStorage.getItem('saveDir') || null,
-	format: 'mp3',
+	format: {
+		file: 'mp3',
+		chanels: 'mono'
+	},
 	loading: false,
 }
 

@@ -5,10 +5,14 @@ import * as actions from 'actions/settings.actions';
 
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormLabel from '@material-ui/core/FormLabel';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
 import Select from '@material-ui/core/Select';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -52,9 +56,19 @@ class Settings extends Component {
 		this.props.cancelSetSavePath(path);
 	}
 
-	handleSetFormat = (e, {props}) => {
-		console.log('handleSetFormat, data:', props)
-		this.props.setFormat(props.value);
+	handleSetFileFormat = (e, {props}) => {
+		this.props.setFormat({
+			...this.props.format, 
+			file: props.value
+		});
+	}
+
+	handleSetChanelCount = (e, chanelCount) => {
+		console.log('handleSetChanelCount, chanelCount:', chanelCount)
+		this.props.setFormat({
+			...this.props.format, 
+			chanels: chanelCount
+		});
 	}
 
 	render() {
@@ -102,28 +116,62 @@ class Settings extends Component {
 				</Section>
 				<Section>
 					<SectionSubTitle variant="caption">Format</SectionSubTitle>
-					<SectionBody>
-							<FormControl 
-								style={{
-										width: '100%',
-										height: '38px',
-									}}
-								variant="outlined" 
-								fullWidth
+					<SectionBody 
+						style={{
+							paddingTop: 16
+						}}
+					>
+						<div style={{
+							display: 'flex',
+						}}>
+						<FormControl 
+							style={{
+									width: '100%',
+									height: '38px',
+								}}
+							variant="outlined" 
+							fullWidth
+						>
+							<InputLabel htmlFor="input-format-file" ref={this.formatInputLabel}>Select an audio format</InputLabel>
+							<Select
+								value={format.file}
+								input={<OutlinedInput labelWidth={162} />}
+								id="input-format-file"
+								onChange={this.handleSetFileFormat}
 							>
-								<InputLabel htmlFor="input-format" ref={this.formatInputLabel}>Select an audio format</InputLabel>
-								<Select
-									value={format}
-									input={<OutlinedInput labelWidth={162} />}
-									id="input-format"
-									onChange={this.handleSetFormat}
-								>
-									<MenuItem value="flac">flac</MenuItem>
-									<MenuItem value="mp3">mp3</MenuItem>
-									<MenuItem value="ogg">ogg</MenuItem>
-									<MenuItem value="raw">raw</MenuItem>
-								</Select>
-							</FormControl>
+								<MenuItem value="flac">flac</MenuItem>
+								<MenuItem value="mp3">mp3</MenuItem>
+								<MenuItem value="ogg">ogg</MenuItem>
+								<MenuItem value="raw">raw</MenuItem>
+							</Select>
+						</FormControl>
+						</div>
+						<div style={{
+							display: 'flex',
+							marginTop: '30px',
+						}}>
+						<FormControl
+							style={{
+								width: '100%',
+								height: '38px',
+							}}
+							variant="outlined"
+							fullWidth
+						>
+							<FormLabel htmlFor="input-format-chanels">Select chanel count</FormLabel>
+							<RadioGroup
+								style={{
+									display: 'inline',
+								}}
+								value={String(format.chanels)}
+								id="input-format-chanels"
+								onChange={this.handleSetChanelCount}
+							>
+								<FormControlLabel value="mono" control={<Radio color="primary" />} label="Mono" />
+								<FormControlLabel value="stereo" control={<Radio color="primary" />} label="Stereo" />
+							</RadioGroup>
+						</FormControl>
+						</div>
 					</SectionBody>
 				</Section>
 			</Container>
