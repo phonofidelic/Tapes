@@ -26,3 +26,5 @@ yarn-error.log*
 
 /tmp
 /public/tmp
+
+README.html
