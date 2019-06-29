@@ -167,8 +167,8 @@ class Settings extends Component {
 								id="input-format-chanels"
 								onChange={this.handleSetChanelCount}
 							>
-								<FormControlLabel value="mono" control={<Radio color="primary" />} label="Mono" />
-								<FormControlLabel value="stereo" control={<Radio color="primary" />} label="Stereo" />
+								<FormControlLabel value="1" control={<Radio color="primary" />} label="Mono" />
+								<FormControlLabel value="2" control={<Radio color="primary" />} label="Stereo" />
 							</RadioGroup>
 						</FormControl>
 						</div>

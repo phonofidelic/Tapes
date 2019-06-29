@@ -86,7 +86,7 @@ class Workspace extends Component {
 
 				this.audioCtx.decodeAudioData(response.data, buffer => {
           var decodedAudioData = buffer.getChannelData(0);
-          // console.log('decodedAudioData:', decodedAudioData);
+          console.log('decodedAudioData:', decodedAudioData);
 
           // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
 					const NUMBER_OF_BUCKETS = 500;

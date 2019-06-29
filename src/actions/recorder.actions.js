@@ -56,6 +56,7 @@ export const stopRecording = (settings, recordingFile) => {
 		title: `${moment().format('MMM Do YYYY, hh:mm:ss a')}`,
 		src: `${settings.saveDir}/${recordingFile}`,
 		filename: recordingFile,
+		format: settings.format,
 		created: Date.now(),
 		updated: Date.now(),
 	}
