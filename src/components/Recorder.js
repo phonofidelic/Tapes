@@ -31,9 +31,9 @@ class Recorder extends Component {
 	}
 
 	handleStartRec = () => {
-		const { saveDir } = this.props;
+		const { settings } = this.props;
     console.log('start', this.props.recorder.isRecording)
-    this.props.startRecording(saveDir);
+    this.props.startRecording(settings);
   }
 
   handleSetRecFile = (e, recordingFile) => {
@@ -41,9 +41,9 @@ class Recorder extends Component {
   }
 
   handleStopRec = () => {
-  	const { saveDir, recordingFile } = this.props;
+  	const { settings, recordingFile } = this.props;
     console.log('stop', this.props.recorder.isRecording)
-    this.props.stopRecording(saveDir, recordingFile);
+    this.props.stopRecording(settings, recordingFile);
   }
 
   handleStartMonitor = async () => {
@@ -87,6 +87,7 @@ const mapStateToProps = state => {
 		recorder: state.recorder,
 		saveDir: state.settings.saveDir,
 		recordingFile: state.recorder.recordingFile,
+		settings: state.settings,
 	}
 }
 

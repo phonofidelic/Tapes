@@ -16,8 +16,8 @@ const electron = window.require('electron');
 const ipcRenderer = electron.ipcRenderer;
 const uuidv4 = require('uuid/v4');
 
-export const startRecording = (saveDir) => {
-	if (!saveDir) {
+export const startRecording = (settings) => {
+	if (!settings.saveDir) {
 		window.alert('Please select a save directory in Settings.') // TODO: replace with custom error message
 		return dispatch => {
 			dispatch({
@@ -26,7 +26,7 @@ export const startRecording = (saveDir) => {
 		}
 	}
 
-	ipcRenderer.send('rec:start', saveDir);
+	ipcRenderer.send('rec:start', settings);
 	return dispatch => {
 		// const recording = {
 		// 	_id: Math.trunc(Date.now() * Math.random()),
@@ -48,13 +48,13 @@ export const setRecFile = (recordingFile) => {
 	}
 }
 
-export const stopRecording = (saveDir, recordingFile) => {
+export const stopRecording = (settings, recordingFile) => {
 	console.log('stopRec, recordingFile:', recordingFile)
 	ipcRenderer.send('rec:stop');
 	const newRecording = {
 		id: uuidv4(),
 		title: `${moment().format('MMM Do YYYY, hh:mm:ss a')}`,
-		src: `${saveDir}/${recordingFile}`,
+		src: `${settings.saveDir}/${recordingFile}`,
 		filename: recordingFile,
 		created: Date.now(),
 		updated: Date.now(),

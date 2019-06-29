@@ -35,15 +35,14 @@ function openDirSelect(renderer) {
 }
 
 let rec; //	<-- TODO: Refactor bad global variable?
-function newRecording(renderer, saveDir) {
+function newRecording(renderer, settings) {
 	let audioIn_readStream;
 	let audioFile_writeStream;
 	const FORMAT = 'mp3';
 
-	recordingFileName = `${uuidv4()}.${FORMAT}`
+	recordingFileName = `${uuidv4()}.${settings.format.file}`
 	console.log('\n*** newRecording')
-	console.log('*** path.resolve(saveDir, recordingFileName):', path.resolve(saveDir, recordingFileName))
-	audioFile_writeStream = fs.WriteStream(path.resolve(saveDir, recordingFileName));
+	audioFile_writeStream = fs.WriteStream(path.resolve(settings.saveDir, recordingFileName));
 	
 	renderer.webContents.send('rec:set_rec_file', recordingFileName)
 
@@ -51,8 +50,8 @@ function newRecording(renderer, saveDir) {
 	rec = spawn(
 		'rec', 
 		[
-			'-c', '1',				// One chanel mono 
-			'-t', FORMAT, 		// Set format
+			'-c', settings.format.chanels === 'mono' ? 1 : 2,				// One chanel mono 
+			'-t', settings.format.file, 		// Set format
 			'-'								// Pipe to stdout
 		],
 	); // Command from https://superuser.com/a/583757

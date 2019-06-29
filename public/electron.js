@@ -65,7 +65,7 @@ app.on('ready', async () => {
 });
 
 ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir));
-ipcMain.on('rec:stop', (e, saveDir) => stopRecording(recorderWindow));
+ipcMain.on('rec:stop', (e) => stopRecording(recorderWindow));
 ipcMain.on('rec:open', (e, recording) => openWorkspace(recording));
 
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow));
