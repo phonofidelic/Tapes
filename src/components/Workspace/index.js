@@ -34,6 +34,7 @@ class Workspace extends Component {
 
 		this.state = {
 			buckets: [],
+			chanelCount: null,
 			audioTime: 0,
 			audioTimePercent: 0,
 			audioDuration: 0,
@@ -46,14 +47,13 @@ class Workspace extends Component {
 		this.props.loadRecordingData(id)
 
 		this.audioElement = createRef();
-		this.waveformMaskElement = createRef();
+		this.waveformMaskElements = [createRef() ,createRef()];
 
 		this.canvasWidth = CANVAS_WIDTH;
 		this.canvasHeight = CANVAS_HEIGHT;
 	}
 
 	componentDidMount() {
-		const { recording } = this.props;
 		this.audioCtx = new (window.AudioContext || window.wobkitAudioContext)();
 		this.analyser = this.audioCtx.createAnalyser();
 	}
@@ -79,41 +79,52 @@ class Workspace extends Component {
 	}
 
 	loadWaveformDada = () => {
+		const { recording } = this.props;
+		const chanelCount = parseInt(recording.format.chanels, 10);		
+
 		// TODO: use audio element as source, no need to request same resource twice
-		axios({url: `http://localhost:5000/recordings/${this.props.recording.filename}`, responseType: "arraybuffer"})
+		axios({url: `http://localhost:5000/recordings/${recording.filename}`, responseType: "arraybuffer"})
 			.then(response => {
 				console.log('server response:', response)
 
 				this.audioCtx.decodeAudioData(response.data, buffer => {
-          var decodedAudioData = buffer.getChannelData(0);
-          console.log('decodedAudioData:', decodedAudioData);
+					let chanels = []
+					for (let c = 0; c < chanelCount; c++) {
+	          var decodedAudioData = buffer.getChannelData(c);
+	          console.log('decodedAudioData:', decodedAudioData);
 
-          // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
-					const NUMBER_OF_BUCKETS = 500;
-					let bucketDataSize = Math.floor(decodedAudioData.length / NUMBER_OF_BUCKETS);
-					let buckets = [];
-					for (var i = 0; i < NUMBER_OF_BUCKETS; i++) {
-						let startingPoint = i * bucketDataSize;
-						// console.log('*** startingPoint:', startingPoint)
-						let endingPoint = i * bucketDataSize + bucketDataSize;
-						let max = 0;
-						for (var j = startingPoint; j < endingPoint; j++) {
-							// console.log('*** decodedAudioData[j]:', decodedAudioData[j])
-							if (decodedAudioData[j] > max) {
-								max = decodedAudioData[j];
+	          // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
+						const NUMBER_OF_BUCKETS = 500;
+						let bucketDataSize = Math.floor(decodedAudioData.length / NUMBER_OF_BUCKETS);
+						let buckets = [];
+						for (var i = 0; i < NUMBER_OF_BUCKETS; i++) {
+							let startingPoint = i * bucketDataSize;
+							// console.log('*** startingPoint:', startingPoint)
+							let endingPoint = i * bucketDataSize + bucketDataSize;
+							let max = 0;
+							for (var j = startingPoint; j < endingPoint; j++) {
+								// console.log('*** decodedAudioData[j]:', decodedAudioData[j])
+								if (decodedAudioData[j] > max) {
+									max = decodedAudioData[j];
+								}
 							}
+							let size = Math.abs(max);
+							// console.log('*** max:', max)
+							buckets.push(size / 2)
 						}
-						let size = Math.abs(max);
-						// console.log('*** max:', max)
-						buckets.push(size / 2)
-					}
-					// console.log('buckets:', buckets)
+						// console.log('buckets:', buckets)
 
+						this.setState({
+							...this.state,
+							buckets,
+						})
+						chanels.push(buckets)
+					} // *** End for-loop ***
+					console.log('chanels:', chanels)
 					this.setState({
-						...this.state,
-						buckets,
+						chanels: chanels
 					})
-			
+					console.log('this.state.chanels:', this.state.chanels)
 	      }, err => console.error('decodeAudioData error:', err));
 			})
 			.catch(err => console.error('server error:', err));
@@ -195,55 +206,67 @@ class Workspace extends Component {
 					<div style={{
 						// border: 'solid red 1px'
 					}}>
-						<svg
-							viewBox={`0 0 100 50`}
-							width="100%"
-							height="400px"
-							className="waveform-container"
-							preserveAspectRatio="none"
-							onClick={this.handleProgressClick}
-						>
-							<rect 
-								className="waveform-time"
-								x="0"
-								y="0"
+
+						{ this.state.chanels && this.state.chanels.map((chanel, i) => (
+							<svg
+								key={i}
+								viewBox={`0 0 100 50`}
 								width="100%"
-								height="2"
-								fill="#666"
+								height="400px"
+								className="waveform-container"
+								preserveAspectRatio="none"
+								onClick={this.handleProgressClick}
+							>
+								<rect 
+									className="waveform-time"
+									x="0"
+									y="0"
+									width="100%"
+									height="2"
+									fill="#666"
+									style={{
+										background: 'red'
+									}}
+								/>
+								<rect 
+									className="waveform-bg"
+									x="0"
+									y="0"
+									width="100"
+									height="100"
+									style={{
+										clipPath: `url(#waveform-mask-chanel-${i})`,
+										fill: 'lightgray',
+									}}
+								/>
+								<rect
+									className="waveform-progress"
+									width={this.state.audioTimePercent}
+									height="100"
+									style={{
+										clipPath: `url(#waveform-mask-chanel-${i})`,
+										fill: theme.palette.primary.accent,
+									}}
+								/>
+							</svg>
+						))}
+						
+
+						{ this.state.chanels && this.state.chanels.map((buckets, i) => (
+							<svg
+								key={i} 
 								style={{
-									background: 'red'
+									height: 0
 								}}
-							/>
-							<rect 
-								className="waveform-bg"
-								x="0"
-								y="0"
-								width="100"
-								height="100"
-								style={{
-									clipPath: 'url(#waveform-mask)',
-									fill: 'lightgray',
-								}}
-							/>
-							<rect
-								className="waveform-progress"
-								width={this.state.audioTimePercent}
-								height="100"
-								style={{
-									clipPath: 'url(#waveform-mask)',
-									fill: theme.palette.primary.accent,
-								}}
-							/>
-						</svg>
-						<svg style={{
-							height: 0
-						}}>
-							<defs>
-								<clipPath id="waveform-mask" ref={this.waveformMaskElement}>
-								{ this.state.buckets && this.renderBuckets(this.state.buckets) }
-								</clipPath>
-							</defs>
-						</svg>
+							>
+								<defs>
+									<clipPath id={`waveform-mask-chanel-${i}`} ref={this.waveformMaskElements[i]}>
+									{ this.state.buckets && this.renderBuckets(buckets) }
+									</clipPath>
+								</defs>
+							</svg>
+						))}
+						
 					</div>
 
 					{ recording && 
