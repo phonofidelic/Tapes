@@ -33,7 +33,7 @@ class Workspace extends Component {
 		super(props);
 
 		this.state = {
-			buckets: [],
+			// buckets: [],
 			chanelCount: null,
 			audioTime: 0,
 			audioTimePercent: 0,
@@ -114,10 +114,10 @@ class Workspace extends Component {
 						}
 						// console.log('buckets:', buckets)
 
-						this.setState({
-							...this.state,
-							buckets,
-						})
+						// this.setState({
+						// 	...this.state,
+						// 	buckets,
+						// })
 						chanels.push(buckets)
 					} // *** End for-loop ***
 					console.log('chanels:', chanels)
@@ -195,6 +195,7 @@ class Workspace extends Component {
 		const theme = this.context;
 
 		// console.log('Workspace, theme:', theme)
+
 		return (
 			<Container>
 				<GlobalStyle />
@@ -204,15 +205,14 @@ class Workspace extends Component {
 				}}>
 
 					<div style={{
-						// border: 'solid red 1px'
+						// border: 'solid red 1px',
 					}}>
-
 						{ this.state.chanels && this.state.chanels.map((chanel, i) => (
 							<svg
 								key={i}
 								viewBox={`0 0 100 50`}
 								width="100%"
-								height="400px"
+								height={`${400 / this.state.chanels.length}px`}
 								className="waveform-container"
 								preserveAspectRatio="none"
 								onClick={this.handleProgressClick}
@@ -222,7 +222,7 @@ class Workspace extends Component {
 									x="0"
 									y="0"
 									width="100%"
-									height="2"
+									height={`${1 * this.state.chanels.length}px`}
 									fill="#666"
 									style={{
 										background: 'red'
@@ -261,7 +261,7 @@ class Workspace extends Component {
 							>
 								<defs>
 									<clipPath id={`waveform-mask-chanel-${i}`} ref={this.waveformMaskElements[i]}>
-									{ this.state.buckets && this.renderBuckets(buckets) }
+									{ this.renderBuckets(buckets) }
 									</clipPath>
 								</defs>
 							</svg>
