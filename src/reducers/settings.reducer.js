@@ -8,7 +8,7 @@ export const INITIAL_STATE = {
 	saveDir: window.localStorage.getItem('saveDir') || null,
 	format: {
 		file: 'mp3',
-		chanels: 1
+		channels: 1
 	},
 	loading: false,
 }

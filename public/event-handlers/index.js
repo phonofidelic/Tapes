@@ -41,7 +41,7 @@ function newRecording(renderer, settings) {
 	const FORMAT = 'mp3';
 
 	recordingFileName = `${uuidv4()}.${settings.format.file}`
-	console.log('\n*** newRecording, settings.format.chanels', parseInt(settings.format.chanels, 10))
+	console.log('\n*** newRecording, settings.format.channels', parseInt(settings.format.channels, 10))
 	audioFile_writeStream = fs.WriteStream(path.resolve(settings.saveDir, recordingFileName));
 	
 	renderer.webContents.send('rec:set_rec_file', recordingFileName)
@@ -50,7 +50,7 @@ function newRecording(renderer, settings) {
 	rec = spawn(
 		'rec', 
 		[
-			'-c', parseInt(settings.format.chanels, 10),
+			'-c', parseInt(settings.format.channels, 10),
 			'-t', settings.format.file, 		// Set format
 			'-'								// Pipe to stdout
 		],

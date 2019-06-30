@@ -63,11 +63,11 @@ class Settings extends Component {
 		});
 	}
 
-	handleSetChanelCount = (e, chanelCount) => {
-		console.log('handleSetChanelCount, chanelCount:', chanelCount)
+	handleSetChannelCount = (e, channelCount) => {
+		console.log('handleSetChannelCount, channelCount:', channelCount)
 		this.props.setFormat({
 			...this.props.format, 
-			chanels: chanelCount
+			channels: channelCount
 		});
 	}
 
@@ -158,14 +158,14 @@ class Settings extends Component {
 							variant="outlined"
 							fullWidth
 						>
-							<FormLabel htmlFor="input-format-chanels">Select chanel count</FormLabel>
+							<FormLabel htmlFor="input-format-channels">Select channel count</FormLabel>
 							<RadioGroup
 								style={{
 									display: 'inline',
 								}}
-								value={String(format.chanels)}
-								id="input-format-chanels"
-								onChange={this.handleSetChanelCount}
+								value={String(format.channels)}
+								id="input-format-channels"
+								onChange={this.handleSetChannelCount}
 							>
 								<FormControlLabel value="1" control={<Radio color="primary" />} label="Mono" />
 								<FormControlLabel value="2" control={<Radio color="primary" />} label="Stereo" />

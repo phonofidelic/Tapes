@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import * as actions from 'actions/workspace.actions';
 import styled, { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
+import WaveSurfer from 'wavesurfer.js';
+import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 
 import {
 	Container,
@@ -33,21 +35,21 @@ class Workspace extends Component {
 		super(props);
 
 		this.state = {
-			// buckets: [],
-			chanelCount: null,
 			audioTime: 0,
 			audioTimePercent: 0,
 			audioDuration: 0,
 			playing: false,
+			barHeight: 10,
 		}
 
-		// const { id } = this.props.match.params;
 		let params = new URLSearchParams(window.location.search);
 		const id = params.get('id');
 		this.props.loadRecordingData(id)
 
 		this.audioElement = createRef();
 		this.waveformMaskElements = [createRef() ,createRef()];
+		this.waveformEl = createRef();
+		this.timelineEl = createRef();
 
 		this.canvasWidth = CANVAS_WIDTH;
 		this.canvasHeight = CANVAS_HEIGHT;
@@ -62,16 +64,7 @@ class Workspace extends Component {
 		console.log('handleAudioElementMounted, e:', e)
 		this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
 		this.source.connect(this.audioCtx.destination);
-
-		this.timeMetrics = []
-		// timeMetrics.length = Math.ceil(this.audioDuration / 1000)
-		console.log('e.target.duration:', e.target.duration)
-		console.log('window.innerWidth:', window.innerWidth/ e.target.duration)
-		// for (let i = 0; i < this.audioDuration; i++) {
-		// 	this.timeMetrics.push({i})
-		// }
-		// console.log('this.timeMetrics:', this.timeMetrics)
-		
+				
 		this.setState({
 			audioDuration: e.target.duration,
 		})
@@ -88,55 +81,30 @@ class Workspace extends Component {
 	}
 
 	loadWaveformDada = () => {
+		const theme = this.context;
 		const { recording } = this.props;
-		const chanelCount = parseInt(recording.format.chanels, 10);		
-
-		// TODO: use audio element as source, no need to request same resource twice
-		axios({url: `http://localhost:5000/recordings/${recording.filename}`, responseType: "arraybuffer"})
-			.then(response => {
-				console.log('server response:', response)
-
-				this.audioCtx.decodeAudioData(response.data, buffer => {
-					let chanels = []
-					for (let c = 0; c < chanelCount; c++) {
-	          var decodedAudioData = buffer.getChannelData(c);
-	          // console.log('decodedAudioData:', decodedAudioData);
-
-	          // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
-						const NUMBER_OF_BUCKETS = 500;
-						let bucketDataSize = Math.floor(decodedAudioData.length / NUMBER_OF_BUCKETS);
-						let buckets = [];
-						for (var i = 0; i < NUMBER_OF_BUCKETS; i++) {
-							let startingPoint = i * bucketDataSize;
-							// console.log('*** startingPoint:', startingPoint)
-							let endingPoint = i * bucketDataSize + bucketDataSize;
-							let max = 0;
-							for (var j = startingPoint; j < endingPoint; j++) {
-								// console.log('*** decodedAudioData[j]:', decodedAudioData[j])
-								if (decodedAudioData[j] > max) {
-									max = decodedAudioData[j];
-								}
-							}
-							let size = Math.abs(max);
-							// console.log('*** max:', max)
-							buckets.push(size / 2)
-						}
-						// console.log('buckets:', buckets)
-
-						// this.setState({
-						// 	...this.state,
-						// 	buckets,
-						// })
-						chanels.push(buckets)
-					} // *** End for-loop ***
-					console.log('chanels:', chanels)
-					this.setState({
-						chanels: chanels
-					})
-					console.log('this.state.chanels:', this.state.chanels)
-	      }, err => console.error('decodeAudioData error:', err));
-			})
-			.catch(err => console.error('server error:', err));
+		const channelCount = parseInt(recording.format.channels, 10); // TODO: fix spelling on channels prop
+		const srcURL = `http://localhost:5000/recordings/${recording.filename}`
+		
+		console.log('channelCount:', channelCount)
+		this.timelinePlugin = TimelinePlugin.create({
+      // plugin options ...
+      container: this.timelineEl.current
+    });
+		this.wavesurfer = WaveSurfer.create({
+      container: this.waveformEl.current,
+      waveColor: 'lightgray',
+      progressColor: theme.palette.primary.accent,
+      cursorColor: theme.palette.primary.accent,
+      responsive: true,
+      audioContext: this.audioCtx,
+      barHeight: this.state.barHeight,
+      splitChannels: channelCount === 2,
+      plugins: [
+		    this.timelinePlugin
+		  ]
+    });
+    this.wavesurfer.load(srcURL);
 	}
 
 	startTimer = () => {
@@ -156,10 +124,12 @@ class Workspace extends Component {
 		if (!this.state.playing) {
 			console.log('play', this.source)
 			this.source.mediaElement.play();
+			this.wavesurfer.play();
 			this.startTimer();
 		} else {
 			console.log('stop', this.source)
 			this.source.mediaElement.pause();
+			this.wavesurfer.pause();
 			clearInterval(this.intervalID);
 		}
 
@@ -169,6 +139,7 @@ class Workspace extends Component {
 	}
 
 	handleProgressClick = (e) => {
+		console.log('handleProgressClick', e)
 		// Get time position from click X pos
 		const time = (e.clientX / window.innerWidth) * this.state.audioDuration;
 		// console.log(time)
@@ -176,26 +147,10 @@ class Workspace extends Component {
 
 		// Play audio from new position
 		this.source.mediaElement.play();
+		this.wavesurfer.play();
 		clearInterval(this.intervalID);
 		this.startTimer();
 		this.setState({ playing: true });
-	}
-
-	renderBuckets(buckets) {
-		// console.log('renderBuckets, buckets:', buckets)
-		const SPACE_BETWEEN_BARS = -0.1;
-		return buckets.map((bucket, i) => {
-			let bucketSVGWidth = 100.0 / buckets.length;
-			let bucketSVGHeight = bucket * 100.0;
-
-			return <rect
-				key={i}
-				x={ bucketSVGWidth * i + SPACE_BETWEEN_BARS / 2.0 }
-				y={ (50 - bucketSVGHeight) / 2.0 }
-				width={ bucketSVGWidth - SPACE_BETWEEN_BARS }
-				height={ bucketSVGHeight }
-			/>
-		})
 	}
 
 	render() {
@@ -203,9 +158,7 @@ class Workspace extends Component {
 		const { playing } = this.state;
 		const theme = this.context;
 
-		
 		// console.log('Workspace, timeMetrics:', this.state.timeMetrics)
-
 		return (
 			<Container>
 				<GlobalStyle />
@@ -214,107 +167,13 @@ class Workspace extends Component {
 					// margin: 20 
 				}}>
 
-					<div style={{
-						// border: 'solid red 1px',
-					}}>
-						{ this.state.chanels && this.state.chanels.map((chanel, i) => (
-							<svg
-								key={i}
-								viewBox={`0 0 100 50`}
-								width="100%"
-								height={`${400 / this.state.chanels.length}px`}
-								className="waveform-container"
-								preserveAspectRatio="none"
-								onClick={this.handleProgressClick}
-							>
-								<line
-									x1={this.state.audioTimePercent - .1}
-									y1="0"
-									x2={this.state.audioTimePercent - .1}
-									y2={`${400 / this.state.chanels.length}px`}
-									stroke={theme.palette.primary.accent}
-									strokeWidth="0.1"
-								/>
-								{/*
-								<rect 
-									className="waveform-time"
-									x="0"
-									y="0"
-									width="100%"
-									height={`${1 * this.state.chanels.length}px`}
-									fill="#666"
-									style={{
-										background: 'red'
-									}}
-								/>
-								*/}
-								<svg
-									viewBox={'0 0 100 100'}
-									width="100%"
-									height={`${1 * this.state.chanels.length}px`}
-									preserveAspectRatio="none"
-								>
-									<rect 
-										className="waveform-time"
-										x="0"
-										y="0"
-										width="100%"
-										height="100"
-										fill="#666"
-									/>
-									{	chanel.map((bucket, i) => (	// <- Wrong metrics, needs to somhow map over duration?
-										<line
-											key={i}
-											x1={i}
-											y1="50"
-											x2={i}
-											y2="100"
-											stroke="#fff"
-											strokeWidth="0.1"
-										/>
-									))
-
-									}
-								</svg>
-								<rect 
-									className="waveform-bg"
-									x="0"
-									y="0"
-									width="100"
-									height="100"
-									style={{
-										clipPath: `url(#waveform-mask-chanel-${i})`,
-										fill: 'lightgray',
-									}}
-								/>
-								<rect
-									className="waveform-progress"
-									width={this.state.audioTimePercent}
-									height="100"
-									style={{
-										clipPath: `url(#waveform-mask-chanel-${i})`,
-										fill: theme.palette.primary.accent,
-									}}
-								/>
-							</svg>
-						))}
-						
-
-						{ this.state.chanels && this.state.chanels.map((buckets, i) => (
-							<svg
-								key={i} 
-								style={{
-									height: 0
-								}}
-							>
-								<defs>
-									<clipPath id={`waveform-mask-chanel-${i}`} ref={this.waveformMaskElements[i]}>
-									{ this.renderBuckets(buckets) }
-									</clipPath>
-								</defs>
-							</svg>
-						))}
-						
+					<div>
+						<div id="timeline" ref={this.timelineEl} />
+						<div
+							id="waveform" 
+							ref={this.waveformEl}
+							onClick={this.handleProgressClick}
+						/>
 					</div>
 
 					{ recording && 
@@ -324,7 +183,6 @@ class Workspace extends Component {
 							preload="true"
 							crossOrigin="anonymous"
 							src={`http://localhost:5000/recordings/${recording.filename}`}
-							//src={`file://${recording.src}`}
 							onLoadedMetadata={this.handleOnLoadedMetadata}
 						/>
 					}

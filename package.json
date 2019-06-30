@@ -32,6 +32,7 @@
     "sox-bin": "^1.0.2",
     "styled-components": "^4.3.1",
     "wait-on": "^3.2.0",
+    "wavesurfer.js": "^2.2.1",
     "web-audio-daw": "^4.5.0"
   },
   "scripts": {
