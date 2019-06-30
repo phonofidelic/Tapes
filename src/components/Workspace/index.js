@@ -63,8 +63,17 @@ class Workspace extends Component {
 		this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
 		this.source.connect(this.audioCtx.destination);
 
+		this.timeMetrics = []
+		// timeMetrics.length = Math.ceil(this.audioDuration / 1000)
+		console.log('e.target.duration:', e.target.duration)
+		console.log('window.innerWidth:', window.innerWidth/ e.target.duration)
+		// for (let i = 0; i < this.audioDuration; i++) {
+		// 	this.timeMetrics.push({i})
+		// }
+		// console.log('this.timeMetrics:', this.timeMetrics)
+		
 		this.setState({
-			audioDuration: e.target.duration
+			audioDuration: e.target.duration,
 		})
 
 		this.audioElement.current.addEventListener('ended', (e) => {
@@ -91,7 +100,7 @@ class Workspace extends Component {
 					let chanels = []
 					for (let c = 0; c < chanelCount; c++) {
 	          var decodedAudioData = buffer.getChannelData(c);
-	          console.log('decodedAudioData:', decodedAudioData);
+	          // console.log('decodedAudioData:', decodedAudioData);
 
 	          // Bucketing algorithm from https://getstream.io/blog/generating-waveforms-for-podcasts-in-winds-2-0/
 						const NUMBER_OF_BUCKETS = 500;
@@ -162,7 +171,7 @@ class Workspace extends Component {
 	handleProgressClick = (e) => {
 		// Get time position from click X pos
 		const time = (e.clientX / window.innerWidth) * this.state.audioDuration;
-		console.log(time)
+		// console.log(time)
 		this.source.mediaElement.currentTime = time;
 
 		// Play audio from new position
@@ -194,7 +203,8 @@ class Workspace extends Component {
 		const { playing } = this.state;
 		const theme = this.context;
 
-		// console.log('Workspace, theme:', theme)
+		
+		// console.log('Workspace, timeMetrics:', this.state.timeMetrics)
 
 		return (
 			<Container>
@@ -217,6 +227,15 @@ class Workspace extends Component {
 								preserveAspectRatio="none"
 								onClick={this.handleProgressClick}
 							>
+								<line
+									x1={this.state.audioTimePercent - .1}
+									y1="0"
+									x2={this.state.audioTimePercent - .1}
+									y2={`${400 / this.state.chanels.length}px`}
+									stroke={theme.palette.primary.accent}
+									strokeWidth="0.1"
+								/>
+								{/*
 								<rect 
 									className="waveform-time"
 									x="0"
@@ -228,6 +247,35 @@ class Workspace extends Component {
 										background: 'red'
 									}}
 								/>
+								*/}
+								<svg
+									viewBox={'0 0 100 100'}
+									width="100%"
+									height={`${1 * this.state.chanels.length}px`}
+									preserveAspectRatio="none"
+								>
+									<rect 
+										className="waveform-time"
+										x="0"
+										y="0"
+										width="100%"
+										height="100"
+										fill="#666"
+									/>
+									{	chanel.map((bucket, i) => (	// <- Wrong metrics, needs to somhow map over duration?
+										<line
+											key={i}
+											x1={i}
+											y1="50"
+											x2={i}
+											y2="100"
+											stroke="#fff"
+											strokeWidth="0.1"
+										/>
+									))
+
+									}
+								</svg>
 								<rect 
 									className="waveform-bg"
 									x="0"
