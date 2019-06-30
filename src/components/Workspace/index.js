@@ -100,6 +100,7 @@ class Workspace extends Component {
       audioContext: this.audioCtx,
       barHeight: this.state.barHeight,
       splitChannels: channelCount === 2,
+      height: 200 / channelCount,
       plugins: [
 		    this.timelinePlugin
 		  ]
