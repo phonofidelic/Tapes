@@ -39,7 +39,7 @@ class Workspace extends Component {
 			audioTimePercent: 0,
 			audioDuration: 0,
 			playing: false,
-			barHeight: 10,
+			barHeight: 2,
 		}
 
 		let params = new URLSearchParams(window.location.search);
@@ -143,15 +143,7 @@ class Workspace extends Component {
 		console.log('handleProgressClick', e)
 		// Get time position from click X pos
 		const time = (e.clientX / window.innerWidth) * this.state.audioDuration;
-		// console.log(time)
 		this.source.mediaElement.currentTime = time;
-
-		// Play audio from new position
-		this.source.mediaElement.play();
-		this.wavesurfer.play();
-		clearInterval(this.intervalID);
-		this.startTimer();
-		this.setState({ playing: true });
 	}
 
 	render() {
