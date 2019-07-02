@@ -15,11 +15,10 @@ import {
 	SectionBody,
 } from 'components/CommonUI';
 
+import RecordingIndicator from 'components/Recorder/RecordingIndicator';
+
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
-
-// const Datauri = window.require('datauri');
-// const datauri = new Datauri();
 
 class Recorder extends Component {
 	componentDidMount() {
@@ -65,6 +64,7 @@ class Recorder extends Component {
 			<Container>
 				<Section>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
+					{ recorder.isRecording && <RecordingIndicator />}
 				</Section>
 				{ recorder.monitorInstance && <AudioAnalyser audio={recorder.monitorInstance} /> }
 				<RecorderControls
