@@ -21,12 +21,43 @@ const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
 class Recorder extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			seconds: 0,
+			minutes: 0,
+			hours: 0,
+		}
+	}
+
 	componentDidMount() {
 		ipcRenderer.on('rec:set_rec_file', this.handleSetRecFile)
 	}
 
 	componentWillUnmount() {
 		ipcRenderer.removeListener('rec:set_rec_file', this.handleSetRecFile)
+		this.stopTimer()
+	}
+
+	startTimer = () => {
+		this.secondInterval = setInterval(() => this.setState({
+			seconds: this.state.seconds + 1
+		}), 1000);
+
+		this.minuteInterval = setInterval(() => this.setState({
+			minutes: this.state.minutes + 1
+		}), 1000 * 60);
+
+		this.hourInterval = setInterval(() => this.setState({
+			hours: this.state.hours + 1
+		}), 1000 * 3600);
+	}
+
+	stopTimer = () => {
+		if (this.secondInterval) clearInterval(this.secondInterval);
+		if (this.minuteInterval) clearInterval(this.minuteInterval);
+		if (this.hourInterval) clearInterval(this.hourInterval);
 	}
 
 	handleStartRec = () => {
@@ -42,6 +73,7 @@ class Recorder extends Component {
   handleStopRec = () => {
   	const { settings, recordingFile } = this.props;
     console.log('stop', this.props.recorder.isRecording)
+    this.stopTimer();
     this.props.stopRecording(settings, recordingFile);
   }
 
@@ -59,12 +91,12 @@ class Recorder extends Component {
 
 	render() {
 		const { recorder } = this.props;
-
+		console.log('seconds:', this.state.seconds)
 		return (
 			<Container>
 				<Section>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
-					{ recorder.isRecording && <RecordingIndicator />}
+					{ recorder.isRecording && <RecordingIndicator /> }
 				</Section>
 				{ recorder.monitorInstance && <AudioAnalyser audio={recorder.monitorInstance} /> }
 				<RecorderControls

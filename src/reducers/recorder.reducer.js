@@ -15,6 +15,7 @@ export const INITIAL_STATE = {
 	recordingFile: null,
 	monitoring: false,
 	monitorInstance: null,
+	time: 0,
 	error: null,
 }
 

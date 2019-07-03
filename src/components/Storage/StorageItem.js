@@ -1,4 +1,5 @@
-import React, { Component, Fragment, useState } from 'react';
+import React, { Component, Fragment, useState, useContext } from 'react';
+import { ThemeContext } from 'theme.context';
 
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
@@ -16,12 +17,15 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import EditRecordingForm from 'components/Storage/EditRecordingForm';
 
-export default function(props) {
+export default function StorageItem(props) {
 	const { 
 		recording,
 		handleDeleteRecording,
 		handleOpenRecording,
 	} = props;
+
+	const theme = useContext(ThemeContext);
+
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [editMode, setEditMode] = useState(false);
 
@@ -68,7 +72,11 @@ export default function(props) {
 		>
 		{ !editMode ?
 			<Fragment>
-				<span style={{ width: '100%' }}>
+				<span style={{ 
+					width: '100%', 
+					// borderBottom: `4px solid ${theme.palette.primary.accent}` ,
+					// paddingBottom: 5
+				}}>
 					{ recording.title }
 				</span>
 				<span style={{ width: '50px' }}>

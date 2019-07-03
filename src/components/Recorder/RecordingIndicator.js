@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { Fragment, useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { ThemeContext } from 'theme.context';
-import ReactStopwatch from 'react-stopwatch';
 
 import Typography from '@material-ui/core/Typography';
+
+import Timer from 'components/Recorder/Timer';
 
 const Container = styled.div`
 	background-color: #e63c36;
@@ -43,17 +44,7 @@ function RecordingIndicator(props) {
 					align="right"
 				>
 					<b>
-						<ReactStopwatch 
-							seconds={0}
-					    minutes={0}
-					    hours={0}
-					    onCallback={() => console.log('Finish')}
-					    render={({formatted, hours, minutes, seconds}) => {
-					    	return (
-					    		<div>{ formatted }</div>
-					    	)
-					    }}
-						/>
+						<Timer />
 					</b>
 				</Typography>
 			</div>

@@ -8,6 +8,7 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MicIcon from '@material-ui/icons/Mic';
 import StorageIcon from '@material-ui/icons/Storage';
+import Tooltip from '@material-ui/core/Tooltip';
 import TuneIcon from '@material-ui/icons/Tune';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -50,31 +51,66 @@ function Navigation(props)  {
 		<NavContainer 
 			value={locationPathname}
 			style={{backgroundColor: '#e9eae6'}}
-		>
+		>	
 			<BottomNavigationAction
+				style={{width: '100%'}}
 				label="Recorder" 
 				icon={<MicIcon />}
-				style={{width: '100%'}}
 				component={NavItem}
 				to="/"
 				value="/"
 			/>
-			<BottomNavigationAction
-				label="Storage" 
-				icon={<StorageIcon />} 
-				style={{width: '100%'}}
-				component={NavItem}
-				to="/storage"
-				value="/storage"
-			/>
-			<BottomNavigationAction
-				label="Settings" 
-				icon={<SettingsIcon />} 
-				style={{width: '100%'}}
-				component={NavItem}
-				to="/settings"
-				value="/settings"
-			/>
+
+			{ props.isRecording ?
+				<Tooltip title="Disabled while recording">
+					<BottomNavigationAction
+						style={{
+							width: '100%',
+							color: '#d3d3d3',
+							cursor: 'not-allowed',
+						}}
+						label="Storage" 
+						icon={<StorageIcon />}
+					/>
+				</Tooltip>
+				:
+				<BottomNavigationAction
+					style={{
+						width: '100%',
+						color: props.isRecording ? '#d3d3d3' : null
+					}}
+					label="Storage" 
+					icon={<StorageIcon />} 
+					component={NavItem}
+					to="/storage"
+					value="/storage"
+				/>
+			}
+
+			{ props.isRecording ?
+				<Tooltip title="Disabled while recording">
+					<BottomNavigationAction
+						style={{
+							width: '100%',
+							color: '#d3d3d3',
+							cursor: 'not-allowed',
+						}}
+						label="Storage"
+						icon={<SettingsIcon />} 
+					/>
+				</Tooltip>
+				:
+				<BottomNavigationAction
+					style={{
+						width: '100%'
+					}}
+					label="Settings" 
+					icon={<SettingsIcon />} 
+					component={NavItem}
+					to="/settings"
+					value="/settings"
+				/>
+			}
 		}
 		</NavContainer>
 	);
@@ -82,7 +118,8 @@ function Navigation(props)  {
 
 const mapStateToProps = state => {
 	return {
-		locationPathname: state.router.location.pathname
+		locationPathname: state.router.location.pathname,
+		isRecording: state.recorder.isRecording,
 	}
 }
 
