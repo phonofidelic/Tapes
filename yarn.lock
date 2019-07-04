@@ -6955,6 +6955,10 @@ node-abi@^2.8.0:
   dependencies:
     semver "^5.4.1"
 
+node-audiorecorder@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/node-audiorecorder/-/node-audiorecorder-1.4.1.tgz#e0de85e1644b22ea8f27b780f211ec3f9ca0b13a"
+
 node-fetch-npm@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/node-fetch-npm/-/node-fetch-npm-2.0.2.tgz#7258c9046182dca345b4208eda918daf33697ff7"

@@ -5,7 +5,6 @@ const {
 } = electron;
 const fs = require('fs');
 const path = require('path');
-const { spawn } = require('child_process');
 const uuidv4 = require('uuid/v4');
 const fixPath = require('fix-path');
 fixPath();
@@ -15,8 +14,7 @@ const {
 	REDUX_DEVTOOLS
 } = require('electron-devtools-installer');
 const isDev = require('electron-is-dev');
-// const Datauri = require('datauri');
-// const datauri = new Datauri();
+const AudioRecorder = require('node-audiorecorder');
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 const { serveStatic } = require('../app/utils');
@@ -34,38 +32,55 @@ function openDirSelect(renderer) {
 	})
 }
 
-let rec; //	<-- TODO: Refactor bad global variable?
-function newRecording(renderer, settings) {
-	let audioIn_readStream;
-	let audioFile_writeStream;
-	const FORMAT = 'mp3';
+// TODO: Refactor bad global variables?
+let rec; 
+let audioRecorder
 
-	recordingFileName = `${uuidv4()}.${settings.format.file}`
-	console.log('\n*** newRecording, settings.format.channels', parseInt(settings.format.channels, 10))
-	audioFile_writeStream = fs.WriteStream(path.resolve(settings.saveDir, recordingFileName));
+function newRecording(renderer, settings) {
+	let audioFile_writeStream;
+
+	const channels = parseInt(settings.format.channels, 10);
+	const fileFormat = settings.format.file
+	const recordingFileName = `${uuidv4()}.${fileFormat}`;
+	const maxDurration = 10;
+	const savePath = path.resolve(settings.saveDir, recordingFileName);
+	const tmpPath = path.resolve( __dirname, '..', 'tmp', recordingFileName);
+
+	
+	console.log('\n*** newRecording, recordingFileName', recordingFileName)
+	audioFile_writeStream = fs.WriteStream(savePath);
 	
 	renderer.webContents.send('rec:set_rec_file', recordingFileName)
 
-	// Execute rec and pipe output to stdout, then create audioIn_readStream from stout.
-	rec = spawn(
-		'rec', 
-		[
-			'-c', parseInt(settings.format.channels, 10),
-			'-t', settings.format.file, 		// Set format
-			'-'								// Pipe to stdout
-		],
-	); // Command from https://superuser.com/a/583757
+	const recorderOptions = {
+		program: 'rec',
+		device: null,
+		bits: 16,
+		channels: channels,
+		encoding: 'signed-integer',
+		rate: 16000,
+  	type: fileFormat
+	};
+	audioRecorder = new AudioRecorder(recorderOptions, console);
 
-	audioIn_readStream = rec.stdout;
-
-	audioIn_readStream
+	audioRecorder.start().stream()
 	.pipe(audioFile_writeStream);
+
+	audioRecorder.stream().on(`close`, function(code) {
+		console.warn(`Recording closed. Exit code: `, code);
+	});
+	audioRecorder.stream().on(`end`, function() {
+		console.warn(`Recording ended.`);
+	});
+	audioRecorder.stream().on(`error`, function() {
+		console.warn(`Recording error.`);
+	});
 }
 
 function stopRecording(e) {
 	console.log('\n*** stop recording')
-	rec.kill();
-	rec = undefined;
+	audioRecorder.stop()
+	audioRecorder = undefined;
 }
 
 function loadRecordings(recorderWindow, saveDir) {
