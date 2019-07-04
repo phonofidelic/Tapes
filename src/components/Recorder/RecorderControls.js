@@ -42,7 +42,7 @@ const RecorderControls = props => {
     	{	!isRecording ?
 				<ControllButton 
 					style={{
-						color: 'red',
+						color: '#e63c36',
 						// border: '1px solid red',
 					}} 
 					onClick={() => handleStartRec()}
