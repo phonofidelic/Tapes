@@ -6,6 +6,8 @@ import IconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 
+import FormattedTime from 'components/FormattedTime';
+
 const ControlsContainer = styled.div`
 	position: fixed;
 	bottom: 0;
@@ -16,10 +18,12 @@ const ControlsContainer = styled.div`
 `
 
 const TimeInfo = styled.div`
+	// border: 1px solid red;
 	width: 100px;
 	padding-top: 15px;
+	padding-left: 10px;
 	flex-grow: 1;
-	text-align: center;
+	// text-align: justify;
 `
 
 function Controls(props) {
@@ -35,7 +39,7 @@ function Controls(props) {
 	return (
 		<ControlsContainer>
 			<TimeInfo theme={theme}>
-				<span style={{width: 50}}>{time.toFixed(2)}</span> / <span style={{width: 50}}>{duration.toFixed(2)}</span>
+				<FormattedTime time={time * 1000} />
 			</TimeInfo>
 			<div style={{flexGrow: 1, textAlign: 'center'}}>
 				<IconButton onClick={() => handleTogglePlay()}>

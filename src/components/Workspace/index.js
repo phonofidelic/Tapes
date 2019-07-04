@@ -5,6 +5,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
+import { ThemeContext } from 'theme.context'
 
 import {
 	Container,
@@ -12,8 +13,6 @@ import {
 	SectionTitle,
 	SectionBody,
 } from 'components/CommonUI';
-import { ThemeContext } from 'theme.context'
-
 import Controls from 'components/Workspace/Controls';
 
 const electron = window.require('electron');
@@ -151,7 +150,7 @@ class Workspace extends Component {
 		const { playing } = this.state;
 		const theme = this.context;
 
-		// console.log('Workspace, timeMetrics:', this.state.timeMetrics)
+		// console.log('Workspace, this.state.audioTime:', this.state.audioTime)
 		return (
 			<Container>
 				<GlobalStyle />

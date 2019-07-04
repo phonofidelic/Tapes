@@ -4,7 +4,7 @@ import { ThemeContext } from 'theme.context';
 
 import Typography from '@material-ui/core/Typography';
 
-import Timer from 'components/Recorder/Timer';
+import Timer from 'components/Timer';
 
 const Container = styled.div`
 	background-color: #e63c36;
