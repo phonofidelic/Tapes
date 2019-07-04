@@ -1,7 +1,9 @@
-## Installation
+## Installing the latest release
 Go to [releases](https://github.com/phonofidelic/Tapes/releases) to find the latest version. At the moment, recording audio with Tapes requires [SoX](http://sox.sourceforge.net/) to be installed on your machine ([download](https://sourceforge.net/projects/sox/files/sox/)).
 
 ## Development
+### Installation:
+`git clone https://github.com/phonofidelic/Tapes.git && cd Tapes`
 
 ### Scripts:
 `yarn`
