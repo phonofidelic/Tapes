@@ -114,7 +114,6 @@ class Recorder extends Component {
 }
 
 const mapStateToProps = state => {
-	// console.log('recorder state:', state)
 	return {
 		recorder: state.recorder,
 		saveDir: state.settings.saveDir,

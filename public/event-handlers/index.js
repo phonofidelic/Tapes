@@ -44,8 +44,6 @@ function newRecording(renderer, settings) {
 	const recordingFileName = `${uuidv4()}.${fileFormat}`;
 	const maxDurration = 10;
 	const savePath = path.resolve(settings.saveDir, recordingFileName);
-	const tmpPath = path.resolve( __dirname, '..', 'tmp', recordingFileName);
-
 	
 	console.log('\n*** newRecording, recordingFileName', recordingFileName)
 	audioFile_writeStream = fs.WriteStream(savePath);

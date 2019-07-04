@@ -155,9 +155,7 @@ class Workspace extends Component {
 			<Container>
 				<GlobalStyle />
 				<SectionTitle variant="overline">Workspace - {recording && recording.title}</SectionTitle>
-				<div style={{ 
-					// margin: 20 
-				}}>
+				<div>
 
 					<div>
 						<div id="timeline" ref={this.timelineEl} />
