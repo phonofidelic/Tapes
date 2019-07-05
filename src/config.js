@@ -10,3 +10,4 @@ export const theme = {
 	}
 };
 
+export const STORAGE_VERSION = 1

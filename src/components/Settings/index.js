@@ -58,7 +58,7 @@ class Settings extends Component {
 
 	handleSetFileFormat = (e, {props}) => {
 		this.props.setFormat({
-			...this.props.format, 
+			...this.props.settings.format, 
 			file: props.value
 		});
 	}
@@ -66,13 +66,13 @@ class Settings extends Component {
 	handleSetChannelCount = (e, channelCount) => {
 		console.log('handleSetChannelCount, channelCount:', channelCount)
 		this.props.setFormat({
-			...this.props.format, 
+			...this.props.settings.format, 
 			channels: channelCount
 		});
 	}
 
 	render() {
-		const { saveDir, format } = this.props;
+		const { settings } = this.props;
 
 		// console.log('Settings, format:', format)
 		return (
@@ -82,7 +82,7 @@ class Settings extends Component {
 					<SectionSubTitle variant="caption">Storage</SectionSubTitle>
 					<SectionBody>
 						<Tooltip
-							title={saveDir || ''}
+							title={settings.saveDir || ''}
 							placement="top-end"
 							enterDelay={300}
 						>
@@ -91,7 +91,7 @@ class Settings extends Component {
 								variant="caption"
 								display="block"
 							>
-								Save folder: {saveDir || '(not set)'}
+								Save folder: {settings.saveDir || '(not set)'}
 							</Typography>
 						</Tooltip>
 							<Tooltip 
@@ -105,7 +105,7 @@ class Settings extends Component {
 									onClick={() => this.handleOpenDirSelect()}
 								>
 									{
-										!saveDir ? 
+										!settings.saveDir ? 
 										'Set save folder' 
 										:
 										'Change save folder'
@@ -134,7 +134,7 @@ class Settings extends Component {
 						>
 							<InputLabel htmlFor="input-format-file" ref={this.formatInputLabel}>Select an audio format</InputLabel>
 							<Select
-								value={format.file}
+								value={settings.format.file}
 								input={<OutlinedInput labelWidth={162} />}
 								id="input-format-file"
 								onChange={this.handleSetFileFormat}
@@ -163,7 +163,7 @@ class Settings extends Component {
 								style={{
 									display: 'inline',
 								}}
-								value={String(format.channels)}
+								value={String(settings.format.channels)}
 								id="input-format-channels"
 								onChange={this.handleSetChannelCount}
 							>
@@ -183,7 +183,8 @@ const mapStateToProps = state => {
 	console.log('settings state:', state)
 	return {
 		saveDir: state.settings.saveDir,
-		format: state.settings.format
+		format: state.settings.format,
+		settings: state.settings,
 	}
 }
 

@@ -10,7 +10,7 @@ import { history } from 'config'
 import { routerMiddleware } from 'connected-react-router';
 import throttle from 'lodash/throttle';
 
-
+import { STORAGE_VERSION } from 'config';
 /*** Persist state to localStorage ****
  *	From: https://egghead.io/lessons/javascript-redux-persisting-the-state-to-the-local-storage
  */
@@ -20,7 +20,14 @@ export const loadState = () => {
 		if (serializedState === null) {
 			return undefined;
 		}
-		return JSON.parse(serializedState);
+		const storage = JSON.parseparse(serializedState);
+		if (!storage.version || storage.version < STORAGE_VERSION) {
+			console.log('storage is out of date')
+			// TODO: Load updated storage object
+			return undefined;
+		}
+		console.log('storage:', storage)
+		return storage
 	} catch (err) {
 		return undefined;
 	}
@@ -55,15 +62,6 @@ export default ({ children, initialState = initGlobalState }) => {
 	const store = createStore(
 		reducer,
 		persistedState,
-		// {
-		// 	...persistedState,
-		// 	// Set everything not tracked by persistentState to initGlobalState defaults. TODO: refactor this
-		// 	// recorder: {
-		// 	// 	...persistedState.recorder,
-		// 	// 	isRecording: recorder.isRecording,
-		// 	// 	monitoring: recorder.monitoring,
-		// 	// },
-		// },
 		enhancer
 	);
 	// console.log('store:', store.getState())
