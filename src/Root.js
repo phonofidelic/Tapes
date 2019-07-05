@@ -18,17 +18,19 @@ export const loadState = () => {
 	try {
 		const serializedState = localStorage.getItem('state');
 		if (serializedState === null) {
+			console.log('savedState not found')
 			return undefined;
 		}
-		const storage = JSON.parseparse(serializedState);
-		if (!storage.version || storage.version < STORAGE_VERSION) {
-			console.log('storage is out of date')
+		const savedState = JSON.parse(serializedState);
+		if (!savedState.version || savedState.version < STORAGE_VERSION) {
+			console.log('savedState is out of date')
 			// TODO: Load updated storage object
 			return undefined;
 		}
-		console.log('storage:', storage)
-		return storage
+		console.log('savedState:', savedState)
+		return savedState
 	} catch (err) {
+		console.error('could not load savedState:', err)
 		return undefined;
 	}
 };
@@ -68,6 +70,7 @@ export default ({ children, initialState = initGlobalState }) => {
 
 	store.subscribe(throttle(() => {
 		saveState({
+			version: store.getState().version,
 			settings: store.getState().settings,
 		});
 	}, 1000));

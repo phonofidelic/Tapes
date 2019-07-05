@@ -10,4 +10,4 @@ export const theme = {
 	}
 };
 
-export const STORAGE_VERSION = 1.0
+export const STORAGE_VERSION = 1.0;
