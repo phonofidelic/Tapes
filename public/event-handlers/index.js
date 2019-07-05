@@ -42,7 +42,6 @@ function newRecording(renderer, settings) {
 	const channels = parseInt(settings.format.channels, 10);
 	const fileFormat = settings.format.file
 	const recordingFileName = `${uuidv4()}.${fileFormat}`;
-	const maxDurration = 10;
 	const savePath = path.resolve(settings.saveDir, recordingFileName);
 	
 	console.log('\n*** newRecording, recordingFileName', recordingFileName)
@@ -57,7 +56,8 @@ function newRecording(renderer, settings) {
 		channels: channels,
 		encoding: 'signed-integer',
 		rate: 16000,
-  	type: fileFormat
+  	type: fileFormat,
+  	silence: 0,
 	};
 	audioRecorder = new AudioRecorder(recorderOptions, console);
 
@@ -73,6 +73,9 @@ function newRecording(renderer, settings) {
 	audioRecorder.stream().on(`error`, function() {
 		console.warn(`Recording error.`);
 	});
+
+	audioFile_writeStream.on('close', () => console.log('audioFile_writeStream stream closed'))
+	audioFile_writeStream.on('error', (err) => console.log('audioFile_writeStream error:', err))
 }
 
 function stopRecording(e) {
