@@ -1,4 +1,5 @@
 const electron = require('electron');
+const isDev = require('electron-is-dev');
 const { BrowserWindow } = electron;
 
 class RecorderWindow extends BrowserWindow {
@@ -13,7 +14,7 @@ class RecorderWindow extends BrowserWindow {
 	    resizable: false,
 	    show: false,
 		});
-		// this.on('blur', this.handleBlur.bind(this)); // disable for development
+		!isDev && this.on('blur', this.handleBlur.bind(this)); // disable for development
 	}
 
 	handleBlur() {
