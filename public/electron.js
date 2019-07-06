@@ -32,8 +32,9 @@ const {
 const {
 	app,
 	BrowserWindow,
+	dialog,
 	ipcMain,
-	dialog
+	Menu
 } = electron;
 
 let recorderWindow;
@@ -51,6 +52,9 @@ app.on('ready', async () => {
 	const iconPath = path.join(__dirname, `../src/assets/${iconName}`);
 	tray = new RecorderTray(iconPath, recorderWindow);
 
+	const mainMenu = Menu.buildFromTemplate(menuTemplate);
+	Menu.setApplicationMenu(mainMenu);
+
 	installExtension(REACT_DEVELOPER_TOOLS)
   .then((name) => console.log(`Added Extension: ${name}`))
   .catch((err) => console.log('An error occurred: ', err));
@@ -63,6 +67,18 @@ app.on('ready', async () => {
   .then(name => console.log(`Added Extension: ${name}`))
   .catch(err => console.log('An error occurred: ', err));
 });
+
+const menuTemplate = [
+	{
+		label: 'Tapes',
+		submenu: [
+			{ 
+				label: 'Quit Tapes',
+				role: 'quit'
+			}
+		]
+	}
+]
 
 ipcMain.on('rec:start', (e, saveDir) => newRecording(recorderWindow, saveDir));
 ipcMain.on('rec:stop', (e) => stopRecording(recorderWindow));
