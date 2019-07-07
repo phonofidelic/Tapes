@@ -15,6 +15,7 @@ const {
 } = require('electron-devtools-installer');
 const isDev = require('electron-is-dev');
 const AudioRecorder = require('node-audiorecorder');
+const { getAudioDurationInSeconds } = require('get-audio-duration')
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 const { serveStatic } = require('../app/utils');
@@ -33,8 +34,10 @@ function openDirSelect(renderer) {
 }
 
 // TODO: Refactor bad global variables?
-let rec; 
-let audioRecorder
+// let rec; 
+let audioRecorder;
+let recDuration = 0;
+let recTimer;
 
 function newRecording(renderer, settings) {
 	let audioFile_writeStream;
@@ -54,12 +57,14 @@ function newRecording(renderer, settings) {
 		device: null,
 		bits: 16,
 		channels: channels,
-		encoding: 'signed-integer',
+		encoding: 'unsigned-integer',
 		rate: 16000,
   	type: fileFormat,
   	silence: 0,
 	};
 	audioRecorder = new AudioRecorder(recorderOptions, console);
+
+	recTimer = setInterval(() => recDuration++, 1)
 
 	audioRecorder.start().stream()
 	.pipe(audioFile_writeStream);
@@ -78,9 +83,10 @@ function newRecording(renderer, settings) {
 	audioFile_writeStream.on('error', (err) => console.log('audioFile_writeStream error:', err))
 }
 
-function stopRecording(e) {
-	console.log('\n*** stop recording')
-	audioRecorder.stop()
+function stopRecording(recorderWindow, settings, recordingFile) {
+	console.log('\n*** stop recording, settings:', settings);
+	audioRecorder.stop();
+	clearInterval(recTimer);
 	audioRecorder = undefined;
 }
 

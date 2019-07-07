@@ -25,14 +25,16 @@ class Recorder extends Component {
 		super(props);
 
 		this.state = {
-			seconds: 0,
-			minutes: 0,
-			hours: 0,
+			time: 0,
+			// seconds: 0,
+			// minutes: 0,
+			// hours: 0,
 		}
 	}
 
 	componentDidMount() {
 		ipcRenderer.on('rec:set_rec_file', this.handleSetRecFile)
+		// ipcRenderer.on('rec:set_rec_duration', (e, duration) => this.props.setRecDuration(duration))
 	}
 
 	componentWillUnmount() {
@@ -41,29 +43,35 @@ class Recorder extends Component {
 	}
 
 	startTimer = () => {
-		this.secondInterval = setInterval(() => this.setState({
-			seconds: this.state.seconds + 1
-		}), 1000);
+		this.timerInterval = setInterval(() => this.setState({
+			time: this.state.time + 1
+		}), 1);
 
-		this.minuteInterval = setInterval(() => this.setState({
-			minutes: this.state.minutes + 1
-		}), 1000 * 60);
+		// this.secondInterval = setInterval(() => this.setState({
+		// 	seconds: this.state.seconds + 1
+		// }), 1000);
 
-		this.hourInterval = setInterval(() => this.setState({
-			hours: this.state.hours + 1
-		}), 1000 * 3600);
+		// this.minuteInterval = setInterval(() => this.setState({
+		// 	minutes: this.state.minutes + 1
+		// }), 1000 * 60);
+
+		// this.hourInterval = setInterval(() => this.setState({
+		// 	hours: this.state.hours + 1
+		// }), 1000 * 3600);
 	}
 
 	stopTimer = () => {
-		if (this.secondInterval) clearInterval(this.secondInterval);
-		if (this.minuteInterval) clearInterval(this.minuteInterval);
-		if (this.hourInterval) clearInterval(this.hourInterval);
+		if (this.timerInterval) clearInterval(this.timerInterval);
+		// if (this.secondInterval) clearInterval(this.secondInterval);
+		// if (this.minuteInterval) clearInterval(this.minuteInterval);
+		// if (this.hourInterval) clearInterval(this.hourInterval);
 	}
 
 	handleStartRec = () => {
 		const { settings } = this.props;
     console.log('start', this.props.recorder.isRecording)
     this.props.startRecording(settings);
+    this.startTimer()
   }
 
   handleSetRecFile = (e, recordingFile) => {
@@ -91,7 +99,6 @@ class Recorder extends Component {
 
 	render() {
 		const { recorder } = this.props;
-		console.log('seconds:', this.state.seconds)
 		return (
 			<Container>
 				<Section>

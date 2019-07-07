@@ -49,17 +49,20 @@ export const setRecFile = (recordingFile) => {
 }
 
 export const stopRecording = (settings, recordingFile) => {
-	console.log('stopRec, recordingFile:', recordingFile)
-	ipcRenderer.send('rec:stop');
+	console.log('stopRec')
+	const recordingId = uuidv4();
 	const newRecording = {
-		id: uuidv4(),
+		id: recordingId,
 		title: `${moment().format('MMM Do YYYY, hh:mm:ss a')}`,
 		src: `${settings.saveDir}/${recordingFile}`,
 		filename: recordingFile,
 		format: settings.format,
+		// TODO: set duration
 		created: Date.now(),
 		updated: Date.now(),
 	}
+
+	ipcRenderer.send('rec:stop', settings, recordingFile);
 
 	return dispatch => {
 		dispatch({

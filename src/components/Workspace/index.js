@@ -34,10 +34,9 @@ class Workspace extends Component {
 		super(props);
 
 		this.state = {
-			audioTime: 0,
-			audioTimePercent: 0,
 			audioDuration: 0,
 			playing: false,
+			currentTime: 0,
 			barHeight: 2,
 		}
 
@@ -60,14 +59,10 @@ class Workspace extends Component {
 	}
 
 	handleOnLoadedMetadata = (e) => {
-		console.log('handleAudioElementMounted, e:', e)
+		console.log('handleAudioElementMounted, e.target.duration:', e.target.duration)
 		this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
 		this.source.connect(this.audioCtx.destination);
-				
-		this.setState({
-			audioDuration: e.target.duration,
-		})
-
+		
 		this.audioElement.current.addEventListener('ended', (e) => {
 			console.log('*** Recording ended')
 			clearInterval(this.intervalID);
@@ -77,6 +72,10 @@ class Workspace extends Component {
 		})
 		
 		this.loadWaveformDada();
+	}
+
+	handleOnComplete = e => {
+		console.log('handleOnComplete, e.target.duration:', e.target.duration)
 	}
 
 	loadWaveformDada = () => {
@@ -105,32 +104,41 @@ class Workspace extends Component {
 		  ]
     });
     this.wavesurfer.load(srcURL);
+
+    this.wavesurfer.on('ready', () => this.setDuration(this.wavesurfer.getDuration()));
+    this.wavesurfer.on('finish', () => this.handleEnded());
+    this.wavesurfer.on('seek', progress => this.handleSeek());
+	}
+
+	setDuration = duration => {
+		console.log('setDuration, duration:', duration)
+		this.setState({ audioDuration: duration })
 	}
 
 	startTimer = () => {
-		// console.log('startTimer, this.audioCtx:', this.audioCtx)
 		if (this.intervalID) clearInterval(this.intervalID);
 
 		this.intervalID = setInterval(() => {
-			// console.log('time:', this.source.mediaElement.currentTime)
+			// console.log('wavesurfer time:', Math.trunc(this.wavesurfer.getCurrentTime()*1000))
 			this.setState({
-				audioTime: this.source.mediaElement.currentTime,
-				audioTimePercent: (this.source.mediaElement.currentTime / this.source.mediaElement.duration) * 100 //  / durration
+				currentTime: this.wavesurfer.getCurrentTime(),
 			})
-		}, 100)
+		}, 1)
+	}
+
+	stopTimer = () => {
+		if (this.intervalID) clearInterval(this.intervalID);
 	}
 
 	handleTogglePlay = (e) => {
 		if (!this.state.playing) {
 			console.log('play', this.source)
-			this.source.mediaElement.play();
 			this.wavesurfer.play();
 			this.startTimer();
 		} else {
 			console.log('stop', this.source)
-			this.source.mediaElement.pause();
 			this.wavesurfer.pause();
-			clearInterval(this.intervalID);
+			this.stopTimer();
 		}
 
 		this.setState({
@@ -138,11 +146,21 @@ class Workspace extends Component {
 		})
 	}
 
-	handleProgressClick = (e) => {
-		console.log('handleProgressClick', e)
-		// Get time position from click X pos
-		const time = (e.clientX / window.innerWidth) * this.state.audioDuration;
-		this.source.mediaElement.currentTime = time;
+	handleSeek = () => {
+		console.log('handleSeek, currentTime:', this.wavesurfer.getCurrentTime())
+		this.setState({ 
+			currentTime: this.wavesurfer.getCurrentTime(),
+		});
+	}
+
+	handleEnded = () => {
+		console.log('handleEnded')
+		this.wavesurfer.stop();
+		this.stopTimer();
+		this.setState({ 
+			currentTime: 0,
+			playing: false,
+		});
 	}
 
 	render() {
@@ -150,7 +168,7 @@ class Workspace extends Component {
 		const { playing } = this.state;
 		const theme = this.context;
 
-		// console.log('Workspace, this.state.audioTime:', this.state.audioTime)
+		// console.log('Workspace, this.state.currentTime:', this.state.currentTime)
 		return (
 			<Container>
 				<GlobalStyle />
@@ -162,7 +180,6 @@ class Workspace extends Component {
 						<div
 							id="waveform" 
 							ref={this.waveformEl}
-							onClick={this.handleProgressClick}
 						/>
 					</div>
 
@@ -170,16 +187,17 @@ class Workspace extends Component {
 						<audio 
 							ref={this.audioElement}
 							//controls
-							preload="true"
+							preload="auto"
 							crossOrigin="anonymous"
 							src={`http://localhost:5000/recordings/${recording.filename}`}
 							onLoadedMetadata={this.handleOnLoadedMetadata}
+							onEnded={this.handleEnded}
 						/>
 					}
 
 					<Controls
 						playing={playing}
-						time={this.state.audioTime}
+						time={this.state.currentTime}
 						duration={this.state.audioDuration}
 						handleTogglePlay={this.handleTogglePlay}
 					/>
