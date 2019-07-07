@@ -9,16 +9,18 @@ import PauseIcon from '@material-ui/icons/Pause';
 import FormattedTime from 'components/FormattedTime';
 
 const ControlsContainer = styled.div`
+	// border: 1px solid red;
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	display: flex;
-	justify-content: center;
+	// justify-content: center;
 	padding: 10px;
 `
 
 const TimeInfo = styled.div`
 	// border: 1px solid red;
+	display: flex;
 	width: 100px;
 	padding-top: 15px;
 	padding-left: 10px;
@@ -39,18 +41,28 @@ function Controls(props) {
 	return (
 		<ControlsContainer>
 			<TimeInfo theme={theme}>
-				<FormattedTime time={time * 1000} />
+				<div style={{marginRight: 5}}>
+					<FormattedTime time={time * 1000} />
+				</div>
 			</TimeInfo>
 			<div style={{flexGrow: 1, textAlign: 'center'}}>
 				<IconButton onClick={() => handleTogglePlay()}>
 				{!playing ? <PlayIcon /> : <PauseIcon />}
 				</IconButton>
 			</div>
+			
 			<div style={{
-				flexGrow: 1, 
-				width: 100,
-				textAlign: 'center'
+				// border: '1px solid red',
+				display: 'flex',
+				justifyContent: 'flex-end',
+				flexGrow: 1,
+				width: '100px',
+				textAlign: 'right', 
+				// width: 100,
+				paddingTop: 15,
+				paddingRight: 25,
 			}}>
+				<FormattedTime time={duration * 1000} />
 			</div>
 		</ControlsContainer>
 	)
