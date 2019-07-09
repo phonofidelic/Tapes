@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -9,8 +9,6 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import MicIcon from '@material-ui/icons/Mic';
 import StorageIcon from '@material-ui/icons/Storage';
 import Tooltip from '@material-ui/core/Tooltip';
-import TuneIcon from '@material-ui/icons/Tune';
-import { makeStyles } from '@material-ui/core/styles';
 
 const Container = styled.div`
 	background-color: #e9eae6;

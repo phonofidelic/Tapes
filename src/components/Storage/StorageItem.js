@@ -1,19 +1,13 @@
-import React, { Component, Fragment, useState, useContext } from 'react';
-import { ThemeContext } from 'theme.context';
+import React, { Fragment, useState } from 'react';
 
-import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import CloseIcon from '@material-ui/icons/Close';
-import CheckIcon from '@material-ui/icons/Check';
 import OpenIcon from '@material-ui/icons/Launch';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
-import Tooltip from '@material-ui/core/Tooltip';
 
 import EditRecordingForm from 'components/Storage/EditRecordingForm';
 
@@ -23,8 +17,6 @@ export default function StorageItem(props) {
 		handleDeleteRecording,
 		handleOpenRecording,
 	} = props;
-
-	const theme = useContext(ThemeContext);
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [editMode, setEditMode] = useState(false);

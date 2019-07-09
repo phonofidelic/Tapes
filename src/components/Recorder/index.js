@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-// import styled from 'styled-components';
 import * as actions from 'actions/recorder.actions';
 
-import Typography from '@material-ui/core/Typography';
-
 import AudioAnalyser from 'components/AudioAnalyser';
-import Monitor from 'components/Monitor';
 import RecorderControls from 'components/Recorder/RecorderControls';
 import {
 	Container,
 	Section,
 	SectionTitle,
-	SectionBody,
 } from 'components/CommonUI';
 
 import RecordingIndicator from 'components/Recorder/RecordingIndicator';
@@ -26,15 +21,11 @@ class Recorder extends Component {
 
 		this.state = {
 			time: 0,
-			// seconds: 0,
-			// minutes: 0,
-			// hours: 0,
 		}
 	}
 
 	componentDidMount() {
 		ipcRenderer.on('rec:set_rec_file', this.handleSetRecFile)
-		// ipcRenderer.on('rec:set_rec_duration', (e, duration) => this.props.setRecDuration(duration))
 	}
 
 	componentWillUnmount() {
@@ -46,25 +37,10 @@ class Recorder extends Component {
 		this.timerInterval = setInterval(() => this.setState({
 			time: this.state.time + 1
 		}), 1);
-
-		// this.secondInterval = setInterval(() => this.setState({
-		// 	seconds: this.state.seconds + 1
-		// }), 1000);
-
-		// this.minuteInterval = setInterval(() => this.setState({
-		// 	minutes: this.state.minutes + 1
-		// }), 1000 * 60);
-
-		// this.hourInterval = setInterval(() => this.setState({
-		// 	hours: this.state.hours + 1
-		// }), 1000 * 3600);
 	}
 
 	stopTimer = () => {
 		if (this.timerInterval) clearInterval(this.timerInterval);
-		// if (this.secondInterval) clearInterval(this.secondInterval);
-		// if (this.minuteInterval) clearInterval(this.minuteInterval);
-		// if (this.hourInterval) clearInterval(this.hourInterval);
 	}
 
 	handleStartRec = () => {
@@ -86,7 +62,6 @@ class Recorder extends Component {
   }
 
   handleStartMonitor = async () => {
-  	const { recorder } = this.props;
   	const monitorInstance = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
   	this.props.startMonitor(monitorInstance);
   }

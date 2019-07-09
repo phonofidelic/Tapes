@@ -1,7 +1,6 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/storage.actions';
-import styled from 'styled-components';
 
 import List from '@material-ui/core/List';
 
@@ -10,15 +9,10 @@ import {
 	Container,
 	Section,
 	SectionTitle,
-	SectionBody,
 } from 'components/CommonUI';
 
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
-
-const StyledList = styled(List)`
-	padding: 0px;
-`
 
 class Storage extends Component {
 	constructor(props) {

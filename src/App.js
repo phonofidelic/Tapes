@@ -14,7 +14,6 @@ class App extends Component {
     let params = new URLSearchParams(window.location.search);
     console.log('params, view:', params.get('view'))
     const view = params.get('view');
-    const recordingId = params.get('id');
 
     return (
       <div className="App">

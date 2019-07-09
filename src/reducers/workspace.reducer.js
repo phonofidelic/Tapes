@@ -1,5 +1,4 @@
 import {
-	OPEN_RECORDING,
 	LOAD_RECORDING,
 } from 'actions/types';
 

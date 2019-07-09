@@ -1,22 +1,16 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/workspace.actions';
-import styled, { createGlobalStyle } from 'styled-components';
-import axios from 'axios';
+import { createGlobalStyle } from 'styled-components';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import { ThemeContext } from 'theme.context'
 
 import {
 	Container,
-	Section,
 	SectionTitle,
-	SectionBody,
 } from 'components/CommonUI';
 import Controls from 'components/Workspace/Controls';
-
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
 
 const CANVAS_WIDTH =  window.innerWidth;
 const CANVAS_HEIGHT = 200;
@@ -166,9 +160,7 @@ class Workspace extends Component {
 	render() {
 		const { recording } = this.props;
 		const { playing } = this.state;
-		const theme = this.context;
 
-		// console.log('Workspace, this.state.currentTime:', this.state.currentTime)
 		return (
 			<Container>
 				<GlobalStyle />
