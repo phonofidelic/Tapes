@@ -4,13 +4,10 @@ import {
 	CANCEL_SET_SAVE_PATH,
 } from 'actions/types';
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
-
 export const openDirSelect = () => {
-	ipcRenderer.send('settings:open_dir_select');
-
 	return (dispatch) => {
+		const { ipcRenderer } = window.require('electron');
+		ipcRenderer.send('settings:open_dir_select');
 		dispatch({
 			type: OPEN_DIR_SELECT,
 		});

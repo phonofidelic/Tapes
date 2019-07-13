@@ -12,8 +12,6 @@ import {
 import * as moment from 'moment';
 import db from 'db';
 
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
 const uuidv4 = require('uuid/v4');
 
 export const startRecording = (settings) => {
@@ -26,13 +24,9 @@ export const startRecording = (settings) => {
 		}
 	}
 
-	ipcRenderer.send('rec:start', settings);
 	return dispatch => {
-		// const recording = {
-		// 	_id: Math.trunc(Date.now() * Math.random()),
-		// 	created: Date.now(),
-		// 	// src: path
-		// }
+		const { ipcRenderer } = window.require('electron');
+		ipcRenderer.send('rec:start', settings);
 		dispatch({
 			type: START_REC,
 		});
@@ -62,9 +56,9 @@ export const stopRecording = (settings, recordingFile) => {
 		updated: Date.now(),
 	}
 
-	ipcRenderer.send('rec:stop', settings, recordingFile);
-
 	return dispatch => {
+		const { ipcRenderer } = window.require('electron');
+		ipcRenderer.send('rec:stop', settings, recordingFile);
 		dispatch({
 			type: STOP_REC,
 		})

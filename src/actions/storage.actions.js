@@ -11,8 +11,7 @@ import {
 	} from 'actions/types';
 import db from 'db';
 
-const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
+const { ipcRenderer } = window.require('electron');
 
 export const loadRecordings = (recordings) => {
 	return dispatch => {
@@ -61,13 +60,15 @@ export const editRecording = recording => {
 
 export const deleteRecording = (id, path) => {
 	console.log('deleteRecording, path:', path)
+
 	return dispatch => {
+		const { ipcRenderer } = window.require('electron');
+		ipcRenderer.send('storage:delete', path);
+
 		dispatch({
 			type: DELETE_RECORDING,
 			id,
 		})
-
-		ipcRenderer.send('storage:delete', path);
 
 		db.recordings.where('id').equals(id)
 		.delete()
@@ -90,9 +91,10 @@ export const deleteRecording = (id, path) => {
 export const openRecording = recording => {
 	console.log('openRecording, recording:', recording)
 
-	ipcRenderer.send('rec:open', recording);
-
 	return dispatch => {
+		const { ipcRenderer } = window.require('electron');
+		ipcRenderer.send('rec:open', recording);
+		
 		dispatch({
 			type: OPEN_RECORDING,
 			recording
