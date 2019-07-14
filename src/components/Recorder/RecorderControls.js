@@ -36,7 +36,10 @@ const RecorderControls = props => {
 	return (
 		<Container data-testid={TEST_ID.RECORDER.CONTROLS.CONTAINER}>
 			<ButtonContainer width={20}>
-				<ControllButton onClick={() => !monitoring ? handleStartMonitor() : handleStopMonitor()}>
+				<ControllButton 
+					data-testid={ !monitoring ? TEST_ID.RECORDER.CONTROLS.MONITOR_START : TEST_ID.RECORDER.CONTROLS.MONITOR_STOP}
+					onClick={() => !monitoring ? handleStartMonitor() : handleStopMonitor()}
+				>
 					{ !monitoring ? <MicOffIcon /> : <MicIcon />}
 				</ControllButton>
 			</ButtonContainer>

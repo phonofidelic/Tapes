@@ -18,10 +18,6 @@ const ipcRenderer  = electron.ipcRenderer;
 class Recorder extends Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			time: 0,
-		}
 	}
 
 	componentDidMount() {
@@ -30,24 +26,12 @@ class Recorder extends Component {
 
 	componentWillUnmount() {
 		ipcRenderer.removeListener('rec:set_rec_file', this.handleSetRecFile)
-		this.stopTimer()
-	}
-
-	startTimer = () => {
-		this.timerInterval = setInterval(() => this.setState({
-			time: this.state.time + 1
-		}), 1);
-	}
-
-	stopTimer = () => {
-		if (this.timerInterval) clearInterval(this.timerInterval);
 	}
 
 	handleStartRec = () => {
 		const { settings } = this.props;
     console.log('start', this.props.recorder.isRecording)
     this.props.startRecording(settings);
-    this.startTimer()
   }
 
   handleSetRecFile = (e, recordingFile) => {
@@ -57,7 +41,6 @@ class Recorder extends Component {
   handleStopRec = () => {
   	const { settings, recordingFile } = this.props;
     console.log('stop', this.props.recorder.isRecording)
-    this.stopTimer();
     this.props.stopRecording(settings, recordingFile);
   }
 
