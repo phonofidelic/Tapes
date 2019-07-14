@@ -5,6 +5,8 @@ import Button from '@material-ui/core/Button';
 import MicIcon from '@material-ui/icons/Mic';
 import MicOffIcon from '@material-ui/icons/MicOff';
 
+import { TEST_ID } from 'constants/testIds';
+
 const Container = styled.div`
 	display: flex;
 	position: fixed;
@@ -32,7 +34,7 @@ const RecorderControls = props => {
 	} = props;
 
 	return (
-		<Container data-testid="recorder-controls_container">
+		<Container data-testid={TEST_ID.RECORDER.CONTROLS.CONTAINER}>
 			<ButtonContainer width={20}>
 				<ControllButton onClick={() => !monitoring ? handleStartMonitor() : handleStopMonitor()}>
 					{ !monitoring ? <MicOffIcon /> : <MicIcon />}
@@ -41,7 +43,6 @@ const RecorderControls = props => {
     	<ButtonContainer width={80}>
     	{	!isRecording ?
 				<ControllButton
-					data-testid="recorder-controls_rec-button"
 					style={{
 						color: '#e63c36',
 					}} 
@@ -51,7 +52,6 @@ const RecorderControls = props => {
 				</ControllButton>
 				:
 				<ControllButton
-					data-testid="recorder-controls_stop-button"
 					onClick={() => handleStopRec()}
 				>
 					stop
