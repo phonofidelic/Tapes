@@ -16,7 +16,7 @@ const ButtonContainer = styled.div`
 	width: ${props => props.width}%;
 `
 
-const ControllButton = styled(Button)`
+export const ControllButton = styled(Button)`
 	width: 100%;
 	height: 50px;
 `
@@ -32,7 +32,7 @@ const RecorderControls = props => {
 	} = props;
 
 	return (
-		<Container>
+		<Container data-testid="recorder-controls_container">
 			<ButtonContainer width={20}>
 				<ControllButton onClick={() => !monitoring ? handleStartMonitor() : handleStopMonitor()}>
 					{ !monitoring ? <MicOffIcon /> : <MicIcon />}
@@ -40,7 +40,8 @@ const RecorderControls = props => {
 			</ButtonContainer>
     	<ButtonContainer width={80}>
     	{	!isRecording ?
-				<ControllButton 
+				<ControllButton
+					data-testid="recorder-controls_rec-button"
 					style={{
 						color: '#e63c36',
 					}} 
@@ -49,7 +50,12 @@ const RecorderControls = props => {
 					rec
 				</ControllButton>
 				:
-				<ControllButton onClick={() => handleStopRec()}>stop</ControllButton>
+				<ControllButton
+					data-testid="recorder-controls_stop-button"
+					onClick={() => handleStopRec()}
+				>
+					stop
+				</ControllButton>
     	}
 			</ButtonContainer>
 		</Container>
