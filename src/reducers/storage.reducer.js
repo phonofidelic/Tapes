@@ -22,7 +22,7 @@ const storage = (state = INITIAL_STATE, action) => {
 		case ADD_NEW_REC:
 			return {
 				...state,
-				recordings: [...state.recordings, action.newRecording]
+				recordings: [...state.recordings, action.recording]
 			}
 
 		case EDIT_RECORDING: 

@@ -19,6 +19,7 @@ const { getAudioDurationInSeconds } = require('get-audio-duration')
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 const { serveStatic } = require('../app/utils');
+const Recording = require('../app/models/Recording');
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
@@ -36,20 +37,32 @@ function openDirSelect(renderer) {
 // TODO: Refactor bad global variables?
 // let rec; 
 let audioRecorder;
-let recDuration = 0;
 let recTimer;
+let recording;
 
 function newRecording(renderer, settings) {
+	console.log('\n*** newRecording')
 	let audioFile_writeStream;
 
+	const id = uuidv4();
 	const channels = parseInt(settings.format.channels, 10);
 	const fileFormat = settings.format.file
-	const recordingFileName = `${uuidv4()}.${fileFormat}`;
+	const recordingFileName = `${id}.${fileFormat}`;
 	const savePath = path.resolve(settings.saveDir, recordingFileName);
 	
-	console.log('\n*** newRecording, recordingFileName', recordingFileName)
+	// console.log('\n*** newRecording, recordingFileName', recordingFileName)
 	audioFile_writeStream = fs.WriteStream(savePath);
 	
+	recording = new Recording({
+		title: '',
+		format: {
+			filetype: fileFormat,
+			channels: channels
+		},
+		filename: recordingFileName,
+		src: savePath
+	})
+	console.log('*** recording:', recording);
 	renderer.webContents.send('rec:set_rec_file', recordingFileName)
 
 	const recorderOptions = {
@@ -63,8 +76,6 @@ function newRecording(renderer, settings) {
   	silence: 0,
 	};
 	audioRecorder = new AudioRecorder(recorderOptions, console);
-
-	recTimer = setInterval(() => recDuration++, 1)
 
 	audioRecorder.start().stream()
 	.pipe(audioFile_writeStream);
@@ -83,10 +94,10 @@ function newRecording(renderer, settings) {
 	audioFile_writeStream.on('error', (err) => console.log('audioFile_writeStream error:', err))
 }
 
-function stopRecording(recorderWindow, settings, recordingFile) {
-	console.log('\n*** stop recording, settings:', settings);
+function stopRecording(recorderWindow) {
+	console.log('\n*** stop recording, recording:', recording);
+	recorderWindow.webContents.send('rec:get_new_recording', recording);
 	audioRecorder.stop();
-	clearInterval(recTimer);
 	audioRecorder = undefined;
 }
 
@@ -100,7 +111,7 @@ function loadRecordings(recorderWindow, saveDir) {
 }
 
 function deleteRecording(path) {
-	console.log('\n*** deleteRecording');
+	console.log('\n*** deleteRecording, path:', path);
 
 	fs.unlink(path, err => {
 		if (err) throw err;
@@ -109,14 +120,14 @@ function deleteRecording(path) {
 }
 
 let workspaceWindow; // TODO: remove bad global variables
-let recording; // TODO: remove bad global variables
+// let recording; // TODO: remove bad global variables
 let server;
 async function openWorkspace(recording) {
 	console.log('\n*** openWorkspace, recording:', recording);
 	// Check if server is already running
 	if (!server) server = await serveStatic('/recordings', path.dirname(recording.src), 5000);
 
-	recording = recording;
+	// recording = recording;
 	workspaceWindow = new WorkspaceWindow();
 	// workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../index.html/open/${recording.id")}`)
 	workspaceWindow.loadURL(isDev ? `http://localhost:3000?view=workspace&id=${recording.id}` :`file://${path.join(__dirname, `../index.html?view=workspace&id=${recording.id}`)}`)

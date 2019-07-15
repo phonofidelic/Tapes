@@ -1,22 +1,18 @@
 import React from 'react';
 import {render, fireEvent} from '@testing-library/react'
-import { getByTestId } from '@testing-library/dom'
+import { wait } from '@testing-library/dom'
 
 import { TEST_ID } from 'constants/testIds';
 import RecorderControls from 'components/Recorder/RecorderControls';
 
 describe('Recordercontrols', () => {
-	it('should be visible with a monitor button and a "rec" button', () => {
-		const { getByText, getByTestId } = render(
-			<RecorderControls />
-		)
+	it('should be visible with a monitor button and a "rec" button', async () => {
+		const { getByText, getByTitle, getByTestId } = render(<RecorderControls />)
 
 		expect(getByTestId(TEST_ID.RECORDER.CONTROLS.CONTAINER)).toBeVisible()
 		expect(getByTestId(TEST_ID.RECORDER.CONTROLS.MONITOR_START)).toBeVisible()
 		expect(getByText('rec')).toBeVisible()
-
-		// fireEvent.click(getByTestId('recorder-controls_rec-button'))
-		// expect(getByTestId('recorder-controls_stop-button')).toHaveTextContent('stop')
+		expect(getByTitle('Click to start monitor')).toBeVisible()
 	})
 
 	it('should have a "stop" button when recording', () => {

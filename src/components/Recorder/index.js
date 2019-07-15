@@ -15,17 +15,18 @@ import RecordingIndicator from 'components/Recorder/RecordingIndicator';
 const electron = window.require('electron');
 const ipcRenderer  = electron.ipcRenderer;
 
-class Recorder extends Component {
+export class Recorder extends Component {
 	constructor(props) {
 		super(props);
 	}
 
 	componentDidMount() {
-		ipcRenderer.on('rec:set_rec_file', this.handleSetRecFile)
+		ipcRenderer.on('rec:get_new_recording', this.handleNewRecording)
 	}
 
 	componentWillUnmount() {
-		ipcRenderer.removeListener('rec:set_rec_file', this.handleSetRecFile)
+		console.log('Recorder unmount')
+		ipcRenderer.removeListener('rec:get_new_recording', this.handleNewRecording)
 	}
 
 	handleStartRec = () => {
@@ -34,14 +35,13 @@ class Recorder extends Component {
     this.props.startRecording(settings);
   }
 
-  handleSetRecFile = (e, recordingFile) => {
-  	this.props.setRecFile(recordingFile);
+  handleNewRecording = (e, newRecording) => {
+  	this.props.addNewRecording(newRecording)
   }
 
   handleStopRec = () => {
-  	const { settings, recordingFile } = this.props;
-    console.log('stop', this.props.recorder.isRecording)
-    this.props.stopRecording(settings, recordingFile);
+    console.log('stop')
+    this.props.stopRecording();
   }
 
   handleStartMonitor = async () => {
@@ -59,10 +59,10 @@ class Recorder extends Component {
 		const { recorder } = this.props;
 		return (
 			<Container>
-				<Section>
+				<div>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
 					{ recorder.isRecording && <RecordingIndicator /> }
-				</Section>
+				</div>
 				{ recorder.monitorInstance && <AudioAnalyser audio={recorder.monitorInstance} /> }
 				<RecorderControls
 					isRecording={recorder.isRecording}

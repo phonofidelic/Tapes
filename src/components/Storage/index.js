@@ -62,7 +62,7 @@ class Storage extends Component {
 							false
 						}
 					>
-					{ recordings.map(recording => (
+					{ recordings && recordings.map(recording => (
 						<StorageItem 
 							key={recording.id}
 							recording={recording}

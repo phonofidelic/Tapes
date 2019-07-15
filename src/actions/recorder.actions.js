@@ -42,42 +42,38 @@ export const setRecFile = (recordingFile) => {
 	}
 }
 
-export const stopRecording = (settings, recordingFile) => {
+export const stopRecording = () => {
 	console.log('stopRec')
-	const recordingId = uuidv4();
-	const newRecording = {
-		id: recordingId,
-		title: `${moment().format('MMM Do YYYY, hh:mm:ss a')}`,
-		src: `${settings.saveDir}/${recordingFile}`,
-		filename: recordingFile,
-		format: settings.format,
-		// TODO: set duration
-		created: Date.now(),
-		updated: Date.now(),
-	}
 
 	return dispatch => {
 		const { ipcRenderer } = window.require('electron');
-		ipcRenderer.send('rec:stop', settings, recordingFile);
+		ipcRenderer.send('rec:stop');
 		dispatch({
 			type: STOP_REC,
 		})
+	}	
+}
 
+export const addNewRecording = (recording) => {
+	console.log('addNewRecording, recording:', recording)
+	return dispatch => {
 		db.table('recordings')
-		.add(newRecording)
+		.add(recording)
 		.then(id => {
-			dispatch({
+			console.log('dixie id:', id)
+			console.log('add recording:', recording)
+			return dispatch({
 				type: ADD_NEW_REC,
-				newRecording
+				recording
 			})
 		})
 		.catch(err => {
-			console.error('Could not save new recording:', err)
+			console.error('Could not save new recording:', err.message)
 			dispatch({
 				type: ERROR_ADD_NEW_REC
 			})
 		})
-	}	
+	}
 }
 
 export const startMonitor = (monitorInstance) => {
