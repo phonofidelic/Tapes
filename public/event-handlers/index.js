@@ -54,7 +54,7 @@ function newRecording(renderer, settings) {
 	audioFile_writeStream = fs.WriteStream(savePath);
 	
 	recording = new Recording({
-		title: '',
+		title: `${id}.${fileFormat}`,
 		format: {
 			filetype: fileFormat,
 			channels: channels

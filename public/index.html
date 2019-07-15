@@ -20,6 +20,13 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+    <script type="text/javascript">
+      const { ipcRenderer } = window.require('electron');
+      
+      ipcRenderer.on('rec:get_new_recording', (e, recording) => {
+        window.dispatchEvent(new CustomEvent('rec:get_new_recording', {detail: recording}))
+      })
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

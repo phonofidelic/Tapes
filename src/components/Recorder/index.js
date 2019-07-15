@@ -12,8 +12,8 @@ import {
 
 import RecordingIndicator from 'components/Recorder/RecordingIndicator';
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
+// const electron = window.require('electron');
+// const ipcRenderer  = electron.ipcRenderer;
 
 export class Recorder extends Component {
 	constructor(props) {
@@ -21,12 +21,14 @@ export class Recorder extends Component {
 	}
 
 	componentDidMount() {
-		ipcRenderer.on('rec:get_new_recording', this.handleNewRecording)
+		// ipcRenderer.on('rec:get_new_recording', this.handleNewRecording)
+		window.addEventListener('rec:get_new_recording', this.handleNewRecording)
 	}
 
 	componentWillUnmount() {
 		console.log('Recorder unmount')
-		ipcRenderer.removeListener('rec:get_new_recording', this.handleNewRecording)
+		// ipcRenderer.removeListener('rec:get_new_recording', this.handleNewRecording)
+		window.removeEventListener('rec:get_new_recording', this.handleNewRecording)
 	}
 
 	handleStartRec = () => {
@@ -35,8 +37,9 @@ export class Recorder extends Component {
     this.props.startRecording(settings);
   }
 
-  handleNewRecording = (e, newRecording) => {
-  	this.props.addNewRecording(newRecording)
+  handleNewRecording = (e) => {
+  	console.log('handleNewRecording, e', e)
+  	this.props.addNewRecording(e.detail)
   }
 
   handleStopRec = () => {

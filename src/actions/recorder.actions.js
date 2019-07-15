@@ -60,8 +60,6 @@ export const addNewRecording = (recording) => {
 		db.table('recordings')
 		.add(recording)
 		.then(id => {
-			console.log('dixie id:', id)
-			console.log('add recording:', recording)
 			return dispatch({
 				type: ADD_NEW_REC,
 				recording
