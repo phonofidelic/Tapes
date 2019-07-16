@@ -106,7 +106,7 @@ function loadRecordings(recorderWindow, saveDir) {
 		if (err) throw err;	// TODO: Handle error
 		const recordings = files.filter(file => file !== '.DS_Store'); // Ignore .DS_Store files
 		console.log('*** recordings:', recordings);
-		recorderWindow.webContents.send('storage:loadRecordings:response', recordings)
+		recorderWindow.webContents.send('storage:load_recordings_response', recordings)
 	});
 }
 

@@ -11,22 +11,15 @@ import {
 	SectionTitle,
 } from 'components/CommonUI';
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
-
 class Storage extends Component {
-	constructor(props) {
-		super(props);
-		ipcRenderer.on('storage:loadRecordings:response', this.handleLoadRecordings)
-	}
-
 	componentDidMount() {
 		const { saveDir } = this.props;
-		saveDir && ipcRenderer.send('storage:loadRecordings', saveDir)
+		window.addEventListener('storage:load_recordings_response', this.handleLoadRecordings)
+		saveDir && this.props.fetchRecordings(saveDir)
 	}
 
 	componentWillUnmount() {
-		ipcRenderer.removeListener('storage:loadRecordings:response', this.handleLoadRecordings)
+		window.removeEventListener('storage:load_recordings_response', this.handleLoadRecordings)
 	}
 
 	handleLoadRecordings = (e, recordings) => {

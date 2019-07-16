@@ -13,10 +13,17 @@ export const INITIAL_STATE = {
 
 const storage = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case 'fetch_recordings':
+			return {
+				...state,
+				loading: true,
+			}
+
 		case LOAD_RECORDINGS:
 			return {
 				...state,
 				recordings: action.recordings,
+				loading: false,
 			}
 
 		case ADD_NEW_REC:

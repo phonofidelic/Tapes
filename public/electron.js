@@ -85,7 +85,7 @@ ipcMain.on('rec:stop', (e, settings, recordingFile) => stopRecording(recorderWin
 ipcMain.on('rec:open', (e, recording) => openWorkspace(recording));
 
 ipcMain.on('settings:open_dir_select', () => openDirSelect(recorderWindow));
-ipcMain.on('storage:loadRecordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir));
+ipcMain.on('storage:load_recordings', (e, saveDir) => loadRecordings(recorderWindow, saveDir));
 ipcMain.on('storage:delete', (e, path) => deleteRecording(path));
 
 process.on('beforeExit', () => {

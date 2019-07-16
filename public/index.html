@@ -26,6 +26,10 @@
       ipcRenderer.on('rec:get_new_recording', (e, recording) => {
         window.dispatchEvent(new CustomEvent('rec:get_new_recording', {detail: recording}))
       })
+
+      ipcRenderer.on('storage:load_recordings_response', (e, recordings) => {
+        window.dispatchEvent(new CustomEvent('storage:load_recordings_response', {detail: recordings}))
+      })
     </script>
   </head>
   <body>

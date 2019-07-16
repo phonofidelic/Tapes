@@ -11,7 +11,16 @@ import {
 	} from 'actions/types';
 import db from 'db';
 
-const { ipcRenderer } = window.require('electron');
+export const fetchRecordings = (saveDir) => {
+	return dispatch => {
+		const { ipcRenderer } = window.require('electron');
+		ipcRenderer.send('storage:load_recordings', saveDir)
+
+		dispatch({
+			type: 'fetch_recordings'
+		})
+	}
+}
 
 export const loadRecordings = (recordings) => {
 	return dispatch => {
