@@ -46,34 +46,33 @@ export const saveState = (state) => {
 }
 /*********************************************************************************************/
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const enhancer = composeEnhancers(
+	applyMiddleware(
+    reduxThunk,
+    routerMiddleware(history),
+  )
+);
+
+const persistedState = loadState() || {};
+
+export const store = createStore(
+	reducer,
+	persistedState,
+	enhancer
+);
+
+store.subscribe(throttle(() => {
+	saveState({
+		version: store.getState().version,
+		settings: store.getState().settings,
+	});
+}, 1000));
+
+const customTheme = createMuiTheme(theme);
+
 export default ({ children, initialState = initGlobalState }) => {
-	const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
-	const enhancer = composeEnhancers(
-		applyMiddleware(
-	    reduxThunk,
-	    routerMiddleware(history),
-	  )
-	);
-
-	const persistedState = loadState() || {};
-
-	const store = createStore(
-		reducer,
-		persistedState,
-		enhancer
-	);
-	// console.log('store:', store.getState())
-
-	store.subscribe(throttle(() => {
-		saveState({
-			version: store.getState().version,
-			settings: store.getState().settings,
-		});
-	}, 1000));
-
-	const customTheme = createMuiTheme(theme);
-
 	return (
 		<Provider store={store}>
       <ThemeProvider>
