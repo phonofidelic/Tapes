@@ -76,6 +76,17 @@ const menuTemplate = [
 				label: 'Quit Tapes',
 				role: 'quit'
 			}
+		],
+		label: 'Development',
+		submenu: [
+			{
+				label: 'Reload',
+				role: 'reload'
+			},
+			{
+				label: 'Toggle Devtools',
+				role: 'toggleDevTools'
+			}
 		]
 	}
 ]

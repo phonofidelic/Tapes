@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/settings.actions';
+import { TEST_ID } from 'constants/testIds';
 
 import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
@@ -23,9 +24,6 @@ import {
 	SectionBody,
 } from 'components/CommonUI';
 
-const electron = window.require('electron');
-const ipcRenderer  = electron.ipcRenderer;
-
 class Settings extends Component {
 	constructor(props) {
 		super(props);
@@ -33,21 +31,21 @@ class Settings extends Component {
 		this.formatInputLabel= React.createRef();
 	}
 	componentDidMount() {
-		ipcRenderer.on('settings:select_dir', this.handleSelectDir);
-		ipcRenderer.on('settings:select_dir_cancel', this.handleSelectDirCancel);
+		window.addEventListener('settings:select_dir', this.handleSelectDir)
+		window.addEventListener('settings:select_dir_cancel', this.handleSelectDirCancel)
 	}
 
 	componentWillUnmount() {
-		ipcRenderer.removeListener('settings:select_dir', this.handleSelectDir)
-		ipcRenderer.removeListener('settings:select_dir_cancel', this.handleSelectDirCancel)
+		window.removeEventListener('settings:select_dir', this.handleSelectDir)
+		window.removeEventListener('settings:select_dir_cancel', this.handleSelectDirCancel)
 	}
 
 	handleOpenDirSelect = () => {
 		this.props.openDirSelect()
 	}
 
-	handleSelectDir = (e, path) => {
-		this.props.setSavePath(path);
+	handleSelectDir = (e) => {
+		this.props.setSavePath(e.detail);
 	}
 
 	handleSelectDirCancel = (e, path) => {
@@ -119,6 +117,7 @@ class Settings extends Component {
 							paddingTop: 16
 						}}
 					>
+						<form data-testid={TEST_ID.SETTINGS.FORMAT.FORM}>
 						<div style={{
 							display: 'flex',
 						}}>
@@ -163,6 +162,8 @@ class Settings extends Component {
 								}}
 								value={String(settings.format.channels)}
 								id="input-format-channels"
+								name="channels"
+								data-testid={TEST_ID.SETTINGS.FORMAT.CHANNEL_INPUT_GROUP}
 								onChange={this.handleSetChannelCount}
 							>
 								<FormControlLabel value="1" control={<Radio color="primary" />} label="Mono" />
@@ -170,6 +171,7 @@ class Settings extends Component {
 							</RadioGroup>
 						</FormControl>
 						</div>
+						</form>
 					</SectionBody>
 				</Section>
 			</Container>
@@ -178,7 +180,7 @@ class Settings extends Component {
 }
 
 const mapStateToProps = state => {
-	console.log('settings state:', state)
+	// console.log('settings state:', state)
 	return {
 		saveDir: state.settings.saveDir,
 		format: state.settings.format,

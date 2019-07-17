@@ -7,5 +7,11 @@ export const TEST_ID = {
 			MONITOR_START: 'recorder_controls_monitor-start',
 			MONITOR_STOP: 'recorder_controls_monitor-stop',
 		}
+	},
+	SETTINGS: {
+		FORMAT: {
+			FORM: 'settings_format_form',
+			CHANNEL_INPUT_GROUP: 'settings_format_channel-input-group'
+		}
 	}
 }

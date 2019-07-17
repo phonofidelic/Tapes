@@ -30,6 +30,14 @@
       ipcRenderer.on('storage:load_recordings_response', (e, recordings) => {
         window.dispatchEvent(new CustomEvent('storage:load_recordings_response', {detail: recordings}))
       })
+
+      ipcRenderer.on('settings:select_dir', (e, path) => {
+        window.dispatchEvent(new CustomEvent('settings:select_dir', {detail: path}))
+      });
+
+      ipcRenderer.on('settings:select_dir_cancel', (e, path) => {
+        window.dispatchEvent(new CustomEvent('settings:select_dir_cancel', {detail: path}))
+      });
     </script>
   </head>
   <body>
