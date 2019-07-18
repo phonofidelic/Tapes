@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { ThemeContext } from 'theme.context';
+import { TEST_ID } from 'constants/testIds';
 
 import IconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayArrow';
@@ -39,7 +40,7 @@ function Controls(props) {
 	const theme = useContext(ThemeContext)
 	// console.log('*** theme:', theme)
 	return (
-		<ControlsContainer>
+		<ControlsContainer data-testid={TEST_ID.WORKSPACE.CONTROLS.CONTAINER}>
 			<TimeInfo theme={theme}>
 				<div style={{marginRight: 5}}>
 					<FormattedTime time={time * 1000} />

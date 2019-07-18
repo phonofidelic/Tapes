@@ -4,7 +4,8 @@ import * as actions from 'actions/workspace.actions';
 import { createGlobalStyle } from 'styled-components';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
-import { ThemeContext } from 'theme.context'
+import { ThemeContext } from 'theme.context';
+import { TEST_ID } from 'constants/testIds';
 
 import {
 	Container,
@@ -48,7 +49,7 @@ class Workspace extends Component {
 	}
 
 	componentDidMount() {
-		this.audioCtx = new (window.AudioContext || window.wobkitAudioContext)();
+		this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 		this.analyser = this.audioCtx.createAnalyser();
 	}
 
@@ -168,9 +169,14 @@ class Workspace extends Component {
 				<div>
 
 					<div>
-						<div id="timeline" ref={this.timelineEl} />
+						<div 
+							id="timeline" 
+							data-testid={TEST_ID.WORKSPACE.TRACK.TIMELINE}
+							ref={this.timelineEl}
+						/>
 						<div
-							id="waveform" 
+							id="waveform"
+							data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 							ref={this.waveformEl}
 						/>
 					</div>

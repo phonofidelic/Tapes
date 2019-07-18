@@ -13,5 +13,14 @@ export const TEST_ID = {
 			FORM: 'settings_format_form',
 			CHANNEL_INPUT_GROUP: 'settings_format_channel-input-group'
 		}
+	},
+	WORKSPACE: {
+		TRACK: {
+			WAVEFORM: 'worcspace_track_waveform',
+			TIMELINE: 'worcspace_track_timeline'
+		},
+		CONTROLS: {
+			CONTAINER: 'workspace_controls_container'
+		}
 	}
 }

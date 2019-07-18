@@ -18,7 +18,7 @@ export const loadState = () => {
 	try {
 		const serializedState = localStorage.getItem('state');
 		if (serializedState === null) {
-			console.log('savedState not found')
+			// console.log('savedState not found')
 			return undefined;
 		}
 		const savedState = JSON.parse(serializedState);
