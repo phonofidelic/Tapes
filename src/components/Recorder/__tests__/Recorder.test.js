@@ -2,14 +2,23 @@ import React from 'react';
 import {render, fireEvent} from '@testing-library/react'
 import { wait } from '@testing-library/dom'
 import { Provider } from 'react-redux';
+import { createStore, combineReducers } from 'redux';
 
-import { INITIAL_STATE } from 'reducers/recorder.reducer';
+import { INITIAL_STATE as recorderInitState } from 'reducers/recorder.reducer';
+import { INITIAL_STATE as settingdInitState } from 'reducers/settings.reducer';
 import { store } from 'Root';
 import { TEST_ID } from 'constants/testIds';
 import Recorder from 'components/Recorder';
 
 const renderComponent = () => render(
 	<Provider store={store}>
+		<Recorder />
+	</Provider>
+)
+
+
+const renderMockedComponent = (mockStore) => render(
+	<Provider store={mockStore}>
 		<Recorder />
 	</Provider>
 )
@@ -37,6 +46,29 @@ describe('Recorder', () => {
 		)
 
 		expect(getByText('Please select a save folder.')).toBeVisible()
+	})
+
+	it('shows a "Stop" button and a recording indicator when recording', () => {
+		let recorderState = {
+			...recorderInitState,
+			isRecording: true
+		}
+		let settingsState = {
+			...settingdInitState,
+			saveDir: '/test'
+		}
+
+		let mockStore = createStore(
+			combineReducers({
+				recorder: () => recorderState,
+				settings: () => settingsState
+			})
+		)
+
+		const { getByText } = renderMockedComponent(mockStore)
+
+		expect(getByText('stop')).toBeVisible()
+		expect(getByText('RECORDING')).toBeVisible()
 	})
 
 	// TODO: mock out getUserMedia
