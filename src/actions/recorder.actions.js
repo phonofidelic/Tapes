@@ -41,15 +41,6 @@ export const startRecording = (settings) => {
 	}
 }
 
-export const setRecFile = (recordingFile) => {
-	return dispatch => {
-		dispatch({
-			type: SET_REC_FILE,
-			recordingFile: recordingFile
-		});
-	}
-}
-
 export const stopRecording = () => {
 	console.log('stopRec')
 

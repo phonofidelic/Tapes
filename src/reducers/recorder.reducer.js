@@ -1,7 +1,6 @@
 import {
 	START_REC,
 	STOP_REC,
-	SET_REC_FILE,
 	START_MONITOR,
 	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
@@ -32,12 +31,6 @@ const recorder = (state = INITIAL_STATE, action) => {
 				...state,
 				isRecording: true,
 				recordingFile: null,
-			}
-
-		case SET_REC_FILE:
-			return {
-				...state,
-				recordingFile: action.recordingFile,
 			}
 
 		case STOP_REC:
