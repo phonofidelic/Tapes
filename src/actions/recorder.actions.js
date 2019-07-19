@@ -14,9 +14,17 @@ import db from 'db';
 
 const uuidv4 = require('uuid/v4');
 
+export const dismissError = () => {
+	return dispatch => {
+		dispatch({
+			type: 'dismiss_error'
+		})
+	}
+}
+
 export const startRecording = (settings) => {
 	if (!settings.saveDir) {
-		window.alert('Please select a save directory in Settings.') // TODO: replace with custom error message
+		// window.alert('Please select a save directory in Settings.') // TODO: replace with custom error message
 		return dispatch => {
 			dispatch({
 				type: ERROR_NO_SAVE_DIR

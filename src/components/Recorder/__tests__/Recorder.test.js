@@ -27,7 +27,6 @@ describe('Recorder', () => {
 
 	it('should show a warning when trying to record without a set save directory', () => {
 		const { getByText } = renderComponent()
-		window.alert = jest.fn()
 		
 		fireEvent(
 			getByText('rec'), 
@@ -37,7 +36,7 @@ describe('Recorder', () => {
 			})
 		)
 
-		expect(window.alert).toBeCalled()
+		expect(getByText('Please select a save directory in Settings.')).toBeVisible()
 	})
 
 	// TODO: mock out getUserMedia

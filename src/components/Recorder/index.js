@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from 'actions/recorder.actions';
 
 import AudioAnalyser from 'components/AudioAnalyser';
+import ErrorMessage from 'components/ErrorMessage';
 import RecorderControls from 'components/Recorder/RecorderControls';
 import {
 	Container,
@@ -52,10 +53,23 @@ export class Recorder extends Component {
   	this.props.stopMonitor(recorder.monitorInstance);
   }
 
+  handleDismissError = () => {
+  	this.props.dismissError();
+  }
+
 	render() {
-		const { recorder } = this.props;
+		const { 
+			recorder,
+			dismissError
+		} = this.props;
+
 		return (
 			<Container>
+				<ErrorMessage 
+					open={Boolean(recorder.error)} 
+					error={recorder.error} 
+					dismissError={dismissError}
+				/>
 				<div>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
 					{ recorder.isRecording && <RecordingIndicator /> }

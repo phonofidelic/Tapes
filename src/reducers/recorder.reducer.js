@@ -21,6 +21,12 @@ export const INITIAL_STATE = {
 
 const recorder = (state = INITIAL_STATE, action) => {
 	switch (action.type) {
+		case 'dismiss_error':
+			return {
+				...state,
+				error: null
+			}
+
 		case START_REC:
 			return {
 				...state,
