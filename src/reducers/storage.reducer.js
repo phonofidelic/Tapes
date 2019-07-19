@@ -4,6 +4,7 @@ import {
 	DELETE_RECORDING,
 	EDIT_RECORDING,
 	EDIT_RECORDING_SUCCESS,
+	ERROR_LOAD_RECORDINGS
 	} from 'actions/types';
 
 export const INITIAL_STATE = {
@@ -49,6 +50,12 @@ const storage = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				recordings: state.recordings.filter(recording => recording.id !== action.id)
+			}
+
+		case ERROR_LOAD_RECORDINGS:
+			return {
+				...state,
+				error: { message: 'Could not load recording from database.' }
 			}
 
 		default: return state;

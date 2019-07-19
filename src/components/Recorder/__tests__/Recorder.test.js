@@ -36,7 +36,7 @@ describe('Recorder', () => {
 			})
 		)
 
-		expect(getByText('Please select a save directory in Settings.')).toBeVisible()
+		expect(getByText('Please select a save folder.')).toBeVisible()
 	})
 
 	// TODO: mock out getUserMedia

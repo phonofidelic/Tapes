@@ -65,7 +65,7 @@ const recorder = (state = INITIAL_STATE, action) => {
 		case ERROR_NO_SAVE_DIR:
 			return {
 				...state,
-				error: { message: 'Please select a save directory in Settings.' }
+				error: { message: 'Please select a save folder.' }
 			}
 
 		case ERROR_ADD_NEW_REC:
@@ -74,11 +74,11 @@ const recorder = (state = INITIAL_STATE, action) => {
 				error: { message: 'Could not save recording in database.' }
 			}
 
-		case ERROR_LOAD_RECORDINGS:
-			return {
-				...state,
-				error: { message: 'Could not load recording from database.' }
-			}
+		// case ERROR_LOAD_RECORDINGS:
+		// 	return {
+		// 		...state,
+		// 		error: { message: 'Could not load recording from database.' }
+		// 	}
 
 		default: return state
 	}

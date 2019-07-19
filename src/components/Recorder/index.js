@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actions from 'actions/recorder.actions';
+import * as recorderActions from 'actions/recorder.actions';
+import * as settingsActions from 'actions/settings.actions';
 
 import AudioAnalyser from 'components/AudioAnalyser';
-import ErrorMessage from 'components/ErrorMessage';
+import DialogMessage from 'components/DialogMessage';
 import RecorderControls from 'components/Recorder/RecorderControls';
 import {
 	Container,
@@ -13,6 +14,10 @@ import {
 
 import RecordingIndicator from 'components/Recorder/RecordingIndicator';
 
+const actions = {
+	...recorderActions,
+	...settingsActions,
+}
 export class Recorder extends Component {
 	constructor(props) {
 		super(props);
@@ -20,10 +25,12 @@ export class Recorder extends Component {
 
 	componentDidMount() {
 		window.addEventListener('rec:get_new_recording', this.handleNewRecording)
+		window.addEventListener('settings:select_dir', this.handleSelectDir)
 	}
 
 	componentWillUnmount() {
 		window.removeEventListener('rec:get_new_recording', this.handleNewRecording)
+		window.removeEventListener('settings:select_dir', this.handleSelectDir)
 	}
 
 	handleStartRec = () => {
@@ -53,22 +60,28 @@ export class Recorder extends Component {
   	this.props.stopMonitor(recorder.monitorInstance);
   }
 
-  handleDismissError = () => {
-  	this.props.dismissError();
-  }
+  handleSelectDir = (e) => {
+		this.props.setSavePath(e.detail);
+	}
 
 	render() {
 		const { 
 			recorder,
-			dismissError
+			saveDir,
+			dismissError,
+			openDirSelect,
 		} = this.props;
 
 		return (
 			<Container>
-				<ErrorMessage 
-					open={Boolean(recorder.error)} 
-					error={recorder.error} 
-					dismissError={dismissError}
+				<DialogMessage 
+					open={!saveDir} 
+					title="Heads up!"
+					message="Please select a save folder."
+					actionButtonText="Set save folder"
+					cancelButtonText="Cancel"
+					handleAction={openDirSelect}
+					//handleClose={dismissError}
 				/>
 				<div>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
