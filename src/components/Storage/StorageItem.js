@@ -71,6 +71,7 @@ export default function StorageItem(props) {
 			button
 			disableRipple	
 			onClick={() => handleSelectRecording(recording.id)}
+			onDoubleClick={() => handleOpenRecording(recording)}
 		>
 		{ !editMode ?
 			<Fragment>
