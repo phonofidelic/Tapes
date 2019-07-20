@@ -55,7 +55,7 @@ export const stopRecording = () => {
 export const addNewRecording = (recording) => {
 	console.log('addNewRecording, recording:', recording)
 	return dispatch => {
-		db.table('recordings')
+		db.recordings
 		.add(recording)
 		.then(id => {
 			return dispatch({

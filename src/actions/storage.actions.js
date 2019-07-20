@@ -24,7 +24,9 @@ export const fetchRecordings = (saveDir) => {
 
 export const loadRecordings = (recordings) => {
 	return dispatch => {
-		db.recordings.reverse().toArray()
+		db.recordings.orderBy('created')
+		.reverse()
+		.toArray()
 		.then(recordings => {
 			console.log('loadRecordings:', recordings)
 			dispatch({
@@ -33,10 +35,10 @@ export const loadRecordings = (recordings) => {
 			})
 		})
 		.catch(err => {
-			console.error('Could not load recordings:', err)
-		})
-		dispatch({
-			type: ERROR_LOAD_RECORDINGS,
+			console.error('Could not load recordings:', err.message)
+			dispatch({
+				type: ERROR_LOAD_RECORDINGS,
+			})
 		})
 	}
 }
