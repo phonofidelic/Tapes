@@ -47,6 +47,10 @@ class Storage extends Component {
 				<Section>
 					<SectionTitle variant="overline">Storage</SectionTitle>
 					<List 
+						style={{
+							maxHeight: 313,
+							overflowY: 'auto',
+						}}
 						disablePadding
 						dense
 						subheader={saveDir ? 
