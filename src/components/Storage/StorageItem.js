@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useContext } from 'react';
+import { ThemeContext } from 'theme.context';
 
 import IconButton from '@material-ui/core/IconButton';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -14,12 +15,16 @@ import EditRecordingForm from 'components/EditRecordingForm';
 export default function StorageItem(props) {
 	const { 
 		recording,
+		selectedRecording,
 		handleDeleteRecording,
 		handleOpenRecording,
+		handleSelectRecording,
 	} = props;
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const [editMode, setEditMode] = useState(false);
+
+	const theme = useContext(ThemeContext)
 
 	const handleClick = e => {
 		setAnchorEl(e.currentTarget);
@@ -55,12 +60,17 @@ export default function StorageItem(props) {
 	}
 
 	return (
-		<ListItem 
+		<ListItem
+			style={{ 
+				justifyContent: 'space-between',
+				// backgroundColor: theme.palette.secondary.light,
+			}}
 			key={recording.id} 
-			style={{ justifyContent: 'space-between' }}
+			selected={selectedRecording === recording.id}
 			divider
 			button
 			disableRipple	
+			onClick={() => handleSelectRecording(recording.id)}
 		>
 		{ !editMode ?
 			<Fragment>

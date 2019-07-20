@@ -12,6 +12,14 @@ import {
 } from 'components/CommonUI';
 
 class Storage extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			selected: null
+		};
+	}
+
 	componentDidMount() {
 		const { saveDir } = this.props;
 		window.addEventListener('storage:load_recordings_response', this.handleLoadRecordings)
@@ -36,6 +44,10 @@ class Storage extends Component {
 
 	handleDeleteRecording = (id, path) => {
 		this.props.deleteRecording(id, path)
+	}
+
+	handleSelectRecording = id => {
+		this.setState({selected: id})
 	}
 
 	render() {
@@ -63,9 +75,11 @@ class Storage extends Component {
 						<StorageItem 
 							key={recording.id}
 							recording={recording}
+							selectedRecording={this.state.selected}
 							handleOpenRecording={this.handleOpenRecording}
 							handleEditRecording={this.handleEditRecording}
 							handleDeleteRecording={this.handleDeleteRecording}
+							handleSelectRecording={this.handleSelectRecording}
 						/>
 					))}
 					</List>
