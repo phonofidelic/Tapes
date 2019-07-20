@@ -7,6 +7,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles({
+  paper: {
+  	margin: '10px',
+  	width: '100%'
+  }
+});
 
 function DialogMessage(props) {
 	const {
@@ -19,14 +27,20 @@ function DialogMessage(props) {
 		handleClose,
 	} = props
 
+	const classes = useStyles();
+
 	return (
 		<Dialog 
+			classes={{
+				paper: classes.paper
+			}}
 			open={open}
 			onClose={handleClose}
 		>
 			<DialogTitle>{title}</DialogTitle>
 			<DialogContent>
-				<Typography>{message}</Typography>
+				<DialogContentText>{message}</DialogContentText>
+				<div>{props.children}</div>
 			</DialogContent>
 			<DialogActions>
 				{ handleAction &&

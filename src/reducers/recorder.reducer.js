@@ -1,6 +1,7 @@
 import {
 	START_REC,
 	STOP_REC,
+	ADD_NEW_REC,
 	START_MONITOR,
 	STOP_MONITOR,
 	ERROR_NO_SAVE_DIR,
@@ -11,7 +12,7 @@ import {
 export const INITIAL_STATE = {
 	isRecording: false,
 	// recordings: [],
-	recordingFile: null,
+	recording: null,
 	monitoring: false,
 	monitorInstance: null,
 	time: 0,
@@ -30,13 +31,19 @@ const recorder = (state = INITIAL_STATE, action) => {
 			return {
 				...state,
 				isRecording: true,
-				recordingFile: null,
+				recording: null,
 			}
 
 		case STOP_REC:
 			return {
 				...state,
 				isRecording: false,
+			}
+
+		case ADD_NEW_REC:
+			return {
+				...state,
+				recording: action.recording,
 			}
 
 		case START_MONITOR: {

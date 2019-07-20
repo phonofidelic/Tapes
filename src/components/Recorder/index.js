@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as recorderActions from 'actions/recorder.actions';
+import * as storageActions from 'actions/storage.actions';
 import * as settingsActions from 'actions/settings.actions';
 
 import AudioAnalyser from 'components/AudioAnalyser';
@@ -13,14 +14,20 @@ import {
 } from 'components/CommonUI';
 
 import RecordingIndicator from 'components/Recorder/RecordingIndicator';
+import EditRecordingForm from 'components/EditRecordingForm';
 
 const actions = {
 	...recorderActions,
+	...storageActions,
 	...settingsActions,
 }
 export class Recorder extends Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			showRecordingDialog: false
+		}
 	}
 
 	componentDidMount() {
@@ -42,6 +49,7 @@ export class Recorder extends Component {
   handleNewRecording = (e) => {
   	console.log('handleNewRecording, e', e)
   	this.props.addNewRecording(e.detail)
+  	this.setState({ showRecordingDialog: true })
   }
 
   handleStopRec = () => {
@@ -64,6 +72,18 @@ export class Recorder extends Component {
 		this.props.setSavePath(e.detail);
 	}
 
+	handleEditSubmit = (formData) => {
+		const { recorder } = this.props;
+		formData.id = recorder.recording.id;
+		this.props.editRecording(formData);
+		this.setState({showRecordingDialog: false});
+	}
+
+	handleDiscardRecording = (id, path) => {
+		this.props.deleteRecording(id, path);
+		this.setState({showRecordingDialog: false});
+	}
+
 	render() {
 		const { 
 			recorder,
@@ -83,6 +103,21 @@ export class Recorder extends Component {
 					handleAction={openDirSelect}
 					//handleClose={dismissError}
 				/>
+				<DialogMessage 
+					open={Boolean(recorder.recording) && this.state.showRecordingDialog} 
+					title="New recording:"
+					message="Hit <Enter> when done, or click Cancel to discard this recording"
+					actionButtonText="Submit"
+					cancelButtonText="Cancel"
+					//handleAction={this.handleEditSubmit}
+					handleClose={() => this.handleDiscardRecording(recorder.recording.id, recorder.recording.src)}
+				>
+					<EditRecordingForm 
+						recording={recorder.recording}
+						setEditMode={() => this.setState({showRecordingDialog: false})}
+						handleEditSubmit={this.handleEditSubmit}
+					/>
+				</DialogMessage>
 				<div>
 					<SectionTitle variant="overline">Recorder</SectionTitle>
 					{ recorder.isRecording && <RecordingIndicator /> }

@@ -9,7 +9,7 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import ListItem from '@material-ui/core/ListItem';
 
-import EditRecordingForm from 'components/Storage/EditRecordingForm';
+import EditRecordingForm from 'components/EditRecordingForm';
 
 export default function StorageItem(props) {
 	const { 
@@ -112,7 +112,9 @@ export default function StorageItem(props) {
 			</Fragment>
 			:
 			<EditRecordingForm 
+				titleRequired={true}
 				recording={recording}
+				showActionButtons={true}
 				setEditMode={setEditMode}
 				handleEditSubmit={handleEditSubmit}
 			/>

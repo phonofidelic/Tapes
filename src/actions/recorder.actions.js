@@ -24,7 +24,6 @@ export const dismissError = () => {
 
 export const startRecording = (settings) => {
 	if (!settings.saveDir) {
-		// window.alert('Please select a save directory in Settings.') // TODO: replace with custom error message
 		return dispatch => {
 			dispatch({
 				type: ERROR_NO_SAVE_DIR

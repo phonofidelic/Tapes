@@ -12,6 +12,7 @@ const EditRecordingForm = props => {
 	const { 
 		recording,
 		setEditMode,
+		showActionButtons,
 		handleSubmit,
 		handleEditSubmit,
 	} = props;
@@ -36,11 +37,13 @@ const EditRecordingForm = props => {
 	)
 
 	return (
-		<form style={{ width: '100%', display: 'flex' }} onSubmit={handleSubmit(formData => {
-			setEditMode(false)
-			console.log(formData)
-			handleEditSubmit(formData)
-		})}
+		<form 
+			style={{ width: '100%', display: 'flex' }}
+			onSubmit={handleSubmit(formData => {
+				setEditMode(false)
+				console.log(formData)
+				handleEditSubmit(formData)
+			})}
 		>
 			<span style={{ width: '100%' }}>
 			<Field
@@ -49,37 +52,40 @@ const EditRecordingForm = props => {
 				id={`recording-title-input_${recording.id}`}
 				name={`title`}
 				type="text"
-				placeholder="Title"
-				label={recording.title}
+				placeholder={recording.title}
+				label="Title"
 				autoFocus={true}
+				required={props.titleRequired}
 			/>
 			</span>
-			<span style={{ width: '50px' }}>
-				<Tooltip
-					title="Cancel changes"
-					placement="left"
-					enterDelay={300}
-				>
-					<IconButton
-						aria-haspopup="true"
-						onClick={() => setEditMode(false)}
+			{ showActionButtons &&
+				<span style={{ width: '50px' }}>
+					<Tooltip
+						title="Cancel changes"
+						placement="left"
+						enterDelay={300}
 					>
-						<CloseIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip
-					title="Save changes"
-					placement="left"
-					enterDelay={300}
-				>
-					<IconButton
-						aria-haspopup="true"
-						type="submit"
+						<IconButton
+							aria-haspopup="true"
+							onClick={() => setEditMode(false)}
+						>
+							<CloseIcon />
+						</IconButton>
+					</Tooltip>
+					<Tooltip
+						title="Save changes"
+						placement="left"
+						enterDelay={300}
 					>
-						<CheckIcon />
-					</IconButton>
-				</Tooltip>
-			</span>
+						<IconButton
+							aria-haspopup="true"
+							type="submit"
+						>
+							<CheckIcon />
+						</IconButton>
+					</Tooltip>
+				</span>
+			}
 		</form>
 	);
 }

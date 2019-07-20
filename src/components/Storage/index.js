@@ -30,8 +30,8 @@ class Storage extends Component {
 		this.props.openRecording(recording)
 	}
 
-	handleEditRecording = id => {
-		this.props.editRecording(id)
+	handleEditRecording = formData => {
+		this.props.editRecording(formData)
 	}
 
 	handleDeleteRecording = (id, path) => {

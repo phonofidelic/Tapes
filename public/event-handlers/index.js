@@ -15,7 +15,9 @@ const {
 } = require('electron-devtools-installer');
 const isDev = require('electron-is-dev');
 const AudioRecorder = require('node-audiorecorder');
-const { getAudioDurationInSeconds } = require('get-audio-duration')
+const { getAudioDurationInSeconds } = require('get-audio-duration');
+const moment = require('moment');
+moment.locale(); 
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 const { serveStatic } = require('../app/utils');
@@ -49,12 +51,17 @@ function newRecording(renderer, settings) {
 	const fileFormat = settings.format.file
 	const recordingFileName = `${id}.${fileFormat}`;
 	const savePath = path.resolve(settings.saveDir, recordingFileName);
+
+	const count = fs.readdirSync(settings.saveDir).length
+	console.log('\n*** count:', count)
 	
 	// console.log('\n*** newRecording, recordingFileName', recordingFileName)
 	audioFile_writeStream = fs.WriteStream(savePath);
 	
 	recording = new Recording({
-		title: `${id}.${fileFormat}`,
+		// title: `${id}.${fileFormat}`,
+		// title: moment().format('llll'),
+		title: `Recording #${count}`,
 		format: {
 			filetype: fileFormat,
 			channels: channels
