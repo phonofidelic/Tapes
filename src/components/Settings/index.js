@@ -139,7 +139,7 @@ class Settings extends Component {
 								<MenuItem value="flac">flac</MenuItem>
 								<MenuItem value="mp3">mp3</MenuItem>
 								<MenuItem value="ogg">ogg</MenuItem>
-								<MenuItem value="raw">raw</MenuItem>
+								<MenuItem value="wav">wav</MenuItem>
 							</Select>
 						</FormControl>
 						</div>
