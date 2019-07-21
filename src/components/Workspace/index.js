@@ -4,6 +4,7 @@ import * as actions from 'actions/workspace.actions';
 import { createGlobalStyle } from 'styled-components';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
+import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.js';
 import { ThemeContext } from 'theme.context';
 import { TEST_ID } from 'constants/testIds';
 
@@ -81,9 +82,17 @@ class Workspace extends Component {
 		
 		console.log('channelCount:', channelCount)
 		this.timelinePlugin = TimelinePlugin.create({
-      // plugin options ...
       container: this.timelineEl.current
     });
+
+    this.cursorPlugin = CursorPlugin.create({
+    	zIndex: -1,
+    	customShowTimeStyle: {
+				marginLeft: '10px'
+    	},
+			showTime: true,
+    })
+
 		this.wavesurfer = WaveSurfer.create({
       container: this.waveformEl.current,
       waveColor: 'lightgray',
@@ -95,9 +104,11 @@ class Workspace extends Component {
       splitChannels: channelCount === 2,
       height: 200 / channelCount,
       plugins: [
-		    this.timelinePlugin
+		    this.timelinePlugin,
+		    this.cursorPlugin
 		  ]
     });
+    
     this.wavesurfer.load(srcURL);
 
     this.wavesurfer.on('ready', () => this.setDuration(this.wavesurfer.getDuration()));
