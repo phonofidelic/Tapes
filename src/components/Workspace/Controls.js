@@ -51,7 +51,13 @@ function Controls(props) {
 				</div>
 			</TimeInfo>
 
-			<div style={{flexGrow: 1, textAlign: 'center'}}>
+			<div 
+				style={{
+					// flexGrow: 1, 
+					// textAlign: 'center'
+					marginRight: 50
+				}}
+			>
 				<IconButton onClick={() => handleTogglePlay()}>
 				{!playing ? <PlayIcon /> : <PauseIcon />}
 				</IconButton>
