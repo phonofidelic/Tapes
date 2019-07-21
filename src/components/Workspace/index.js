@@ -5,6 +5,7 @@ import { createGlobalStyle } from 'styled-components';
 import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.js';
+import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js';
 import { ThemeContext } from 'theme.context';
 import { TEST_ID } from 'constants/testIds';
 
@@ -93,6 +94,10 @@ class Workspace extends Component {
 			showTime: true,
     })
 
+    this.regionsPlugin = RegionsPlugin.create({
+			loop: true
+    })
+
 		this.wavesurfer = WaveSurfer.create({
       container: this.waveformEl.current,
       waveColor: 'lightgray',
@@ -105,15 +110,34 @@ class Workspace extends Component {
       height: 200 / channelCount,
       plugins: [
 		    this.timelinePlugin,
-		    this.cursorPlugin
+		    this.cursorPlugin,
+		    this.regionsPlugin
 		  ]
     });
-    
+
     this.wavesurfer.load(srcURL);
 
-    this.wavesurfer.on('ready', () => this.setDuration(this.wavesurfer.getDuration()));
+    this.wavesurfer.on('ready', () => {
+    	this.setDuration(this.wavesurfer.getDuration());
+    	this.wavesurfer.enableDragSelection({ 
+    		loop: true 
+    	});
+  	});
+
     this.wavesurfer.on('finish', () => this.handleEnded());
-    this.wavesurfer.on('seek', progress => this.handleSeek());
+
+    this.wavesurfer.on('seek', progress => {
+    	this.handleSeek()
+    	console.log('regions:', this.wavesurfer.regions)
+    	this.wavesurfer.clearRegions()
+    	// if (this.wavesurfer.regions)
+    });
+		
+		this.wavesurfer.on('region-created', region => {
+			console.log('region-created, region:', region.start)
+			region.play()
+			// this.wavesurfer.seekTo()
+		})
 	}
 
 	setDuration = duration => {
