@@ -6,6 +6,8 @@ import { TEST_ID } from 'constants/testIds';
 import IconButton from '@material-ui/core/IconButton';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import ZoomInIcon from '@material-ui/icons/ZoomIn';
+import ZoomOutIcon from '@material-ui/icons/ZoomOut';
 
 import FormattedTime from 'components/FormattedTime';
 
@@ -34,7 +36,9 @@ function Controls(props) {
 		playing,
 		time,
 		duration,
+		zoomedIn,
 		handleTogglePlay,
+		handleToggleZoom,
 	} = props;
 
 	const theme = useContext(ThemeContext)
@@ -46,12 +50,19 @@ function Controls(props) {
 					<FormattedTime time={time * 1000} />
 				</div>
 			</TimeInfo>
+
 			<div style={{flexGrow: 1, textAlign: 'center'}}>
 				<IconButton onClick={() => handleTogglePlay()}>
 				{!playing ? <PlayIcon /> : <PauseIcon />}
 				</IconButton>
 			</div>
-			
+
+			<div>
+				<IconButton onClick={() => handleToggleZoom()}>
+					{ !zoomedIn ? <ZoomInIcon /> : <ZoomOutIcon /> }
+				</IconButton>
+			</div>
+
 			<div style={{
 				// border: '1px solid red',
 				display: 'flex',

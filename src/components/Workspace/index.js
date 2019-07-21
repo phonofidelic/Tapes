@@ -35,6 +35,8 @@ class Workspace extends Component {
 			playing: false,
 			currentTime: 0,
 			barHeight: 2,
+			zoom: 50,
+			zoomedIn: false,
 		}
 
 		let params = new URLSearchParams(window.location.search);
@@ -95,7 +97,7 @@ class Workspace extends Component {
     })
 
     this.regionsPlugin = RegionsPlugin.create({
-			loop: true
+			// loop: true
     })
 
 		this.wavesurfer = WaveSurfer.create({
@@ -108,6 +110,7 @@ class Workspace extends Component {
       barHeight: this.state.barHeight,
       splitChannels: channelCount === 2,
       height: 200 / channelCount,
+      hideScrollbar: true,
       plugins: [
 		    this.timelinePlugin,
 		    this.cursorPlugin,
@@ -116,6 +119,10 @@ class Workspace extends Component {
     });
 
     this.wavesurfer.load(srcURL);
+
+    /**
+     * Wavesurfer event handlers
+     */
 
     this.wavesurfer.on('ready', () => {
     	this.setDuration(this.wavesurfer.getDuration());
@@ -134,8 +141,9 @@ class Workspace extends Component {
     });
 		
 		this.wavesurfer.on('region-created', region => {
-			console.log('region-created, region:', region.start)
-			region.play()
+			console.log('region-created, region:', region)
+			// setTimeout(() => region.play(), 100)
+			
 			// this.wavesurfer.seekTo()
 		})
 	}
@@ -193,6 +201,22 @@ class Workspace extends Component {
 		});
 	}
 
+	zoomIn = () => {
+		console.log('zoom')
+		this.setState({ zoom: 100, zoomedIn: true })
+		this.wavesurfer.zoom(100)
+	}
+
+	zoomOut = () => {
+		console.log('zoom')
+		this.setState({ zoom: 0, zoomedIn: false })
+		this.wavesurfer.zoom(0)
+	}
+
+	handleToggleZoom = () => {
+		!this.state.zoomedIn ? this.zoomIn() : this.zoomOut()
+	}
+
 	render() {
 		const { recording } = this.props;
 		const { playing } = this.state;
@@ -213,6 +237,7 @@ class Workspace extends Component {
 							id="waveform"
 							data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 							ref={this.waveformEl}
+							onDoubleClick={this.handleZoom}
 						/>
 					</div>
 
@@ -232,7 +257,9 @@ class Workspace extends Component {
 						playing={playing}
 						time={this.state.currentTime}
 						duration={this.state.audioDuration}
+						zoomedIn={this.state.zoomedIn}
 						handleTogglePlay={this.handleTogglePlay}
+						handleToggleZoom={this.handleToggleZoom}
 					/>
 
 				</div>
