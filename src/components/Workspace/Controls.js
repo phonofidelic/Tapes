@@ -4,29 +4,55 @@ import { ThemeContext } from 'theme.context';
 import { TEST_ID } from 'constants/testIds';
 
 import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import PlayIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import ZoomInIcon from '@material-ui/icons/ZoomIn';
 import ZoomOutIcon from '@material-ui/icons/ZoomOut';
+import FollowIcon from '@material-ui/icons/TrendingFlat';
 
 import FormattedTime from 'components/FormattedTime';
 
-const ControlsContainer = styled.div`
-	// border: 1px solid red;
+const Container = styled.div`
+	// border: 1px solid blue;
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	display: flex;
-	// justify-content: center;
-	padding: 10px;
+	justify-content: center;
 `
 
-const TimeInfo = styled.div`
-	// border: 1px solid red;
+const ControlsContainer = styled.div`
+	// border: 1px solid green;
 	display: flex;
-	width: 100px;
-	padding-top: 15px;
-	padding-left: 10px;
+	width: 100%;
+	flex-grow: 1;
+	justify-content: center;
+	padding: 10px;
+`
+const PlaybackControls = styled.div`
+	// border: 1px solid orange;
+	margin-right: 50px;
+	align-self: center;
+	// flex-grow: 1;
+`
+
+const ZoomControls = styled.div`
+	// border: 1px solid orange;
+	display: flex;
+	width: 95px;
+	// flex-grow: 1;
+`
+
+const TimeInfoContainer = styled.div`
+	// border: 1px solid green;
+	display: flex;
+	justify-content: ${props => props.justifyContent};
+	text-align: ${props => props.textAlign | 'left'};
+	width: 100%;
+	padding-top: 25px;
+	padding-right: 20px;
+	padding-left: 20px;
 	flex-grow: 1;
 	// text-align: justify;
 `
@@ -44,32 +70,46 @@ function Controls(props) {
 	const theme = useContext(ThemeContext)
 	// console.log('*** theme:', theme)
 	return (
-		<ControlsContainer data-testid={TEST_ID.WORKSPACE.CONTROLS.CONTAINER}>
-			<TimeInfo theme={theme}>
-				<div style={{marginRight: 5}}>
-					<FormattedTime time={time * 1000} />
-				</div>
-			</TimeInfo>
+		<Container data-testid={TEST_ID.WORKSPACE.CONTROLS.CONTAINER}>
+			{/*<div style={{
+				position: 'fixed',
+				top: 0,
+				left: 0,
+				width: '50vw',
+				height: '100vh',
+				border: '1px solid red',
+			}}>
+			</div>*/}
 
-			<div 
-				style={{
-					// flexGrow: 1, 
-					// textAlign: 'center'
-					marginRight: 50
-				}}
+			<TimeInfoContainer 
+				theme={theme}
+				justifyContent="flex-start"
 			>
-				<IconButton onClick={() => handleTogglePlay()}>
-				{!playing ? <PlayIcon /> : <PauseIcon />}
-				</IconButton>
-			</div>
+				<FormattedTime time={time * 1000} />
+			</TimeInfoContainer>
 
-			<div>
-				<IconButton onClick={() => handleToggleZoom()}>
-					{ !zoomedIn ? <ZoomInIcon /> : <ZoomOutIcon /> }
-				</IconButton>
-			</div>
+			<ControlsContainer>
+				<PlaybackControls>
+					<IconButton onClick={() => handleTogglePlay()}>
+					{!playing ? <PlayIcon /> : <PauseIcon />}
+					</IconButton>
+				</PlaybackControls>
 
-			<div style={{
+				<ZoomControls>
+					<IconButton onClick={() => handleToggleZoom()}>
+						{ !zoomedIn ? <ZoomInIcon /> : <ZoomOutIcon /> }
+					</IconButton>
+					{ false &&
+						<Tooltip enterDelay={300} title="Follow cursor">
+							<IconButton>
+								<FollowIcon color="disabled" />
+							</IconButton>
+						</Tooltip>
+					}
+				</ZoomControls>
+			</ControlsContainer>
+
+			{/*<div style={{
 				// border: '1px solid red',
 				display: 'flex',
 				justifyContent: 'flex-end',
@@ -81,8 +121,15 @@ function Controls(props) {
 				paddingRight: 25,
 			}}>
 				<FormattedTime time={duration * 1000} />
-			</div>
-		</ControlsContainer>
+			</div>*/}
+			<TimeInfoContainer 
+				theme={theme}
+				justifyContent="flex-end"
+			>
+				<FormattedTime time={duration * 1000} />
+			</TimeInfoContainer>
+
+		</Container>
 	)
 }
 

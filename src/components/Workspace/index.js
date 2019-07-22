@@ -37,6 +37,7 @@ class Workspace extends Component {
 			barHeight: 2,
 			zoom: 50,
 			zoomedIn: false,
+			selection: null,
 		}
 
 		let params = new URLSearchParams(window.location.search);
@@ -110,7 +111,8 @@ class Workspace extends Component {
       barHeight: this.state.barHeight,
       splitChannels: channelCount === 2,
       height: 200 / channelCount,
-      hideScrollbar: true,
+      // hideScrollbar: true,
+      autoCenter: false,
       plugins: [
 		    this.timelinePlugin,
 		    this.cursorPlugin,
@@ -137,14 +139,31 @@ class Workspace extends Component {
     	this.handleSeek()
     	console.log('regions:', this.wavesurfer.regions)
     	this.wavesurfer.clearRegions()
-    	// if (this.wavesurfer.regions)
+    	this.setState({ selection: null })
     });
 		
 		this.wavesurfer.on('region-created', region => {
 			console.log('region-created, region:', region)
-			// setTimeout(() => region.play(), 100)
 			
-			// this.wavesurfer.seekTo()
+			setTimeout(() => {
+				this.setState({
+					selection: {
+						start: region.start,
+						end: region.end
+					}
+				})
+			}, 100)
+		});
+
+		this.wavesurfer.on('region-updated', region => {			
+			setTimeout(() => {
+				this.setState({
+					selection: {
+						start: region.start,
+						end: region.end
+					}
+				})
+			}, 100)
 		})
 	}
 
@@ -235,6 +254,7 @@ class Workspace extends Component {
 						/>
 						<div
 							id="waveform"
+							style={{overflowX: 'hidden'}}
 							data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 							ref={this.waveformEl}
 							onDoubleClick={this.handleZoom}
@@ -251,6 +271,14 @@ class Workspace extends Component {
 							onLoadedMetadata={this.handleOnLoadedMetadata}
 							onEnded={this.handleEnded}
 						/>
+					}
+
+					{ this.state.selection &&
+						<div>
+							<div>Selection:</div>
+							<div>start: {this.state.selection.start}</div>
+							<div>end: {this.state.selection.end}</div>
+						</div>
 					}
 
 					<Controls
