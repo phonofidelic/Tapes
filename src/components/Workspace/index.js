@@ -146,6 +146,7 @@ class Workspace extends Component {
 			console.log('region-created, region:', region)
 			
 			setTimeout(() => {
+				this.play(region.start)
 				this.setState({
 					selection: {
 						start: region.start,
@@ -187,20 +188,20 @@ class Workspace extends Component {
 		if (this.intervalID) clearInterval(this.intervalID);
 	}
 
-	handleTogglePlay = (e) => {
-		if (!this.state.playing) {
-			console.log('play', this.source)
-			this.wavesurfer.play();
-			this.startTimer();
-		} else {
-			console.log('stop', this.source)
-			this.wavesurfer.pause();
-			this.stopTimer();
-		}
+	play = (start) => {
+		this.wavesurfer.play(start);
+		this.startTimer();
+		this.setState({ playing: true });
+	}
 
-		this.setState({
-			playing: !this.state.playing
-		})
+	pause = () => {
+		this.wavesurfer.pause();
+		this.stopTimer();
+		this.setState({ playing: false });
+	}
+
+	handleTogglePlay = (e) => {
+		!this.state.playing ? this.play() : this.pause();
 	}
 
 	handleSeek = () => {
@@ -254,7 +255,6 @@ class Workspace extends Component {
 						/>
 						<div
 							id="waveform"
-							style={{overflowX: 'hidden'}}
 							data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 							ref={this.waveformEl}
 							onDoubleClick={this.handleZoom}
