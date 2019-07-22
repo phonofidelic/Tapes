@@ -138,7 +138,7 @@ class Workspace extends Component {
     this.wavesurfer.on('seek', progress => {
     	this.handleSeek()
     	console.log('regions:', this.wavesurfer.regions)
-    	this.wavesurfer.clearRegions()
+    	// this.wavesurfer.clearRegions()
     	this.setState({ selection: null })
     });
 		
@@ -146,7 +146,9 @@ class Workspace extends Component {
 			console.log('region-created, region:', region)
 			
 			setTimeout(() => {
-				this.play(region.start)
+				// this.state.playing && this.play(region.start)
+				console.log(region.start / this.state.audioDuration)
+				this.wavesurfer.seekTo(region.start / this.state.audioDuration)
 				this.setState({
 					selection: {
 						start: region.start,
@@ -258,6 +260,7 @@ class Workspace extends Component {
 							data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 							ref={this.waveformEl}
 							onDoubleClick={this.handleZoom}
+							onClick={() => this.wavesurfer.clearRegions()}
 						/>
 					</div>
 
