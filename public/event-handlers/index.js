@@ -21,7 +21,7 @@ moment.locale();
 
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 const { serveStatic } = require('../app/utils');
-const Recording = require('../app/models/Recording');
+const Recording = require('../app/models/Recording.model');
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
