@@ -22,6 +22,7 @@ moment.locale();
 const WorkspaceWindow = require('../app/WorkspaceWindow');
 const { serveStatic } = require('../app/utils');
 const Recording = require('../app/models/Recording.model');
+const Project = require('../app/models/Project.model');
 
 function openDirSelect(renderer) {
 	dialog.showOpenDialog({
@@ -127,16 +128,13 @@ function deleteRecording(path) {
 }
 
 let workspaceWindow; // TODO: remove bad global variables
-// let recording; // TODO: remove bad global variables
 let server;
 async function openWorkspace(recording) {
 	console.log('\n*** openWorkspace, recording:', recording);
 	// Check if server is already running
 	if (!server) server = await serveStatic('/recordings', path.dirname(recording.src), 5000);
 
-	// recording = recording;
 	workspaceWindow = new WorkspaceWindow();
-	// workspaceWindow.loadURL(isDev ? `http://localhost:3000/open/${recording.id}` : `file://${path.join(__dirname, "../index.html/open/${recording.id")}`)
 	workspaceWindow.loadURL(isDev ? `http://localhost:3000?view=workspace&id=${recording.id}` :`file://${path.join(__dirname, `../index.html?view=workspace&id=${recording.id}`)}`)
 	isDev && workspaceWindow.webContents.openDevTools({mode: 'detach'});
 

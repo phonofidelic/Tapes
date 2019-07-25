@@ -15,6 +15,7 @@ const Container = styled.div`
 	display: flex;
 	width: 100%;
 	// max-width: 300px;
+	z-index: 4;
 `
 
 const NavContainer = styled(BottomNavigation)`
@@ -42,6 +43,7 @@ function Navigation(props)  {
 				backgroundColor: '#e9eae6',
 				WebkitAppRegion: 'drag',
 				height: 56,
+				zIndex: 4,
 			}}
 		>
 		</Container>

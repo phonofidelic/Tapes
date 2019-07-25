@@ -14,13 +14,11 @@ import {
 	SectionTitle,
 } from 'components/CommonUI';
 import Controls from 'components/Workspace/Controls';
-
-const CANVAS_WIDTH =  window.innerWidth;
-const CANVAS_HEIGHT = 200;
+import Recording from 'components/Workspace/Recording';
 
 const GlobalStyle = createGlobalStyle`
 	body {
-		overflow-y: hidden;
+		// overflow-y: hidden;
 	}
 `
 
@@ -32,7 +30,6 @@ class Workspace extends Component {
 
 		this.state = {
 			audioDuration: 0,
-			playing: false,
 			currentTime: 0,
 			barHeight: 2,
 			zoom: 50,
@@ -43,184 +40,48 @@ class Workspace extends Component {
 		let params = new URLSearchParams(window.location.search);
 		const id = params.get('id');
 		this.props.loadRecordingData(id)
-
-		this.audioElement = createRef();
-		this.waveformMaskElements = [createRef() ,createRef()];
-		this.waveformEl = createRef();
-		this.timelineEl = createRef();
-
-		this.canvasWidth = CANVAS_WIDTH;
-		this.canvasHeight = CANVAS_HEIGHT;
-	}
-
-	componentDidMount() {
-		this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-		this.analyser = this.audioCtx.createAnalyser();
-	}
-
-	handleOnLoadedMetadata = (e) => {
-		console.log('handleAudioElementMounted, e.target.duration:', e.target.duration)
-		this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
-		this.source.connect(this.audioCtx.destination);
-		
-		this.audioElement.current.addEventListener('ended', (e) => {
-			console.log('*** Recording ended')
-			clearInterval(this.intervalID);
-			this.setState({
-				playing: false
-			})
-		})
-		
-		this.loadWaveformDada();
-	}
-
-	handleOnComplete = e => {
-		console.log('handleOnComplete, e.target.duration:', e.target.duration)
-	}
-
-	loadWaveformDada = () => {
-		const theme = this.context;
-		const { recording } = this.props;
-		const channelCount = parseInt(recording.format.channels, 10); // TODO: fix spelling on channels prop
-		const srcURL = `http://localhost:5000/recordings/${recording.filename}`
-		
-		console.log('channelCount:', channelCount)
-		this.timelinePlugin = TimelinePlugin.create({
-      container: this.timelineEl.current
-    });
-
-    this.cursorPlugin = CursorPlugin.create({
-    	zIndex: -1,
-    	customShowTimeStyle: {
-				marginLeft: '10px'
-    	},
-			showTime: true,
-    })
-
-    this.regionsPlugin = RegionsPlugin.create({
-			// loop: true
-    })
-
-		this.wavesurfer = WaveSurfer.create({
-      container: this.waveformEl.current,
-      waveColor: 'lightgray',
-      progressColor: theme.palette.primary.accent,
-      cursorColor: theme.palette.primary.accent,
-      responsive: true,
-      audioContext: this.audioCtx,
-      barHeight: this.state.barHeight,
-      splitChannels: channelCount === 2,
-      height: 200 / channelCount,
-      // hideScrollbar: true,
-      autoCenter: false,
-      plugins: [
-		    this.timelinePlugin,
-		    this.cursorPlugin,
-		    this.regionsPlugin
-		  ]
-    });
-
-    this.wavesurfer.load(srcURL);
-
-    /**
-     * Wavesurfer event handlers
-     */
-
-    this.wavesurfer.on('ready', () => {
-    	this.setDuration(this.wavesurfer.getDuration());
-    	this.wavesurfer.enableDragSelection({ 
-    		loop: true 
-    	});
-  	});
-
-    this.wavesurfer.on('finish', () => this.handleEnded());
-
-    this.wavesurfer.on('seek', progress => {
-    	this.handleSeek()
-    	console.log('regions:', this.wavesurfer.regions)
-    	// this.wavesurfer.clearRegions()
-    	this.setState({ selection: null })
-    });
-		
-		this.wavesurfer.on('region-created', region => {
-			console.log('region-created, region:', region)
-			
-			setTimeout(() => {
-				// this.state.playing && this.play(region.start)
-				console.log(region.start / this.state.audioDuration)
-				this.wavesurfer.seekTo(region.start / this.state.audioDuration)
-				this.setState({
-					selection: {
-						start: region.start,
-						end: region.end
-					}
-				})
-			}, 100)
-		});
-
-		this.wavesurfer.on('region-updated', region => {			
-			setTimeout(() => {
-				this.setState({
-					selection: {
-						start: region.start,
-						end: region.end
-					}
-				})
-			}, 100)
-		})
-	}
-
-	setDuration = duration => {
-		console.log('setDuration, duration:', duration)
-		this.setState({ audioDuration: duration })
-	}
-
-	startTimer = () => {
-		if (this.intervalID) clearInterval(this.intervalID);
-
-		this.intervalID = setInterval(() => {
-			// console.log('wavesurfer time:', Math.trunc(this.wavesurfer.getCurrentTime()*1000))
-			this.setState({
-				currentTime: this.wavesurfer.getCurrentTime(),
-			})
-		}, 1)
-	}
-
-	stopTimer = () => {
-		if (this.intervalID) clearInterval(this.intervalID);
-	}
-
-	play = (start) => {
-		this.wavesurfer.play(start);
-		this.startTimer();
-		this.setState({ playing: true });
-	}
-
-	pause = () => {
-		this.wavesurfer.pause();
-		this.stopTimer();
-		this.setState({ playing: false });
 	}
 
 	handleTogglePlay = (e) => {
-		!this.state.playing ? this.play() : this.pause();
+	!this.props.playing ? 
+		this.props.playWorkspace()
+		:
+		this.props.pauseWorkspace();
 	}
 
-	handleSeek = () => {
-		console.log('handleSeek, currentTime:', this.wavesurfer.getCurrentTime())
+	handleSeek = (time) => {
+		console.log('handleSeek, currentTime:', time)
 		this.setState({ 
-			currentTime: this.wavesurfer.getCurrentTime(),
+			currentTime: time,
+			// selection: null,
 		});
 	}
 
 	handleEnded = () => {
-		console.log('handleEnded')
-		this.wavesurfer.stop();
-		this.stopTimer();
-		this.setState({ 
-			currentTime: 0,
-			playing: false,
-		});
+		this.props.stopWorkspace();
+	}
+
+	handleToggleZoom = () => {
+		!this.state.zoomedIn ? this.zoomIn() : this.zoomOut()
+	}
+
+	handleWavesurferReady = duration => {
+		console.log('handleWavesurferReady, duration:', duration)
+		this.setState({ audioDuration: duration })
+	}
+
+	handleSetTime = (time) => {
+		this.setState({ currentTime: time })
+	}
+
+	handleCreateRegion = region => {
+		console.log('handleCreateRegion, region:', region)
+		this.setState({ selection: region })
+	}
+	
+	handleUpdateRegion = region => {
+		console.log('handleUpdateRegion, region:', region)
+		this.setState({ selection: region })	
 	}
 
 	zoomIn = () => {
@@ -235,13 +96,11 @@ class Workspace extends Component {
 		this.wavesurfer.zoom(0)
 	}
 
-	handleToggleZoom = () => {
-		!this.state.zoomedIn ? this.zoomIn() : this.zoomOut()
-	}
-
 	render() {
-		const { recording } = this.props;
-		const { playing } = this.state;
+		const { 
+			recording,
+			playing, 
+		} = this.props;
 
 		return (
 			<Container>
@@ -249,31 +108,20 @@ class Workspace extends Component {
 				<SectionTitle variant="overline">Workspace - {recording && recording.title}</SectionTitle>
 				<div>
 
-					<div>
-						<div 
-							id="timeline" 
-							data-testid={TEST_ID.WORKSPACE.TRACK.TIMELINE}
-							ref={this.timelineEl}
-						/>
-						<div
-							id="waveform"
-							data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
-							ref={this.waveformEl}
-							onDoubleClick={this.handleZoom}
-							onClick={() => this.wavesurfer.clearRegions()}
-						/>
-					</div>
-
-					{ recording && 
-						<audio 
-							ref={this.audioElement}
-							//controls
-							preload="auto"
-							crossOrigin="anonymous"
-							src={`http://localhost:5000/recordings/${recording.filename}`}
-							onLoadedMetadata={this.handleOnLoadedMetadata}
-							onEnded={this.handleEnded}
-						/>
+					{ 
+						recording && 
+						<Recording
+							recording={recording}
+							audioDuration={this.state.audioDuration}
+							playing={playing}
+							barHeight={this.state.barHeight}
+							handleWavesurferReady={this.handleWavesurferReady}
+							handleSeek={this.handleSeek}
+							handleSetTime={this.handleSetTime}
+							handleEnded={this.handleEnded}
+							handleCreateRegion={this.handleCreateRegion}
+							handleUpdateRegion={this.handleUpdateRegion}
+						/> 
 					}
 
 					{ this.state.selection &&
@@ -302,6 +150,7 @@ class Workspace extends Component {
 const mapStateToProps = state => {
 	return {
 		recording: state.workspace.recording,
+		playing: state.workspace.playing,
 	}
 }
 

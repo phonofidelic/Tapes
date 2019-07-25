@@ -15,11 +15,13 @@ import FormattedTime from 'components/FormattedTime';
 
 const Container = styled.div`
 	// border: 1px solid blue;
+	background-color: ${props => props.theme.palette.secondary.light}
 	position: fixed;
 	bottom: 0;
 	width: 100%;
 	display: flex;
 	justify-content: center;
+	z-index: 4;
 `
 
 const ControlsContainer = styled.div`
@@ -70,7 +72,10 @@ function Controls(props) {
 	const theme = useContext(ThemeContext)
 	// console.log('*** theme:', theme)
 	return (
-		<Container data-testid={TEST_ID.WORKSPACE.CONTROLS.CONTAINER}>
+		<Container 
+			data-testid={TEST_ID.WORKSPACE.CONTROLS.CONTAINER}
+			theme={theme}
+		>
 			{/*<div style={{
 				position: 'fixed',
 				top: 0,
@@ -82,13 +87,12 @@ function Controls(props) {
 			</div>*/}
 
 			<TimeInfoContainer 
-				theme={theme}
 				justifyContent="flex-start"
 			>
 				<FormattedTime time={time * 1000} />
 			</TimeInfoContainer>
 
-			<ControlsContainer>
+			<ControlsContainer theme={theme}>
 				<PlaybackControls>
 					<IconButton onClick={() => handleTogglePlay()}>
 					{!playing ? <PlayIcon /> : <PauseIcon />}

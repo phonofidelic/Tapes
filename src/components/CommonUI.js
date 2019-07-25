@@ -16,6 +16,7 @@ export const SectionTitle = styled(Typography)`
 	background-color: #333;
 	display: flex;
 	padding-left: 8px;
+	z-index: 4;
 `
 // const SectionSubTitle = 
 export const SectionSubTitle = styled(Typography)`
