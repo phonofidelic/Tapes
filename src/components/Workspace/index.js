@@ -12,10 +12,11 @@ import {
 } from 'components/CommonUI';
 import Controls from 'components/Workspace/Controls';
 import Recording from 'components/Workspace/Recording';
+import Selection from 'components/Workspace/Selection';
 
 const GlobalStyle = createGlobalStyle`
 	body {
-		// overflow-y: hidden;
+		overflow-y: hidden;
 	}
 `
 
@@ -134,11 +135,10 @@ class Workspace extends Component {
 					}
 
 					{ this.state.selection &&
-						<div>
-							<div>Selection:</div>
-							<div>start: {this.state.selection.start}</div>
-							<div>end: {this.state.selection.end}</div>
-						</div>
+						<Selection 
+							start={this.state.selection.start}
+							end={this.state.selection.start}
+						/>
 					}
 
 					<Controls
