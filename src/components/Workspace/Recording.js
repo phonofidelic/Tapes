@@ -22,11 +22,10 @@ class Recording extends Component {
 	componentDidMount() {
 		this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 		this.analyser = this.audioCtx.createAnalyser();
-	}
-
-	componentWillReceiveProps(nextProps) {
-		// console.log('Recording, nextProps:', nextProps)
-		nextProps.playing ? this.play() : this.pause();
+		document.addEventListener('play_workspace', e => this.play());
+		document.addEventListener('pause_workspace', e => this.pause());
+		document.addEventListener('zoomin_workspace', e => this.zoomIn())
+		document.addEventListener('zoomout_workspace', e => this.zoomOut())
 	}
 
 	handleOnLoadedMetadata = (e) => {
@@ -160,7 +159,15 @@ class Recording extends Component {
 	}
 
 	seek = (time) => {
-		this.props.handleSeek(time)
+		this.props.handleSeek(time);
+	}
+
+	zoomIn = () => {
+		this.wavesurfer.zoom(100);
+	}
+
+	zoomOut = () => {
+		this.wavesurfer.zoom(0);
 	}
 
 	render() {

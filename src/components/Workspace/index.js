@@ -2,9 +2,6 @@ import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/workspace.actions';
 import { createGlobalStyle } from 'styled-components';
-import WaveSurfer from 'wavesurfer.js';
-import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
-import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js';
 import { ThemeContext } from 'theme.context';
 import { TEST_ID } from 'constants/testIds';
@@ -37,16 +34,21 @@ class Workspace extends Component {
 			selection: null,
 		}
 
+		this.recorderElement = createRef();
+
 		let params = new URLSearchParams(window.location.search);
 		const id = params.get('id');
 		this.props.loadRecordingData(id)
 	}
 
 	handleTogglePlay = (e) => {
-	!this.props.playing ? 
-		this.props.playWorkspace()
-		:
-		this.props.pauseWorkspace();
+	if (!this.props.playing) {
+			this.props.playWorkspace()
+			document.dispatchEvent(new Event('play_workspace'))
+		} else {
+			this.props.pauseWorkspace();
+			document.dispatchEvent(new Event('pause_workspace'))
+		}
 	}
 
 	handleSeek = (time) => {
@@ -59,10 +61,6 @@ class Workspace extends Component {
 
 	handleEnded = () => {
 		this.props.stopWorkspace();
-	}
-
-	handleToggleZoom = () => {
-		!this.state.zoomedIn ? this.zoomIn() : this.zoomOut()
 	}
 
 	handleWavesurferReady = duration => {
@@ -84,17 +82,26 @@ class Workspace extends Component {
 		this.setState({ selection: region })	
 	}
 
-	zoomIn = () => {
-		console.log('zoom')
-		this.setState({ zoom: 100, zoomedIn: true })
-		this.wavesurfer.zoom(100)
+	handleToggleZoom = () => {
+		!this.state.zoomedIn ?
+		document.dispatchEvent(new Event('zoomin_workspace'))
+		:
+		document.dispatchEvent(new Event('zoomout_workspace'));
+
+		this.setState({ zoomedIn: !this.state.zoomedIn })
 	}
 
-	zoomOut = () => {
-		console.log('zoom')
-		this.setState({ zoom: 0, zoomedIn: false })
-		this.wavesurfer.zoom(0)
-	}
+	// zoomIn = () => {
+	// 	console.log('zoom')
+	// 	this.setState({ zoom: 100, zoomedIn: true })
+	// 	this.wavesurfer.zoom(100)
+	// }
+
+	// zoomOut = () => {
+	// 	console.log('zoom')
+	// 	this.setState({ zoom: 0, zoomedIn: false })
+	// 	this.wavesurfer.zoom(0)
+	// }
 
 	render() {
 		const { 
@@ -111,10 +118,12 @@ class Workspace extends Component {
 					{ 
 						recording && 
 						<Recording
+							ref={this.recorderElement}
 							recording={recording}
 							audioDuration={this.state.audioDuration}
 							playing={playing}
 							barHeight={this.state.barHeight}
+							zoomedIn={this.state.zoomedIn}
 							handleWavesurferReady={this.handleWavesurferReady}
 							handleSeek={this.handleSeek}
 							handleSetTime={this.handleSetTime}
