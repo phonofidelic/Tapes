@@ -87,6 +87,10 @@ class Workspace extends Component {
 			selections: [...this.state.selections, region]
 		})
 	}
+
+	handleClearRegions = () => {
+		this.setState({ selections: [] });
+	}
 	
 	handleUpdateRegion = region => {
 		console.log('handleUpdateRegion, region:', region)
@@ -141,6 +145,7 @@ class Workspace extends Component {
 							handleEnded={this.handleEnded}
 							handleCreateRegion={this.handleCreateRegion}
 							handleUpdateRegion={this.handleUpdateRegion}
+							handleClearRegions={this.handleClearRegions}
 						/> 
 					}
 

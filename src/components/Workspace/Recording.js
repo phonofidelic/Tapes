@@ -122,6 +122,11 @@ class Recording extends Component {
 		}, 100)
 	}
 
+	clearRegions = () => {
+		this.wavesurfer.clearRegions();
+		this.props.handleClearRegions();
+	}
+
 	handleReady = () => {
 		this.props.handleWavesurferReady(this.wavesurfer.getDuration())
 		this.wavesurfer.enableDragSelection({ 
@@ -187,8 +192,8 @@ class Recording extends Component {
 					id="waveform"
 					data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 					ref={this.waveformEl}
-					onDoubleClick={this.handleZoom}
-					onClick={() => this.wavesurfer.clearRegions()}
+					// onDoubleClick={this.handleZoom}
+					onClick={() => this.clearRegions()}
 				/>
 				{ recording && 
 					<audio 
