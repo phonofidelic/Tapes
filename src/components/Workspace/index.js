@@ -1,7 +1,7 @@
 import React, { Component, createRef } from 'react';
 import { connect } from 'react-redux';
 import * as actions from 'actions/workspace.actions';
-import { createGlobalStyle } from 'styled-components';
+import styled, { createGlobalStyle } from 'styled-components';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js';
 import { ThemeContext } from 'theme.context';
 import { TEST_ID } from 'constants/testIds';
@@ -19,6 +19,11 @@ const GlobalStyle = createGlobalStyle`
 		overflow-y: hidden;
 	}
 `
+const SelectionContainer = styled.div`
+	display: flex;
+	overflow-x: auto;
+	padding: 20px 10px;
+`
 
 class Workspace extends Component {
 	static contextType = ThemeContext;
@@ -33,6 +38,7 @@ class Workspace extends Component {
 			zoom: 50,
 			zoomedIn: false,
 			selection: null,
+			selections: [],
 		}
 
 		this.recorderElement = createRef();
@@ -57,6 +63,7 @@ class Workspace extends Component {
 		this.setState({ 
 			currentTime: time,
 			// selection: null,
+			// selections: [],
 		});
 	}
 
@@ -75,12 +82,15 @@ class Workspace extends Component {
 
 	handleCreateRegion = region => {
 		console.log('handleCreateRegion, region:', region)
-		this.setState({ selection: region })
+		this.setState({ 
+			selection: region,
+			selections: [...this.state.selections, region]
+		})
 	}
 	
 	handleUpdateRegion = region => {
 		console.log('handleUpdateRegion, region:', region)
-		this.setState({ selection: region })	
+		this.setState({ selection: region })
 	}
 
 	handleToggleZoom = () => {
@@ -134,12 +144,24 @@ class Workspace extends Component {
 						/> 
 					}
 
-					{ this.state.selection &&
+					{/* this.state.selection &&
 						<Selection 
 							start={this.state.selection.start}
 							end={this.state.selection.start}
 						/>
+					*/}
+
+					<SelectionContainer>
+					{ 
+						this.state.selections.map((selection, i) => (
+							<Selection 
+								key={i}
+								start={this.state.selections[i].start}
+								end={this.state.selections[i].end}
+							/>
+						))
 					}
+					</SelectionContainer>
 
 					<Controls
 						playing={playing}

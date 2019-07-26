@@ -8,7 +8,7 @@ export default function FormattedTime(props) {
 	let minutes = ('0' + (Math.floor(time / 60000) % 60)).slice(-2);
 	let hours = ('0' + Math.floor(time / 360000)).slice(-2);
 	return (
-		<div>
+		<div style={{display: props.display}}>
 			{hours} : {minutes} : {seconds} : {centiseconds}
 		</div>
 	);
