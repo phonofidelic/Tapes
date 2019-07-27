@@ -28,7 +28,7 @@ class Recording extends Component {
 		document.addEventListener('workspace_zoomin', e => this.zoomIn())
 		document.addEventListener('workspace_zoomout', e => this.zoomOut())
 		document.addEventListener('workspace_selectregion', e => {
-			console.log('workspace_selectregion')
+			// console.log('workspace_selectregion', e.detail)
 			this.wavesurfer.seekTo(e.detail.start / this.props.audioDuration)
 		})
 	}
@@ -100,13 +100,16 @@ class Recording extends Component {
     this.wavesurfer.on('ready', () => this.handleReady());
 
     this.wavesurfer.on('finish', () => this.stop());
+
     this.wavesurfer.on('seek', progress => {
+    	// console.log('seek, progress:', progress)
     	this.seek(this.wavesurfer.getCurrentTime())
     });
 		this.wavesurfer.on('region-created', region => {
 
 			this.createRegion(region)
 		});
+
 		this.wavesurfer.on('region-updated', region => this.updateRegion(region));
 		// this.wavesurfer.on('region-click', region => console.log('region-click', region));
 	}
@@ -125,7 +128,6 @@ class Recording extends Component {
 
 		region.on('over', e => {
 			console.log('region hover, e:', e)
-			// e.stopPropagation()
 		})
 
 		setTimeout(() => {
@@ -187,7 +189,7 @@ class Recording extends Component {
 	}
 
 	seek = (time) => {
-		console.log('seek, time:', time / this.props.audioDuration)
+		// console.log('seek, time:', time / this.props.audioDuration)
 		// this.wavesurfer.seekTo(time / this.props.audioDuration)
 		this.props.handleSeek(time);
 	}
@@ -217,7 +219,6 @@ class Recording extends Component {
 					id="waveform"
 					data-testid={TEST_ID.WORKSPACE.TRACK.WORKSPACE}
 					ref={this.waveformEl}
-					// onDoubleClick={this.handleZoom}
 					onClick={() => this.clearRegions()}
 				/>
 				{ recording && 

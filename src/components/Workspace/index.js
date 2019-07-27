@@ -92,14 +92,7 @@ class Workspace extends Component {
 	handleSelectRegion = region => {
 		// console.log('handleSelectRegion, region:', region)
 		document.dispatchEvent(
-			new CustomEvent(
-				'workspace_selectregion', 
-				{
-					'detail': region,
-					'bubbles': true,
-					'composed': true
-				}
-			)
+			new CustomEvent('workspace_selectregion', { 'detail': region })
 		)
 
 		this.setState({
@@ -172,7 +165,12 @@ class Workspace extends Component {
 					}
 					</RegionsContainer>
 
-					[DEBUG] Selected Region: {this.state.selectedRegion && this.state.selectedRegion.id}
+					<div style={{padding: '5px'}}>
+					[DEBUG] 
+					<div style={{padding: '5px'}}>Selected Region: {this.state.selectedRegion && this.state.selectedRegion.id}</div>
+					<div style={{padding: '5px'}}>Region start: {this.state.selectedRegion && this.state.selectedRegion.start}</div>
+					<div style={{padding: '5px'}}>currentTime: {this.state.currentTime}</div>
+					</div>
 
 					<Controls
 						playing={playing}
