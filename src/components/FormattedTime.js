@@ -1,15 +1,22 @@
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
 
 export default function FormattedTime(props) {
-	const { time } = props;
+	const { time, variant } = props;
 
 	let centiseconds = ('0' + (Math.floor(time / 10) % 100)).slice(-2);
 	let seconds = ('0' + (Math.floor(time / 1000) % 60)).slice(-2);
 	let minutes = ('0' + (Math.floor(time / 60000) % 60)).slice(-2);
 	let hours = ('0' + Math.floor(time / 360000)).slice(-2);
 	return (
-		<div style={{display: props.display}}>
+		<Typography 
+			style={{
+				display: props.display,
+				margin: 0,
+			}}
+			variant={variant}
+		>
 			{hours} : {minutes} : {seconds} : {centiseconds}
-		</div>
+		</Typography>
 	);
 }
