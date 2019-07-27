@@ -23,10 +23,14 @@ class Recording extends Component {
 	componentDidMount() {
 		this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 		this.analyser = this.audioCtx.createAnalyser();
-		document.addEventListener('play_workspace', e => this.play());
-		document.addEventListener('pause_workspace', e => this.pause());
-		document.addEventListener('zoomin_workspace', e => this.zoomIn())
-		document.addEventListener('zoomout_workspace', e => this.zoomOut())
+		document.addEventListener('workspace_play', e => this.play());
+		document.addEventListener('workspace_pause', e => this.pause());
+		document.addEventListener('workspace_zoomin', e => this.zoomIn())
+		document.addEventListener('workspace_zoomout', e => this.zoomOut())
+		document.addEventListener('workspace_selectregion', e => {
+			console.log('workspace_selectregion')
+			this.wavesurfer.seekTo(e.detail.start / this.props.audioDuration)
+		})
 	}
 
 	handleOnLoadedMetadata = (e) => {
@@ -183,6 +187,8 @@ class Recording extends Component {
 	}
 
 	seek = (time) => {
+		console.log('seek, time:', time / this.props.audioDuration)
+		// this.wavesurfer.seekTo(time / this.props.audioDuration)
 		this.props.handleSeek(time);
 	}
 

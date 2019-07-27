@@ -52,10 +52,10 @@ class Workspace extends Component {
 	handleTogglePlay = (e) => {
 	if (!this.props.playing) {
 			this.props.playWorkspace()
-			document.dispatchEvent(new Event('play_workspace'))
+			document.dispatchEvent(new Event('workspace_play'))
 		} else {
 			this.props.pauseWorkspace();
-			document.dispatchEvent(new Event('pause_workspace'))
+			document.dispatchEvent(new Event('workspace_pause'))
 		}
 	}
 
@@ -91,7 +91,21 @@ class Workspace extends Component {
 
 	handleSelectRegion = region => {
 		// console.log('handleSelectRegion, region:', region)
-		this.setState({selectedRegion: region})
+		document.dispatchEvent(
+			new CustomEvent(
+				'workspace_selectregion', 
+				{
+					'detail': region,
+					'bubbles': true,
+					'composed': true
+				}
+			)
+		)
+
+		this.setState({
+			selectedRegion: region,
+			currentTime: region.start
+		})
 	}
 
 	handleClearRegions = () => {
@@ -105,9 +119,9 @@ class Workspace extends Component {
 
 	handleToggleZoom = () => {
 		!this.state.zoomedIn ?
-		document.dispatchEvent(new Event('zoomin_workspace'))
+		document.dispatchEvent(new Event('workspace_zoomin'))
 		:
-		document.dispatchEvent(new Event('zoomout_workspace'));
+		document.dispatchEvent(new Event('workspace_zoomout'));
 
 		this.setState({ zoomedIn: !this.state.zoomedIn })
 	}
