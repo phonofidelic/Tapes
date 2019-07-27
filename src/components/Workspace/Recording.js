@@ -3,6 +3,7 @@ import WaveSurfer from 'wavesurfer.js';
 import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline.min.js';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.js';
+import uuidv4 from 'uuid/v4';
 
 import { ThemeContext } from 'theme.context';
 import { TEST_ID } from 'constants/testIds';
@@ -98,12 +99,31 @@ class Recording extends Component {
     this.wavesurfer.on('seek', progress => {
     	this.seek(this.wavesurfer.getCurrentTime())
     });
-		this.wavesurfer.on('region-created', region => this.createRegion(region));
+		this.wavesurfer.on('region-created', region => {
+
+			this.createRegion(region)
+		});
 		this.wavesurfer.on('region-updated', region => this.updateRegion(region));
+		// this.wavesurfer.on('region-click', region => console.log('region-click', region));
 	}
 
 	createRegion = region => {
 		console.log('region-created, region:', region)
+
+		region.id = uuidv4();
+
+		region.on('click', e => {
+			e.stopPropagation()
+			this.props.handleSelectRegion(region)
+		})
+
+		region.on('update', () => this.props.handleSelectRegion(region))
+
+		region.on('over', e => {
+			console.log('region hover, e:', e)
+			// e.stopPropagation()
+		})
+
 		setTimeout(() => {
 			this.wavesurfer.seekTo(region.start / this.props.audioDuration)
 
@@ -113,7 +133,6 @@ class Recording extends Component {
 	}
 
 	updateRegion = region => {
-		console.log('region-updated, region:', region)
 		setTimeout(() => {
 			this.wavesurfer.seekTo(region.start / this.props.audioDuration)
 

@@ -35,15 +35,8 @@ function RecordingIndicator(props) {
 				color: theme.palette.primary.dark,
 				textAlign: 'right',
 				paddingRight: 8
-			}}>
-				<Typography
-					variant="caption"
-					align="right"
-				>
-					<b>
-						<Timer />
-					</b>
-				</Typography>
+			}}>				
+				<Timer />
 			</div>
 		</Container>
 	)

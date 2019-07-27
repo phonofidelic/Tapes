@@ -12,17 +12,17 @@ import {
 } from 'components/CommonUI';
 import Controls from 'components/Workspace/Controls';
 import Recording from 'components/Workspace/Recording';
-import Selection from 'components/Workspace/Selection';
+import RegionInfo from 'components/Workspace/RegionInfo';
 
 const GlobalStyle = createGlobalStyle`
 	body {
-		overflow-y: hidden;
+		// overflow-y: hidden;
 	}
 `
-const SelectionContainer = styled.div`
+const RegionsContainer = styled.div`
 	display: flex;
 	overflow-x: auto;
-	padding: 20px 10px;
+	padding: 10px 10px;
 `
 
 class Workspace extends Component {
@@ -37,8 +37,9 @@ class Workspace extends Component {
 			barHeight: 2,
 			zoom: 50,
 			zoomedIn: false,
-			selection: null,
-			selections: [],
+			// region: null,
+			regions: [],
+			selectedRegion: null,
 		}
 
 		this.recorderElement = createRef();
@@ -59,11 +60,11 @@ class Workspace extends Component {
 	}
 
 	handleSeek = (time) => {
-		console.log('handleSeek, currentTime:', time)
+		// console.log('handleSeek, currentTime:', time)
 		this.setState({ 
 			currentTime: time,
-			// selection: null,
-			// selections: [],
+			// region: null,
+			// regions: [],
 		});
 	}
 
@@ -81,20 +82,25 @@ class Workspace extends Component {
 	}
 
 	handleCreateRegion = region => {
-		console.log('handleCreateRegion, region:', region)
+		// console.log('handleCreateRegion, region:', region)
 		this.setState({ 
-			selection: region,
-			selections: [...this.state.selections, region]
+			// region: region,
+			regions: [...this.state.regions, region]
 		})
 	}
 
+	handleSelectRegion = region => {
+		// console.log('handleSelectRegion, region:', region)
+		this.setState({selectedRegion: region})
+	}
+
 	handleClearRegions = () => {
-		this.setState({ selections: [] });
+		this.setState({ regions: [] });
 	}
 	
 	handleUpdateRegion = region => {
-		console.log('handleUpdateRegion, region:', region)
-		this.setState({ selection: region })
+		// console.log('handleUpdateRegion, region:', region)
+		this.setState({ region: region })
 	}
 
 	handleToggleZoom = () => {
@@ -105,18 +111,6 @@ class Workspace extends Component {
 
 		this.setState({ zoomedIn: !this.state.zoomedIn })
 	}
-
-	// zoomIn = () => {
-	// 	console.log('zoom')
-	// 	this.setState({ zoom: 100, zoomedIn: true })
-	// 	this.wavesurfer.zoom(100)
-	// }
-
-	// zoomOut = () => {
-	// 	console.log('zoom')
-	// 	this.setState({ zoom: 0, zoomedIn: false })
-	// 	this.wavesurfer.zoom(0)
-	// }
 
 	render() {
 		const { 
@@ -145,28 +139,26 @@ class Workspace extends Component {
 							handleEnded={this.handleEnded}
 							handleCreateRegion={this.handleCreateRegion}
 							handleUpdateRegion={this.handleUpdateRegion}
+							handleSelectRegion={this.handleSelectRegion}
 							handleClearRegions={this.handleClearRegions}
 						/> 
 					}
 
-					{/* this.state.selection &&
-						<Selection 
-							start={this.state.selection.start}
-							end={this.state.selection.start}
-						/>
-					*/}
-
-					<SelectionContainer>
+					<RegionsContainer>
 					{ 
-						this.state.selections.map((selection, i) => (
-							<Selection 
+						this.state.regions.map((region, i) => (
+							<RegionInfo 
 								key={i}
-								start={this.state.selections[i].start}
-								end={this.state.selections[i].end}
+								count={i}
+								region={region}
+								selectedRegion={this.state.selectedRegion}
+								handleSelectRegion={this.handleSelectRegion}
 							/>
 						))
 					}
-					</SelectionContainer>
+					</RegionsContainer>
+
+					[DEBUG] Selected Region: {this.state.selectedRegion && this.state.selectedRegion.id}
 
 					<Controls
 						playing={playing}
