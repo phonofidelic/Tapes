@@ -1,62 +1,86 @@
 import React, { useContext } from 'react';
-import styled from 'styled-components';
 
 import FormattedTime from 'components/FormattedTime';
 import { ThemeContext } from 'theme.context';
 
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Card from '@material-ui/core/Card';
+import CardActions from '@material-ui/core/CardActions';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 
-
-const Container = styled.div`
-	// border: 1px solid ${({theme}) => theme.palette.primary.accent};
-	background-color: ${ props => props.selectedRegion.id === props.regionId ? '#d3d3d3' : 'none'};
-	padding: 5px;
-	border-radius: 3px;
-	margin: 0 10px;
-	// max-height: 54px;
-	// min-width: 150px;
-`
+const useStyles = makeStyles({
+  card: {
+    backgroundColor: '#d3d3d3',
+    margin: '0 10px',
+    minWidth: 180
+  },
+  selected: {
+  	backgroundColor: '#fff',
+  	margin: '0 10px',
+  	minWidth: 180
+  }
+});
 
 const RegionInfo = props => {
 	const { 
 		region,
+		recording,
 		selectedRegion,
 		count,
 		handleSelectRegion,
 	} = props;
 
+	const classes = useStyles();
+
 	const theme = useContext(ThemeContext)
 
 	return (
-		<Container 
-			theme={theme}
-			selectedRegion={selectedRegion}
-			regionId={region.id}
-			onClick={() => handleSelectRegion(region)}
+		<Card 
+			className={
+				selectedRegion.id === region.id ? 
+					(classes.selected) 
+					: 
+					(classes.card)
+			}
+			theme={theme}	
 		>
-			<div>Region #{count + 1}</div>
-			<div>
-				<Typography variant="caption">start: </Typography>
-			{
-				<FormattedTime
-					time={region.start * 1000}
-					display="inline"
-					variant="caption"
-				/>
-			}
-			</div>
-			<div>
-			<Typography variant="caption">end: </Typography>
-			{
-				<FormattedTime
-					time={region.end * 1000}
-					display="inline"
-					variant="caption"
-				/>
-			}
-			</div>
-		</Container>
-	)
+		<CardActionArea>
+			<CardContent onClick={() => handleSelectRegion(region)}>
+				<Typography noWrap>{recording.title} - Region #{count + 1}</Typography>
+				<div>
+					<Typography noWrap variant="caption">start: </Typography>
+					{
+			 			<FormattedTime
+			 				time={region.start * 1000}
+			 				display="inline"
+			 				variant="caption"
+			 				noWrap
+			 			/>
+			 		}
+		 		</div>
+		 		<div>
+			 		<Typography noWrap variant="caption">end: </Typography>
+			 		{
+			 			<FormattedTime
+			 				time={region.end * 1000}
+			 				display="inline"
+			 				variant="caption"
+			 				noWrap
+			 			/>
+			 		}
+		 		</div>
+			</CardContent>
+		</CardActionArea>
+		<CardActions>
+			<Button onClick={() => console.log('Card button clicked')}>
+				Save Tape
+			</Button>
+		</CardActions>
+		</Card>
+	);
 }
 
 export default RegionInfo;

@@ -2,7 +2,11 @@ import React from 'react';
 import Typography from '@material-ui/core/Typography';
 
 export default function FormattedTime(props) {
-	const { time, variant } = props;
+	const { 
+		time,
+		variant,
+		noWrap,
+	} = props;
 
 	let centiseconds = ('0' + (Math.floor(time / 10) % 100)).slice(-2);
 	let seconds = ('0' + (Math.floor(time / 1000) % 60)).slice(-2);
@@ -15,6 +19,7 @@ export default function FormattedTime(props) {
 				margin: 0,
 			}}
 			variant={variant}
+			noWrap={noWrap}
 		>
 			{hours} : {minutes} : {seconds} : {centiseconds}
 		</Typography>

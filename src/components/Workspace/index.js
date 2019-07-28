@@ -22,7 +22,9 @@ const GlobalStyle = createGlobalStyle`
 const RegionsContainer = styled.div`
 	display: flex;
 	overflow-x: auto;
+	min-width: 530px;
 	padding: 10px 10px;
+	margin-bottom: ${({theme}) => theme.dimensions.workspaceControlsHeight}px;
 `
 
 class Workspace extends Component {
@@ -125,6 +127,8 @@ class Workspace extends Component {
 			playing, 
 		} = this.props;
 
+		const theme = this.context;
+
 		return (
 			<Container>
 				<GlobalStyle />
@@ -151,13 +155,14 @@ class Workspace extends Component {
 						/> 
 					}
 
-					<RegionsContainer>
+					<RegionsContainer theme={theme}>
 					{ 
 						this.state.regions.map((region, i) => (
 							<RegionInfo 
 								key={i}
 								count={i}
 								region={region}
+								recording={recording}
 								selectedRegion={this.state.selectedRegion}
 								handleSelectRegion={this.handleSelectRegion}
 							/>
@@ -165,12 +170,14 @@ class Workspace extends Component {
 					}
 					</RegionsContainer>
 
+					{/*
 					<div style={{padding: '5px'}}>
 					[DEBUG] 
 					<div style={{padding: '5px'}}>Selected Region: {this.state.selectedRegion && this.state.selectedRegion.id}</div>
 					<div style={{padding: '5px'}}>Region start: {this.state.selectedRegion && this.state.selectedRegion.start}</div>
 					<div style={{padding: '5px'}}>currentTime: {this.state.currentTime}</div>
 					</div>
+					*/}
 
 					<Controls
 						playing={playing}
