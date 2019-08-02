@@ -25,24 +25,18 @@ class Recording extends Component {
 		this.analyser = this.audioCtx.createAnalyser();
 		document.addEventListener('workspace_play', e => this.play());
 		document.addEventListener('workspace_pause', e => this.pause());
-		document.addEventListener('workspace_zoomin', e => this.zoomIn())
-		document.addEventListener('workspace_zoomout', e => this.zoomOut())
+		document.addEventListener('workspace_zoomin', e => this.zoomIn());
+		document.addEventListener('workspace_zoomout', e => this.zoomOut());
 		document.addEventListener('workspace_selectregion', e => {
-			
 			this.wavesurfer.seekTo(e.detail.start / this.props.audioDuration)
-
 			setTimeout(() => {
-				console.log('workspace_selectregion', this.props.selectedRegion)
-
 				for (var region in this.wavesurfer.regions.list) {
-					console.log('region', region)
-					console.log('selected region:', this.props.selectedRegion.id)
 					this.wavesurfer.regions.list[region].color = 'rgba(0, 0, 0, 0.1)';
 					this.wavesurfer.regions.list[this.props.selectedRegion.id].color = 'rgba(245, 145, 85, 0.5)'
 					this.wavesurfer.regions.list[region].updateRender();
 				}
-			}, 1)
-		})
+			}, 1);
+		});
 	}
 
 	handleOnLoadedMetadata = (e) => {
