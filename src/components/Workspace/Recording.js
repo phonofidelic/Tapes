@@ -130,14 +130,14 @@ class Recording extends Component {
 			console.log(this.props.playing)
 			if (this.props.playing) {
 				this.pause();
-				this.props.handlePause();
+				// this.props.handlePause();
 			}
 		});
 
 		region.on('update-end', () => {
 			setTimeout(() => {
-				this.play();
-				this.props.handlePlay();
+				if (this.props.playing) this.play();
+				// this.props.handlePlay();
 			}, 100)
 			
 		})
