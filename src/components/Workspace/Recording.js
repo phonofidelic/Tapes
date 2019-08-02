@@ -102,29 +102,21 @@ class Recording extends Component {
     /**
      * Wavesurfer event handlers
      */
-
     this.wavesurfer.on('ready', () => this.handleReady());
 
     this.wavesurfer.on('finish', () => this.stop());
 
-    this.wavesurfer.on('seek', progress => {
-    	// console.log('seek, progress:', progress)
-    	this.seek(this.wavesurfer.getCurrentTime())
-    });
-		this.wavesurfer.on('region-created', region => {
+    this.wavesurfer.on('seek', progress => this.seek(this.wavesurfer.getCurrentTime()));
 
-			this.createRegion(region)
-		});
+		this.wavesurfer.on('region-created', region => this.createRegion(region));
 
 		this.wavesurfer.on('region-updated', region => this.updateRegion(region));
-		// this.wavesurfer.on('region-click', region => console.log('region-click', region));
 	}
 
 	createRegion = region => {
 		console.log('region-created, region:', region)
 		
 		region.id = uuidv4();
-		// region.color = 'rgba(245, 145, 85, 0.5)';
 
 		region.on('click', e => {
 			e.stopPropagation();
@@ -132,10 +124,7 @@ class Recording extends Component {
 		});
 
 		region.on('update', () => {
-			console.log(this.props.playing);
-			if (this.props.playing) {
-				this.pause();
-			}
+			if (this.props.playing) this.pause();
 		});
 
 		region.on('update-end', () => {
