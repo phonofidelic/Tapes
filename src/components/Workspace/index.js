@@ -151,6 +151,7 @@ class Workspace extends Component {
 							audioDuration={this.state.audioDuration}
 							playing={playing}
 							barHeight={this.state.barHeight}
+							selectedRegion={this.state.selectedRegion}
 							zoomedIn={this.state.zoomedIn}
 							handleWavesurferReady={this.handleWavesurferReady}
 							handleSeek={this.handleSeek}

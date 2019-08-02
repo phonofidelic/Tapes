@@ -28,8 +28,20 @@ class Recording extends Component {
 		document.addEventListener('workspace_zoomin', e => this.zoomIn())
 		document.addEventListener('workspace_zoomout', e => this.zoomOut())
 		document.addEventListener('workspace_selectregion', e => {
-			// console.log('workspace_selectregion', e.detail)
+			
 			this.wavesurfer.seekTo(e.detail.start / this.props.audioDuration)
+
+			setTimeout(() => {
+				console.log('workspace_selectregion', this.props.selectedRegion)
+
+				for (var region in this.wavesurfer.regions.list) {
+					console.log('region', region)
+					console.log('selected region:', this.props.selectedRegion.id)
+					this.wavesurfer.regions.list[region].color = 'rgba(0, 0, 0, 0.1)';
+					this.wavesurfer.regions.list[this.props.selectedRegion.id].color = 'rgba(245, 145, 85, 0.5)'
+					this.wavesurfer.regions.list[region].updateRender();
+				}
+			}, 1)
 		})
 	}
 
@@ -116,42 +128,39 @@ class Recording extends Component {
 
 	createRegion = region => {
 		console.log('region-created, region:', region)
-		this.props.handleSelectRegion(region)
-
+		
 		region.id = uuidv4();
+		// region.color = 'rgba(245, 145, 85, 0.5)';
 
 		region.on('click', e => {
-			e.stopPropagation()
-			this.props.handleSelectRegion(region)
-		})
+			e.stopPropagation();
+			this.props.handleSelectRegion(region);
+		});
 
 		region.on('update', () => {
-			// this.props.handleSelectRegion(region)
-			console.log(this.props.playing)
+			console.log(this.props.playing);
 			if (this.props.playing) {
 				this.pause();
-				// this.props.handlePause();
 			}
 		});
 
 		region.on('update-end', () => {
 			setTimeout(() => {
 				if (this.props.playing) this.play();
-				// this.props.handlePlay();
-			}, 100)
+			}, 100);
 			
-		})
+		});
 
 		region.on('over', e => {
 			console.log('region hover, e:', e)
-		})
+		});
+
+		this.props.handleSelectRegion(region);
 
 		setTimeout(() => {
 			this.wavesurfer.seekTo(region.start / this.props.audioDuration)
-
-			// TODO: this.props.createTape(region.start, region.end)
 			this.props.handleCreateRegion(region);
-		}, 100)
+		}, 100);
 	}
 
 	updateRegion = region => {
