@@ -53,12 +53,20 @@ class Workspace extends Component {
 
 	handleTogglePlay = (e) => {
 	if (!this.props.playing) {
-			this.props.playWorkspace()
-			document.dispatchEvent(new Event('workspace_play'))
+			this.props.playWorkspace();
+			document.dispatchEvent(new Event('workspace_play'));
 		} else {
 			this.props.pauseWorkspace();
-			document.dispatchEvent(new Event('workspace_pause'))
+			document.dispatchEvent(new Event('workspace_pause'));
 		}
+	}
+
+	handlePlay = () => {
+		this.props.playWorkspace();
+	}
+
+	handlePause = () => {;
+		this.props.pauseWorkspace();
 	}
 
 	handleSeek = (time) => {
@@ -152,6 +160,8 @@ class Workspace extends Component {
 							handleUpdateRegion={this.handleUpdateRegion}
 							handleSelectRegion={this.handleSelectRegion}
 							handleClearRegions={this.handleClearRegions}
+							handlePlay={this.handlePlay}
+							handlePause={this.handlePause}
 						/> 
 					}
 

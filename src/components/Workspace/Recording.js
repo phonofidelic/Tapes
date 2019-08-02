@@ -116,6 +116,7 @@ class Recording extends Component {
 
 	createRegion = region => {
 		console.log('region-created, region:', region)
+		this.props.handleSelectRegion(region)
 
 		region.id = uuidv4();
 
@@ -124,7 +125,22 @@ class Recording extends Component {
 			this.props.handleSelectRegion(region)
 		})
 
-		region.on('update', () => this.props.handleSelectRegion(region))
+		region.on('update', () => {
+			// this.props.handleSelectRegion(region)
+			console.log(this.props.playing)
+			if (this.props.playing) {
+				this.pause();
+				this.props.handlePause();
+			}
+		});
+
+		region.on('update-end', () => {
+			setTimeout(() => {
+				this.play();
+				this.props.handlePlay();
+			}, 100)
+			
+		})
 
 		region.on('over', e => {
 			console.log('region hover, e:', e)
