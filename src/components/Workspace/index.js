@@ -44,15 +44,13 @@ class Workspace extends Component {
 			selectedRegion: null,
 		}
 
-		this.recorderElement = createRef();
-
 		let params = new URLSearchParams(window.location.search);
 		const id = params.get('id');
 		this.props.loadRecordingData(id)
 	}
 
 	handleTogglePlay = (e) => {
-	if (!this.props.playing) {
+		if (!this.props.playing) {
 			this.props.playWorkspace();
 			document.dispatchEvent(new Event('workspace_play'));
 		} else {
@@ -70,11 +68,8 @@ class Workspace extends Component {
 	}
 
 	handleSeek = (time) => {
-		// console.log('handleSeek, currentTime:', time)
 		this.setState({ 
 			currentTime: time,
-			// region: null,
-			// regions: [],
 		});
 	}
 
@@ -146,7 +141,6 @@ class Workspace extends Component {
 					{ 
 						recording && 
 						<Recording
-							ref={this.recorderElement}
 							recording={recording}
 							audioDuration={this.state.audioDuration}
 							playing={playing}
@@ -180,15 +174,6 @@ class Workspace extends Component {
 						))
 					}
 					</RegionsContainer>
-
-					{/*
-					<div style={{padding: '5px'}}>
-					[DEBUG] 
-					<div style={{padding: '5px'}}>Selected Region: {this.state.selectedRegion && this.state.selectedRegion.id}</div>
-					<div style={{padding: '5px'}}>Region start: {this.state.selectedRegion && this.state.selectedRegion.start}</div>
-					<div style={{padding: '5px'}}>currentTime: {this.state.currentTime}</div>
-					</div>
-					*/}
 
 					<Controls
 						playing={playing}
