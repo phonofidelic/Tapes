@@ -29,6 +29,8 @@ class Recording extends Component {
 		document.addEventListener('workspace_zoomout', e => this.zoomOut());
 		document.addEventListener('workspace_selectregion', e => {
 			this.wavesurfer.seekTo(e.detail.start / this.props.audioDuration)
+
+			console.log('workspace_selectregion, current time:', this.wavesurfer.getCurrentTime())
 			setTimeout(() => {
 				for (var region in this.wavesurfer.regions.list) {
 					this.wavesurfer.regions.list[region].color = 'rgba(0, 0, 0, 0.1)';
@@ -141,7 +143,7 @@ class Recording extends Component {
 		this.props.handleSelectRegion(region);
 
 		setTimeout(() => {
-			this.wavesurfer.seekTo(region.start / this.props.audioDuration)
+			// this.wavesurfer.seekTo(region.start / this.props.audioDuration)
 			this.props.handleCreateRegion(region);
 		}, 100);
 	}

@@ -31,19 +31,19 @@ const ControlsContainer = styled.div`
 	flex-grow: 1;
 	justify-content: center;
 	padding: 10px;
+	flex: 1;
 `
 const PlaybackControls = styled.div`
 	// border: 1px solid orange;
-	margin-right: 50px;
 	align-self: center;
-	// flex-grow: 1;
+	flex: 1;
 `
 
 const ZoomControls = styled.div`
 	// border: 1px solid orange;
 	display: flex;
 	width: 95px;
-	// flex-grow: 1;
+	flex: 1;
 `
 
 const TimeInfoContainer = styled.div`
@@ -55,8 +55,13 @@ const TimeInfoContainer = styled.div`
 	padding-top: 25px;
 	padding-right: 20px;
 	padding-left: 20px;
-	flex-grow: 1;
+	// flex-grow: 1;
 	// text-align: justify;
+	flex: 1;
+`
+
+const Spacer = styled.div`
+	flex: 1;
 `
 
 function Controls(props) {
@@ -93,6 +98,7 @@ function Controls(props) {
 			</TimeInfoContainer>
 
 			<ControlsContainer theme={theme}>
+				<Spacer />
 				<PlaybackControls>
 					<IconButton onClick={() => handleTogglePlay()}>
 					{!playing ? <PlayIcon /> : <PauseIcon />}
