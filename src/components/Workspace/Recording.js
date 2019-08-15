@@ -21,8 +21,6 @@ class Recording extends Component {
 	}
 
 	componentDidMount() {
-		this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-		this.analyser = this.audioCtx.createAnalyser();
 		document.addEventListener('workspace_play', e => this.play());
 		document.addEventListener('workspace_pause', e => this.pause());
 		document.addEventListener('workspace_zoomin', e => this.zoomIn());
@@ -34,34 +32,20 @@ class Recording extends Component {
 			setTimeout(() => {
 				for (var region in this.wavesurfer.regions.list) {
 					this.wavesurfer.regions.list[region].color = 'rgba(0, 0, 0, 0.1)';
-					this.wavesurfer.regions.list[this.props.selectedRegion.id].color = 'rgba(245, 145, 85, 0.5)'
+					this.wavesurfer.regions.list[this.props.selectedRegion.id].color = 'rgba(245, 145, 85, 0.5)';
 					this.wavesurfer.regions.list[region].updateRender();
 				}
 			}, 1);
 		});
+
+		this.loadWaveformData();
 	}
 
-	handleOnLoadedMetadata = (e) => {
-		console.log('handleOnLoadedMetadata, e.target.duration:', e.target.duration)
-		this.source = this.audioCtx.createMediaElementSource(this.audioElement.current)
-		this.source.connect(this.audioCtx.destination);
-		
-		this.audioElement.current.addEventListener('ended', (e) => {
-			console.log('*** Recording ended')
-			clearInterval(this.intervalID);
-			this.setState({
-				playing: false
-			})
-		})
-		
-		this.loadWaveformDada();
-	}
-
-	loadWaveformDada = () => {
+	loadWaveformData = () => {
 		const theme = this.context;
 		const { recording } = this.props;
 		const channelCount = parseInt(recording.format.channels, 10); // TODO: fix spelling on channels prop
-		const srcURL = `http://localhost:5000/recordings/${recording.filename}`
+		const srcURL = `http://localhost:5000/recordings/${recording.filename}`;
 		
 		console.log('channelCount:', channelCount)
 		this.timelinePlugin = TimelinePlugin.create({
@@ -74,11 +58,11 @@ class Recording extends Component {
 				marginLeft: '10px'
     	},
 			showTime: true,
-    })
+    });
 
     this.regionsPlugin = RegionsPlugin.create({
 			// loop: true
-    })
+    });
 
 		this.wavesurfer = WaveSurfer.create({
       container: this.waveformEl.current,
@@ -86,8 +70,7 @@ class Recording extends Component {
       progressColor: theme.palette.primary.accent,
       cursorColor: theme.palette.primary.accent,
       responsive: true,
-      audioContext: this.audioCtx,
-      barHeight: this.props.barHeight,
+      // barHeight: this.props.barHeight,
       splitChannels: channelCount === 2,
       height: 200 / channelCount,
       // hideScrollbar: true,
@@ -120,6 +103,9 @@ class Recording extends Component {
 		
 		region.id = uuidv4();
 
+		/**
+     * Region event handlers
+     */
 		region.on('click', e => {
 			e.stopPropagation();
 			this.props.handleSelectRegion(region);
@@ -133,7 +119,6 @@ class Recording extends Component {
 			setTimeout(() => {
 				if (this.props.playing) this.play();
 			}, 100);
-			
 		});
 
 		region.on('over', e => {
@@ -154,7 +139,7 @@ class Recording extends Component {
 
 			// TODO: this.props.updateTape(region.start, region.end)
 			this.props.handleUpdateRegion(region);
-		}, 100)
+		}, 100);
 	}
 
 	clearRegions = () => {
@@ -173,8 +158,8 @@ class Recording extends Component {
 		if (this.intervalID) clearInterval(this.intervalID);
 
 		this.intervalID = setInterval(() => {
-			this.props.handleSetTime(this.wavesurfer.getCurrentTime())
-		}, 1)
+			this.props.handleSetTime(this.wavesurfer.getCurrentTime());
+		}, 1);
 	}
 
 	stopTimer = () => {
@@ -218,6 +203,8 @@ class Recording extends Component {
 			playing,
 		} = this.props;
 
+		// console.log('this.wavesurfer:', this.wavesurfer)
+
 		return (
 			<div>
 				<div 
@@ -231,19 +218,8 @@ class Recording extends Component {
 					ref={this.waveformEl}
 					onClick={() => this.clearRegions()}
 				/>
-				{ recording && 
-					<audio 
-						ref={this.audioElement}
-						//controls
-						preload="auto"
-						crossOrigin="anonymous"
-						src={`http://localhost:5000/recordings/${recording.filename}`}
-						onLoadedMetadata={this.handleOnLoadedMetadata}
-						onEnded={this.handleEnded}
-					/>
-				}
 			</div>
-		)
+		);
 	}
 }
 

@@ -36,8 +36,8 @@ class Workspace extends Component {
 		this.state = {
 			audioDuration: 0,
 			currentTime: 0,
-			barHeight: 2,
-			zoom: 50,
+			// barHeight: 2,
+			// zoom: 50,
 			zoomedIn: false,
 			// region: null,
 			regions: [],
@@ -112,7 +112,7 @@ class Workspace extends Component {
 	
 	handleUpdateRegion = region => {
 		// console.log('handleUpdateRegion, region:', region)
-		this.setState({ region: region })
+		this.setState({ selectedRegion: region })
 	}
 
 	handleToggleZoom = () => {
@@ -144,7 +144,7 @@ class Workspace extends Component {
 							recording={recording}
 							audioDuration={this.state.audioDuration}
 							playing={playing}
-							barHeight={this.state.barHeight}
+							// barHeight={this.state.barHeight}
 							selectedRegion={this.state.selectedRegion}
 							zoomedIn={this.state.zoomedIn}
 							handleWavesurferReady={this.handleWavesurferReady}
