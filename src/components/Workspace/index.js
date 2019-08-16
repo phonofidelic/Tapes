@@ -107,7 +107,7 @@ class Workspace extends Component {
 	}
 
 	handleClearRegions = () => {
-		this.setState({ regions: [] });
+		this.setState({ regions: [], selectedRegion: null });
 	}
 	
 	handleUpdateRegion = region => {
@@ -147,6 +147,7 @@ class Workspace extends Component {
 							// barHeight={this.state.barHeight}
 							selectedRegion={this.state.selectedRegion}
 							zoomedIn={this.state.zoomedIn}
+							multiSelect={false}
 							handleWavesurferReady={this.handleWavesurferReady}
 							handleSeek={this.handleSeek}
 							handleSetTime={this.handleSetTime}
@@ -162,16 +163,30 @@ class Workspace extends Component {
 
 					<RegionsContainer theme={theme}>
 					{ 
-						this.state.regions.map((region, i) => (
-							<RegionInfo 
-								key={i}
-								count={i}
-								region={region}
-								recording={recording}
-								selectedRegion={this.state.selectedRegion}
-								handleSelectRegion={this.handleSelectRegion}
-							/>
-						))
+						/***
+						 *	Disable multiple regions until region selection bug is fixed
+						 ***/
+
+						// this.state.regions.map((region, i) => (
+						// 	<RegionInfo 
+						// 		key={i}
+						// 		count={i}
+						// 		region={region}
+						// 		recording={recording}
+						// 		selectedRegion={this.state.selectedRegion}
+						// 		handleSelectRegion={this.handleSelectRegion}
+						// 	/>
+						// ))
+
+						this.state.selectedRegion &&
+						<RegionInfo 
+							// key={i}
+							count={0}
+							region={this.state.selectedRegion}
+							recording={recording}
+							selectedRegion={this.state.selectedRegion}
+							handleSelectRegion={this.handleSelectRegion}
+						/>
 					}
 					</RegionsContainer>
 

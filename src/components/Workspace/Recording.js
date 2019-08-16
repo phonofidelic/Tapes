@@ -34,6 +34,13 @@ class Recording extends Component {
 					this.wavesurfer.regions.list[region].color = 'rgba(0, 0, 0, 0.1)';
 					this.wavesurfer.regions.list[this.props.selectedRegion.id].color = 'rgba(245, 145, 85, 0.5)';
 					this.wavesurfer.regions.list[region].updateRender();
+
+					/***
+					 *	Disable multiple regions until region selection bug is fixed
+					 ***/
+					if (this.wavesurfer.regions.list[region].id !== this.props.selectedRegion.id) {
+						this.wavesurfer.regions.list[region].remove()
+					}
 				}
 			}, 1);
 		});
