@@ -21,7 +21,7 @@
     "get-audio-duration": "^1.0.0",
     "history": "^4.9.0",
     "lodash": "^4.17.11",
-    "lodash-es": "^4.17.14",
+    "lodash-es": "^4.17.21",
     "lodash.template": "^4.5.0",
     "moment": "^2.24.0",
     "node-audiorecorder": "^1.4.1",
