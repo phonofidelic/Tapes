@@ -11,7 +11,7 @@
     "connected-react-router": "^6.4.0",
     "cross-env": "^5.2.0",
     "datauri": "^2.0.0",
-    "dexie": "^2.0.4",
+    "dexie": "^3.2.2",
     "electron-devtools-installer": "^2.2.4",
     "electron-is-dev": "^1.1.0",
     "electron-serve": "^0.3.0",
