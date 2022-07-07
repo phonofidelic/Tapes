@@ -23,7 +23,7 @@
     "lodash": "^4.17.11",
     "lodash-es": "^4.17.14",
     "lodash.template": "^4.5.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "node-audiorecorder": "^1.4.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
